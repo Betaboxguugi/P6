@@ -4,7 +4,11 @@ The associated documentation for the project is also in this repository.
 
 # Collaborators
 Alexander Brandborg
+
 Mathias Claus Jensen (mcje13@student.aau.dk)
+
 Arash Michael Sami Kjær
+
 Mikael Vind Mikkelsen
+
 Christian Thomsen (Supervisor)
