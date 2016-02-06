@@ -1,0 +1,76 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{hyperref}
+
+\title{Start of P6 thoughts}
+\author{Mathias Claus Jensen}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Initial Project Idea}
+The following is a summary of the project proposal. \\
+
+\emph{There are currently no way of doing automated tests for the python package \href{http://pygrametl.org}{\textit{pygrametl}}. It is suggested that in this project it should be investigated how to do regression testing for \textit{pygrametl}. Some requirements for the test are that they should be fast, and should be able to run on atleast Linux, Mac OSx and Windows. It is suggested to use \href{http://sqlite.org}{SQLite} for creating and tearing down databases. It is suggested that a succesfull implementation of automatic tests for \textit{pygrametl} could lead to a module that can assist users in  testing of their programs.} \\
+
+This summary  suggests several areas of interest, such as what is \textit{pygrametl} and how can automated tests be implemented, what is \textit{automated tests} and \textit{regression testing}, how do we make sure that it runs and fast and is portable and lastly how could this lead to a module that can assist users in testing their own \textit{pygrametl} programs. \\
+
+This initial idea could also be split up into three seqential process.
+\begin{itemize}
+\item First: Describe theoraticaly how to test ETL systems efficiantly
+\item Second: Implement this for pygrametl
+\item Third: Further develop this implementation into a module for users to use
+\end{itemize}
+
+The second and third step could be solved in one step, it could be viable to build a module for users to use that could used to do automatic tests for pygrametl.
+
+
+\section{A few clarification regarding terminology}
+In the above summary of the given problem, some terminology was used, as we are new to this shit, this section will serve to help clarifying some of it, i hope.
+
+\begin{itemize}
+\item \textbf{ETL}: Extract-Transform-Load. You extract data from homogenous or heterogenous data sources, transform it to a proper structure/format for querying and analysis and then load that stuff into the target (database, datawarehouse, wateva).
+  The thing about ETLs is that they are good at getting data from a lot of different sources and then transforming that into a uniform structure that is usable. \cite{wiki-etl}
+
+\item \textbf{Regression Testing}: Testing to see that changes in the system doesn't introduce non-wanted behaviour. The test first strategy is a form of regression testing and it fits well with agile development. Usually regression testing is done by the use of unit, functional or non-functional tests. \cite{wiki-regression}
+
+\item \textbf{Functional and Non-Functional Tests}: Functional tests are tests on which a larger parts of a systems functionality is tested. Non-functional tests are tests that test the systems not functional requirements, such as run-time, system loads, etc. \cite{wiki-functional, wiki-nonfunctional}
+
+\item \textbf{Manuel Tests or Test Automation}: Test automation is the opposite of manual testings, in which you as a tester do tests of your code. Test automation is having software that runs your tests for you. It is very related to Regression testing, as you typically do a bunch of regression tests and then use them with test automation. An example of some software that does automated testing would be the test suite in visual studio. \cite{wiki-manual, wiki-automation}
+\end{itemize}
+
+
+
+\begin{thebibliography}{9}
+
+\bibitem{wiki-etl}
+  Wikipedia article on ETL,
+  \emph{https://en.wikipedia.org/wiki/Extract,\_transform,\_load},
+  2016.
+
+\bibitem{wiki-regression}
+  Wikipedia article on Regression Testing,
+  \emph{https://en.wikipedia.org/wiki/Regression\_testing},
+  2016.
+
+\bibitem{wiki-functional}
+  Wikipedia article on Functional Tests,
+  \emph{https://en.wikipedia.org/wiki/Functional\_testing},
+  2016.
+
+\bibitem{wiki-nonfunctional}
+  Wikipedia article on Non-Functional Tests,
+  \emph{https://en.wikipedia.org/wiki/Non-Functional\_testing},
+  2016.
+
+\bibitem{wiki-manual}
+  Wikipedia article on Manual Testing,
+  \emph{https://en.wikipedia.org/wiki/Manual\_testing},
+  2016.
+
+\bibitem{wiki-automation}
+  Wikipedia article on Test Automation,
+  \emph{https://en.wikipedia.org/wiki/Test\_automation},
+  2016.  
+\end{thebibliography}
+\end{document}
