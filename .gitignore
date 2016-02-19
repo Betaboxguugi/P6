@@ -225,3 +225,5 @@ Temporary Items
 pyvenv.cfg
 pip-selfcheck.json
 
+*.db
+
