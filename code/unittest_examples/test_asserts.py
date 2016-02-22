@@ -4,8 +4,8 @@ import unittest
 class TestAsserts(unittest.TestCase):
 
     def test_equal(self):
-        a = 1
-        b = 1
+        a = 'equal'
+        b = 'equal'
         self.assertEqual(a, b)
 
     def test_not_equal(self):
@@ -13,45 +13,87 @@ class TestAsserts(unittest.TestCase):
         b = 2
         self.assertNotEqual(a, b)
 
-    @unittest.skip("reason")
     def test_true(self):
-        self.assertTrue()
+        self.assertTrue(True)
 
-    @unittest.skip("reason")
     def test_false(self):
-        self.assertFalse()
+        self.assertFalse(False)
 
-    @unittest.skip("reason")
-    def test_is(self):
-        self.assertIs()
+    def test_is(self):  # Can't figure how this is different to equal
+        a = 'same object?'
+        b = 'same object?'
+        self.assertIs(a, b)
 
-    @unittest.skip("reason")
     def test_is_not(self):
-        self.assertIsNot()
+        self.assertIsNot('lol','lmao')
 
-    @unittest.skip("reason")
     def test_is_none(self):
-        self.assertIsNone()
+        self.assertIsNone(None)
 
-    @unittest.skip("reason")
     def test_is_not_none(self):
-        self.assertIsNotNone()
+        self.assertIsNotNone(9001)
 
-    @unittest.skip("reason")
     def test_in(self):
-        self.assertIn()
+        l = (1, 2)
+        self.assertIn(1, l)
 
-    @unittest.skip("reason")
     def test_not_in(self):
-        self.assertNotIn()
+        l = (1, 2)
+        self.assertNotIn(None, l)
 
-    @unittest.skip("reason")
     def test_is_instance(self):
-        self.assertIsInstance()
+        x = 1
+        self.assertIsInstance(x, int)
 
-    @unittest.skip("reason")
     def test_not_is_instance(self):
-        self.assertNotIsInstance()
+        x = 1
+        self.assertNotIsInstance(x, str)
+
+    def test_equal_fail(self):
+        a = 'equal'
+        b = 'Equal'
+        self.assertEqual(a, b)
+
+    def test_not_equal_fail(self):
+        a = 1
+        b = 1
+        self.assertNotEqual(a, b)
+
+    def test_true_fail(self):
+        self.assertTrue(False)
+
+    def test_false_fail(self):
+        self.assertFalse(True)
+
+    def test_is_fail(self):  # Can't figure how this is different to equal
+        a = 'same object?'
+        b = 'same object'
+        self.assertIs(a, b)
+
+    def test_is_not_fail(self):
+        self.assertIsNot('lol','lol')
+
+    def test_is_none_fail(self):
+        self.assertIsNone(4237508934)
+
+    def test_is_not_none_fail(self):
+        self.assertIsNotNone(None)
+
+    def test_in_fail(self):
+        l = (1, 2)
+        self.assertIn(3, l)
+
+    def test_not_in_fail(self):
+        l = (1, 2)
+        self.assertNotIn(1, l)
+
+    def test_is_instance_fail(self):
+        x = 1
+        self.assertIsInstance(x, float)
+
+    def test_not_is_instance_fail(self):
+        x = 1
+        self.assertNotIsInstance(x, int)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestAsserts)
 unittest.TextTestRunner(verbosity=2).run(suite)
