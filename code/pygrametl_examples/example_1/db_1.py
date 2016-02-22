@@ -46,7 +46,7 @@ def setup_out_dw(dw_name='./dw.db'):
     if os.path.exists(dw_name):
         os.remove(dw_name)
     
-    dw_conn = sqlite3.connect(sales_dw_name)
+    dw_conn = sqlite3.connect(dw_name)
     dw_cur = dw_conn.cursor()
 
     # We make a table for each dimension and the FactTable
