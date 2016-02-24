@@ -20,7 +20,7 @@ def print_table(str, name=None):
     return []
 
 
-"This just insures we have a fresh database to work with."
+# This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
     os.remove('test.db')
     print("Deleted previous database")
