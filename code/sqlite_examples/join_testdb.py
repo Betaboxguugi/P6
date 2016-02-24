@@ -1,4 +1,4 @@
-"""WIP - Examples of join between 2 tables"""
+"""Examples of join between 2 tables"""
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
@@ -47,6 +47,8 @@ print("Tables created successfully")
 
 # Inserting array into the relevant table
 persons_list = [('Anders', 43),
+                ('Maria', 33),
+                ('Sandra', 13),
                 ('Charles', 50),
                 ('Wolf', 28),
                 ('Hannibal', 45),
@@ -60,7 +62,10 @@ print_table("SELECT * FROM PERSONS",
 hobbies_list = [(4, 'Bowling'),
                 (3, 'Warhammer 40k'),
                 (2, 'Beer Brewing'),
-                (1, 'Cooking')]
+                (6, 'Cooking'),
+                (6, 'Murder'),
+                ]
+
 c.executemany("INSERT INTO HOBBIES (PERSON_ID,NAME) VALUES (?,?)", hobbies_list)
 
 print_table("SELECT * FROM HOBBIES",
@@ -71,10 +76,17 @@ print_table("SELECT * FROM HOBBIES",
 print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS JOIN HOBBIES",
             "Joined Table")
 
-# The last table shows all combinations between all the names from the 2 tables.
+# The table "Joined Table", shows all combinations between all the names from the 2 tables.
 # So to only see what hobbies each persons have we add "ON PERSONS.ID = HOBBIES.PERSON_ID".
 print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS JOIN HOBBIES ON PERSONS.ID = HOBBIES.PERSON_ID",
             "Specified Joined Table")
+
+# The table "Specified Joined Table", does not show Anders and Wolf as they have no hobbies.
+# So we use LEFT OUTER JOIN to insure we show all the people from the table PERSONS
+print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS LEFT OUTER JOIN HOBBIES ON PERSONS.ID = HOBBIES.PERSON_ID",
+            "Specified Left Outer Joined Table")
+
+
 
 print("Operation done successfully")
 conn.commit()
