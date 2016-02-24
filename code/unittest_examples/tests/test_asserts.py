@@ -19,13 +19,13 @@ class TestAsserts(unittest.TestCase):  # By making a TestCase class like this we
     def test_false(self):
         self.assertFalse(False)
 
-    def test_is(self):  # Can't figure out how this is different to equal
+    def test_is(self):
         a = 'same object?'
         b = 'same object?'
-        self.assertIs(a, b)
+        self.assertIs(a, b)  # Test if the objects are the same
 
     def test_is_not(self):
-        self.assertIsNot('lol','lmao')
+        self.assertIsNot(0, 0.0)  # Objects are not the same even if they evaluate to the same value
 
     def test_is_none(self):
         self.assertIsNone(None)
