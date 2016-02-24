@@ -36,7 +36,7 @@ dw_conn = sqlite3.connect(DW_NAME)
 dw_conn_wrapper = pygrametl.ConnectionWrapper(connection=dw_conn)
 
 # We make a source for our SQL and CSV
-# NOTE: We use NAME_MAPPING to do some mapping for us, not sure why.
+# NOTE: We use NAME_MAPPING to do some mapping between source and DW as they do not share attribute name
 sales_source = SQLSource(connection=sales_conn, query="SELECT * FROM sales", names=NAME_MAPPING) 
 
 csv_file_handle = open(CSV_NAME, "r")
@@ -74,20 +74,36 @@ fact_table = FactTable(
 [location_dimension.insert(row) for row in region_source]
 csv_file_handle.close()
 
-a = [('genre', cookbook_fix)]
-s = MappingStep(a)
+# Here are all of our steps.
+# They make the necessary transformations so that we can load our data into the DW
+# Each row in the source is processed through the step chain one at a time.
 
+# Beginning of chain for iterating over rows
 step_starter = SourceStep(sales_source)
+
+# Calls the time_splitter function on a row
 time_splitter = Step(split_timestamp)
-printer = PrintStep()
+
+# These steps ensure that an entry related to our row is in the given dimension. If not it is inserted.
+# Afterwards the primary key of the given entry is inserted into the row.
 ensure_book = DimensionStep(dimension=book_dimension, keyfield='bookid')
 ensure_time = DimensionStep(dimension=time_dimension, keyfield='timeid')
 ensure_location = DimensionStep(dimension=location_dimension, keyfield='locationid')
+
+# Inserts the row into the fact table
 ft_insert = Step(fact_table.insert)
 
-connectsteps(step_starter, time_splitter, ensure_book, ensure_time, ensure_location, ft_insert, printer)
+# Prints the row
+printer = PrintStep()
+
+# Fixes a typo found in the sales source
+genre_typo_fix = ValueMappingStep(outputatt='genre', inputatt='genre', mapping={'Cockbook': 'Cookbook'})
+
+# Chains together steps and then enacts them on each row
+connectsteps(step_starter, time_splitter, ensure_book, ensure_time, ensure_location, genre_typo_fix, ft_insert, printer)
 step_starter.start()
 
+# The load has now been completed, and we are ready to commit and close our connections
 dw_conn_wrapper.commit()
 dw_conn_wrapper.close()
 
