@@ -41,7 +41,7 @@ class TestAsserts(unittest.TestCase):  # By making a TestCase class like this we
         l = (1, 2)
         self.assertNotIn(None, l)
 
-    def test_is_instance(self):  # checks if the two objects are the sa´me type
+    def test_is_instance(self):  # checks if the two objects are the same type
         x = 1
         self.assertIsInstance(x, int)
 
@@ -55,7 +55,7 @@ class TestAsserts(unittest.TestCase):  # By making a TestCase class like this we
         b = 'Equal'
         self.assertEqual(a, b)
 
-    @unittest.expectedFailure  # expectedFailure means that if the test fails, it is not counted as failed test
+    @unittest.expectedFailure  # expectedFailure means that if the test fails, it is not counted as a failed test
     def test_not_equal_fail(self):
         a = 1
         b = 1
@@ -121,5 +121,3 @@ class TestAsserts(unittest.TestCase):  # By making a TestCase class like this we
 
 suite = unittest.makeSuite(TestAsserts)          # tests can be run without any of this
 unittest.TextTestRunner(verbosity=2).run(suite)  # This is for more detailed output when running the tests from here
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
