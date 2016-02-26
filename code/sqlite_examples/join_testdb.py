@@ -34,10 +34,11 @@ print("Opened database successfully")
 c.execute('''CREATE TABLE PERSONS
     (ID     INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,
     NAME    TEXT                                NOT NULL,
-    AGE     INT                                 NOT NULL);
+    AGE     INT                                 NOT NULL,
+    FRIEND_ID INTEGER                                   );
     ''')
 
-# Table over the persons hobbies, not PERSON_ID which we wil use to identify who has each hobby.
+# Table over the persons hobbies, note PERSON_ID which we wil use to identify who has each hobby.
 c.execute('''CREATE TABLE HOBBIES
     (ID INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,
     PERSON_ID           INT                 NOT NULL,
@@ -46,14 +47,14 @@ c.execute('''CREATE TABLE HOBBIES
 print("Tables created successfully")
 
 # Inserting array into the relevant table
-persons_list = [('Anders', 43),
-                ('Maria', 33),
-                ('Sandra', 13),
-                ('Charles', 50),
-                ('Wolf', 28),
-                ('Hannibal', 45),
+persons_list = [('Anders', 43, 2),
+                ('Maria', 33, 1),
+                ('Sandra', 13, 5),
+                ('Charles', 50, 6),
+                ('Wolf', 28, 3),
+                ('Hannibal', 45, 4),
                 ]
-c.executemany("INSERT INTO PERSONS (NAME,AGE) VALUES (?,?)", persons_list)
+c.executemany("INSERT INTO PERSONS (NAME,AGE,FRIEND_ID) VALUES (?,?,?)", persons_list)
 
 print_table("SELECT * FROM PERSONS",
             "Persons")
@@ -81,11 +82,19 @@ print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS JOIN HOBBIES",
 print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS JOIN HOBBIES ON PERSONS.ID = HOBBIES.PERSON_ID",
             "Specified Joined Table")
 
-# The table "Specified Joined Table", does not show Anders and Wolf as they have no hobbies.
+# The table "Specified Joined Table", does not show Anders and Wolf cause they have no hobbies.
 # So we use LEFT OUTER JOIN to insure we show all the people from the table PERSONS
+# Note that RIGHT OUTER JOIN does not yet exist in SQLite, but you can
+# achieve the same effect by switching the placement of PERSONS and HOBBIES
 print_table("SELECT PERSONS.NAME, HOBBIES.NAME FROM PERSONS LEFT OUTER JOIN HOBBIES ON PERSONS.ID = HOBBIES.PERSON_ID",
             "Specified Left Outer Joined Table")
 
+# Example of a self joined table, which shows who each persons friend are
+print_table("""SELECT P1.NAME, P2.NAME
+                FROM PERSONS P1
+                JOIN PERSONS P2
+                ON P1.ID = P2.FRIEND_ID""",
+            "Self Joined Table")
 
 
 print("Operation done successfully")

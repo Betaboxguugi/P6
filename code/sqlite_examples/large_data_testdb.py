@@ -80,28 +80,39 @@ INSERT INTO solar_system_objects(body,mean_radius,mean_radius_rel,volume,volume_
 INSERT INTO solar_system_objects(body,mean_radius,mean_radius_rel,volume,volume_rel,mass,mass_rel,density,surface_gravity,surface_gravity_rel,type_of_object,shape) VALUES ('Ceres ',476.2,0.076,0.437,0.0004,0.95,0.000159,2.077,0.27,0.0275,'dwarf planet belt asteroid','round');
     """)
 
-# List of all the bodies in alphabetic order
-print_table("SELECT body FROM solar_system_objects GROUP BY body","List of all bodies")
+# List of all the items in the table in alphabetic order by body
+print_table("SELECT * FROM solar_system_objects GROUP BY body",
+            "List of all bodies")
 
 # Bodies who volume are larger than earth
-print_table("SELECT body, volume_rel FROM solar_system_objects WHERE volume_rel > 1","Bodies larger than earth")
+print_table("SELECT body, volume_rel FROM solar_system_objects WHERE volume_rel > 1",
+            "Bodies larger than earth")
 
 # Bodies who volume are smaller than earth but also more than 50% of earth volume
 print_table("SELECT body, volume_rel FROM solar_system_objects WHERE volume_rel < 1 AND volume_rel > 0.5",
             "Smaller than earth but not to small")
 
-#
-print_table("")
+# Bodies that are satellites of larger bodies
+print_table("SELECT body, type_of_object FROM solar_system_objects WHERE type_of_object LIKE \"%satellite%\" ",
+            "All satellites")
 
 # Bodies that are satellites of larger bodies
-print_table("SELECT body FROM solar_system_objects WHERE type_of_object LIKE \"%satellite%\" ","All satellites")
+print_table("SELECT body, type_of_object FROM solar_system_objects WHERE type_of_object LIKE \"%ice%\" OR type_of_object LIKE \"%gas%\"",
+            "All gas or ice bodies")
 
-
-
-
-
-# SELECT * FROM exercise_logs WHERE type IN (
-#     SELECT type FROM drs_favorites WHERE reason LIKE "%cardiovascular%");
+# Count amount of bodies that have a larger, smaller or the same mass relative to earths.
+# Also check if the table has any NULL values and label those as well.
+print_table("""SELECT COUNT(*),
+                    CASE
+                        WHEN mass_rel > 1 THEN "Mass greater than earth"
+                        WHEN mass_rel = 1 THEN "Mass same as earth"
+                        WHEN mass_rel IS NULL THEN "N/A"
+                        WHEN mass_rel < 1 THEN "Mass less than earth"
+                    END AS "compare_mass"
+                FROM solar_system_objects
+                GROUP BY compare_mass
+                        """,
+            "Number of bodies with greater, same or less mass than earth")
 
 
 print("Operation done successfully")
