@@ -115,6 +115,7 @@ print_table("""SELECT COUNT(*),
             "Number of bodies with greater, same or less mass than earth")
 
 
+
 print("Operation done successfully")
 conn.commit()
 conn.close()
