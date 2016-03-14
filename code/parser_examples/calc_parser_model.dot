@@ -1,0 +1,81 @@
+digraph arpeggio_graph {
+42441472 [label="calc=Sequence"];
+42441472->42441528 [label="1"]
+
+42441528 [label="OneOrMore"];
+42441528->42495056 [label="1"]
+
+42495056 [label="expression=Sequence"];
+42495056->44804528 [label="1"]
+
+44804528 [label="term=Sequence"];
+44804528->44804752 [label="1"]
+
+44804752 [label="factor=Sequence"];
+44804752->44804696 [label="1"]
+
+44804696 [label="Optional"];
+44804696->44804864 [label="1"]
+
+44804864 [label="OrderedChoice"];
+44804864->44804976 [label="1"]
+
+44804976 [label="StrMatch(+)"];
+44804864->44805032 [label="2"]
+
+44805032 [label="StrMatch(-)"];
+44804752->44804920 [label="2"]
+
+44804920 [label="OrderedChoice"];
+44804920->44805200 [label="1"]
+
+44805200 [label="number=RegExMatch(\\d*\\.\\d*|\\d+)"];
+44804920->44805648 [label="2"]
+
+44805648 [label="Sequence"];
+44805648->44805424 [label="1"]
+
+44805424 [label="StrMatch(()"];
+44805648->42495056 [label="2"]
+
+44805648->44805312 [label="3"]
+
+44805312 [label="StrMatch())"];
+44804528->44804472 [label="2"]
+
+44804472 [label="ZeroOrMore"];
+44804472->44804808 [label="1"]
+
+44804808 [label="Sequence"];
+44804808->44805088 [label="1"]
+
+44805088 [label="OrderedChoice"];
+44805088->44805368 [label="1"]
+
+44805368 [label="StrMatch(*)"];
+44805088->44805536 [label="2"]
+
+44805536 [label="StrMatch(/)"];
+44804808->44804752 [label="2"]
+
+42495056->42470536 [label="2"]
+
+42470536 [label="ZeroOrMore"];
+42470536->42517112 [label="1"]
+
+42517112 [label="Sequence"];
+42517112->44804640 [label="1"]
+
+44804640 [label="OrderedChoice"];
+44804640->44805144 [label="1"]
+
+44805144 [label="StrMatch(+)"];
+44804640->44805480 [label="2"]
+
+44805480 [label="StrMatch(-)"];
+42517112->44804528 [label="2"]
+
+42441472->44804584 [label="2"]
+
+44804584 [label="EOF"];
+}
