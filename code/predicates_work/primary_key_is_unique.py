@@ -98,7 +98,7 @@ print('Data inserted into table')
 
 # IGNORE, experimental area for various smaller things.
 print('WAT ---------------------------------------------------------------------------------------')
-c.execute("SELECT NAME FROM '%s'" % COMPANY)
+c.execute("SELECT NAME FROM '%s'" % 'COMPANY')
 print(c.fetchall())
 
 c.execute("PRAGMA table_info(COMPANY)")
