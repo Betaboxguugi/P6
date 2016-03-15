@@ -28,52 +28,69 @@ February 2
 """
 
 
-def day31(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]|3[0-1]')  # We use regular expression to define what is
+def day31(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]|3[0-1]')  # We use regular expressions to define what is
                                                                      # legal in a string. r'' is a RE in Python
 
 
 def day30(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]|30')
 
 
-def day_feb(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]')  # February also encapsulates Feb 29th which is leap year
+def day_feb(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-8]')
 
 
-# def day_feb_leap(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]')  # Not implemented
+def day_feb_leap(): return apeg.RegExMatch(r'0[1-9]|1[0-9]|2[0-9]')
 
 
-def month31(): return apeg.RegExMatch(r'0(1|3|5|7|8)|1(0|2)'), "-", day31
+def month31(): return apeg.RegExMatch(r'0(1|3|5|7|8)|1(0|2)'), "-", day31  # We can match tuples too
 
 
-def month30(): return apeg.RegExMatch(r'0(4|6|9)|11'), "-", day30
+def month30(): return apeg.RegExMatch(r'0(4|6|9)|11'), "-", day30  # as well as strings like "-"
 
 
 def month_feb(): return apeg.RegExMatch(r'02'), "-", day_feb
 
 
-# def month_feb_leap(): return apeg.RegExMatch(r'02'), "-", day_feb_leap  # Not implemented
+def month_feb_leap(): return apeg.RegExMatch(r'02'), "-", day_feb_leap
 
 
-def year(): return apeg.RegExMatch(r'[0-9][0-9][0-9][0-9]')  # lazily implemented, allows strings like '0000'
+def year(): return apeg.RegExMatch(r'[0-9][0-9][0-9][0-9]')
 
 
 def date(): return year, "-", apeg.OrderedChoice([month31, month30, month_feb]), apeg.EOF  # This is the root rule
-                                                                                           # you can tell since it
-                                                                                           # it has End Of FIle
+                                                                                           # you can tell since
+                                                                                           # it has End Of File
 
-# def date_leap(): return apeg.GrammarError  # Not implemented
+
+def date_leap(): return year, "-", apeg.OrderedChoice([month31, month30, month_feb_leap]), apeg.EOF
 
 # these strings are in the language
 input_good = ["2016-03-15", "2016-02-28", "2016-02-29", "2016-01-31", "2016-04-30", "2016-11-30", "2016-12-31",
-              "2016-11-29", "2016-12-30", "0001-01-01", "0000-01-01", "1111-11-11", "9998-12-31", "9999-01-01"]
+              "2016-11-29", "2016-12-30", "0001-01-01", "0000-01-01", "1111-11-11", "9998-12-31", "9999-01-01",
+              "2020-02-29", "2000-02-29", "1600-02-29", "0400-02-29", "0800-02-29"]
 
 # these are not and will raise an error and halt the program
 input_bad = ["2016-04-31", "2016-01-32", "2016-02-30", "2016-00-01", "2016-13-01", "10000-01-01", "001-01-01",
-             "2016-01-00"]
+             "2016-01-00", "2015-02-29"]
 # bad_string = "2016-01-00"
-parser = apeg.ParserPython(date, debug=True)  # We generate a parser using the syntax we defined and enable debugging
+parser = apeg.ParserPython(date)  # We generate a parser using the syntax we defined and enable debugging
+parser_leap = apeg.ParserPython(date_leap)  # We actually make 2 parsers
 for input_string in input_good:
-    parse_tree = parser.parse(input_string)  # We test all the good strings on our parser
-    print(parse_tree)
+    year = int(input_string.split("-").pop(0))
+    if year % 4 == 0:  # Ifs to catch leap years
+        if year % 100 == 0:
+            if year % 400 == 0:
+                parse_tree = parser_leap.parse(input_string)
+                print(parse_tree)
+
+            else:
+                parse_tree = parser.parse(input_string)
+                print(parse_tree)
+        else:
+            parse_tree = parser_leap.parse(input_string)
+            print(parse_tree)
+    else:
+        parse_tree = parser.parse(input_string)
+        print(parse_tree)
 
 # parse_tree = parser.parse(bad_string)  # I made this to test bad strings, it's not automatic because errors
 
