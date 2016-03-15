@@ -22,8 +22,12 @@ class Table:
         print(c.fetchall())
 
 
-
-def table_unique_keys(table_name):
+# Function, takes a SQL table and print a line for each column, stating whether or not it is a primary key
+def table_contain_primary_keys(table_name):
+    # PRAGMA, is SQL extension specific to SQLite, used to modify the operation of the SQLite
+    # library or to query the SQLite library for internal (non-table) data, as is the case here.
+    # table_info returns one row for each column in the named table, which contains various information. The
+    # important here is the "pk" column provided, which tells if the column in our table is a primary key.
     c.execute("PRAGMA table_info('%s')" % table_name)
     number_of_columns = len(c.fetchall())
     for x in range(0, number_of_columns):
@@ -36,7 +40,9 @@ def table_unique_keys(table_name):
             print(c.fetchall()[x][1] + ' is NOT a primary key')
 
 
-def table_column_unique(table_name, column_name):
+# Function, takes a SQL table and name of a column in it, then prints a line,
+# stating whether all entries in that column are unique
+def table_column_contain_unique_keys(table_name, column_name):
     c.execute("SELECT {} FROM {}".format(column_name, table_name))
     column_length = len(c.fetchall())
     list_column = []
@@ -49,6 +55,8 @@ def table_column_unique(table_name, column_name):
         print('All entries in column {} in table {} are unique'.format(column_name, table_name))
 
 
+# Function, returns true if it finds any duplicates in a list or false if none are found.
+# Used in function table_column_contain_unique_keys
 def any_dup(the_list):
     seen = set()
     for x in the_list:
@@ -56,7 +64,6 @@ def any_dup(the_list):
             return True
         seen.add(x)
     return False
-
 
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
@@ -69,6 +76,7 @@ else:
 c = conn.cursor()
 print("Opened database successfully")
 
+# Making table to test on...
 c.execute('''CREATE TABLE COMPANY
     (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
     NAME           TEXT   NOT NULL,
@@ -84,11 +92,11 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('Buggy', 67, 'America', 2000)
                 ]
 
+# ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 print('Data inserted into table')
 
-COMPANY = ('COMPANY',)
-
+# IGNORE, experimental area for various smaller things.
 print('WAT ---------------------------------------------------------------------------------------')
 c.execute("SELECT NAME FROM '%s'" % COMPANY)
 print(c.fetchall())
@@ -103,10 +111,11 @@ c.execute("PRAGMA table_info(COMPANY)")
 print(c.fetchall()[0][5])
 print('NONWAT ------------------------------------------------------------------------------------')
 
-table_unique_keys('COMPANY')
+# Examples of how to use the functions as they are now
+table_contain_primary_keys('COMPANY')
 
-table_column_unique('COMPANY', 'ID')
+table_column_contain_unique_keys('COMPANY', 'ID')
 
-table_column_unique('COMPANY', 'NAME')
+table_column_contain_unique_keys('COMPANY', 'NAME')
 
-table_column_unique('COMPANY', 'ADDRESS')
+table_column_contain_unique_keys('COMPANY', 'ADDRESS')
