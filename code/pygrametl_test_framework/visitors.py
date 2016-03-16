@@ -54,12 +54,11 @@ class ModifyVisitor(ast.NodeVisitor):
 
         
     def __replace_connection(self, node):
-        """ Replaces a connection in the given node with use specified ones. If 
-        a connection maps to none, we dont do anything.
+        """ Replaces a connection in the given node with use specified ones.
         :param node: The node for which a connection will be replaced.
         """
         id = self.__get_id()
-        if self.conn_map[id] is not None: # If none, we do nothing
+        if self.conn_map[id] is not None: 
             newode = ast.Name(id=id, ctx=ast.Load())
             if len(node.args) != 0:    # Conn given as positional arg
                 node.args[0] = newode
@@ -68,6 +67,7 @@ class ModifyVisitor(ast.NodeVisitor):
                     if keyword.arg == 'connection':
                         keyword.value = newode
             ast.fix_missing_locations(node) # Fixes Indenting and line numbers
+       
 
             
     def __find_call_name(self, node):
@@ -218,16 +218,18 @@ class ExtractVisitor(ast.NodeVisitor):
         :param node: The node the visitor starts at. Should be a Module Node
         :return: The lists of sources found in the given node.
         """
-        #print(ast.dump(node))
         self.visit(node)
         if self.wrapper is None:
             raise ValueError('No wrapper was found in the program')
-        for node in self.dims:
+
+        # We make src call nodes for each dim and ft node
+        for node in self.dims: 
             src_node = self.__make_src_from_table(node)
             self.dim_srcs.append(src_node)
         for node in self.fts:
             src_node = self.__make_src_from_table(node)
             self.ft_srcs.append(src_node)
+            
         return (self.atom_srcs.copy(), self.aggr_srcs.copy(),
                 self.dim_srcs.copy(), self.ft_srcs.copy())
         

@@ -109,7 +109,8 @@ class TestClass(object):
             exec(p2, None, scope)
 
         # TODO: Take our newly found sources and order them
-        # Distinguish between input srcs and dw srcs
+        # Distinguish between input srcs and dw srcs.
+        # Maybe between fts and dims aswell.
         # Find some logic for how to handle aggregated srcs
 
         # TODO: Feed the sources to some predicates
