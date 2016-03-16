@@ -70,7 +70,7 @@ input_good = ["2016-03-15", "2016-02-28", "2016-02-29", "2016-01-31", "2016-04-3
 
 # these are not and will raise an error and halt the program
 input_bad = ["2016-04-31", "2016-01-32", "2016-02-30", "2016-00-01", "2016-13-01", "10000-01-01", "001-01-01",
-             "2016-01-00", "2015-02-29"]
+             "2016-01-00", "2015-02-29", "0000-001-01", "0000-01-001", "0000.01.01", "0000/01/01"]
 # bad_string = "2016-01-00"
 parser = apeg.ParserPython(date)  # We generate a parser using the syntax we defined and enable debugging
 parser_leap = apeg.ParserPython(date_leap)  # We actually make 2 parsers
@@ -93,6 +93,3 @@ for input_string in input_good:
         print(parse_tree)
 
 # parse_tree = parser.parse(bad_string)  # I made this to test bad strings, it's not automatic because errors
-
-
-
