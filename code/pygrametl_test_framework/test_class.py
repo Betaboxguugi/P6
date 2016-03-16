@@ -2,18 +2,11 @@
 """
 
 import ast
-from visitors import ModifyVisitor
+from visitors import ModifyVisitor, ExtractVisitor
 
 
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['TestClass']
-
-
-# CONSTANTS
-BASE_SOURCES = []
-AGGREGATED_SOURCES = []
-DIM_CLASSES = []
-FT_CLASSES = []
 
 
 class TestClass(object):
@@ -35,6 +28,7 @@ class TestClass(object):
         """
         self.conn_map = conn_map
         self.program_path = program_path
+        self._no_aggr_srcs = True
 
         
     def __modify_program(self):
@@ -46,23 +40,87 @@ class TestClass(object):
             program = f.read()
         mv = ModifyVisitor(self.conn_map)
         tree = ast.parse(program)
-        mv.visit(tree)
+        mv.start(tree) # We start visiting the root of the tree
         return tree
 
+    def __make_assign_nodes(self, expr_list):
+        """ Make a list of assign nodes, each within its own module, from a
+        list of expression nodes. Each assign will assign to the variable name
+        src<i>, where <i> is a number we increment for each expression in the
+        expression list
+        :param expr_list: A list of Expr node
+        :return: A list of modules, each containing one Assign Node in their
+        body. 
+        """
+        # We make the assign list
+        assign_list = []
+        i = 0
+        for node in expr_list:
+            assign = ast.Assign(targets=[ast.Name(id='src' + str(i),
+                                                  ctx=ast.Store())],
+                                value=node)
+            assign_list.append(assign)
+            i += 1
+            
+        # We make the Module list
+        module_list = []
+        for a in assign_list: # Maybe put all the assigns into one module instead
+            module_node = ast.Module(lineno=1, col_offset=0, body=[a])
+            ast.fix_missing_locations(module_node)
+            module_list.append(module_node)
+        return module_list 
+            
     
+    def __get_src_call_nodes(self, node):
+        """ Gets all the needed src call nodes from a node.
+        :param node: The node from which we will find/make all the Call nodes.
+        :return: A list of modules, each containing one assign node.
+        """
+        ev = ExtractVisitor()
+        atom_srcs, aggr_srcs, dim_srcs, ft_srcs = ev.start(node)
+        src_list = atom_srcs + aggr_srcs + dim_srcs + ft_srcs
+        module_list = self.__make_assign_nodes(src_list)
+        
+        if len(aggr_srcs) == 0: # If we dont have any aggregated src nodes
+            self._no_aggr_srcs = True
+        else:
+            self._no_aggr_srcs = False
+    
+        return module_list
+        
+
     def run(self):
         """ We modify the program to use the user specified sources, then run
         the modified program, and tests to see if our predicates hold true on
         the resulting DBs.
         """
+        scope = self.conn_map.copy()
+        
+        # We modify and run the pygrametl program
+        # TODO: Dont close() connections
         tree = self.__modify_program()
-        p = compile(source=tree, filename=self.program_path, mode='exec')
-        scope = globals().update(self.conn_map)
-        exec(p, scope)
-        # TODO: Load the now populated dbs data in.
-        # TODO: Run predicates on the loaded data.
-        # TODO: Report Errors in a nice way :0)
-    
+        p1 = compile(source=tree, filename=self.program_path, mode='exec')
+        exec(p1, None, scope)
+
+        # We get the needed src objects and reload the data
+        module_list = self.__get_src_call_nodes(tree)
+        for module in module_list:
+            p2 = compile(source=module, filename='<string>', mode='exec')
+            exec(p2, None, scope)
+
+        # TODO: Take our newly found sources and order them
+        # Distinguish between input srcs and dw srcs
+        # Find some logic for how to handle aggregated srcs
+
+        # TODO: Feed the sources to some predicates
+
+        # TODO: Report errors
+
+        # TODO: Close connections
+
+        return scope # For Debugging
+
+
 
 
 
