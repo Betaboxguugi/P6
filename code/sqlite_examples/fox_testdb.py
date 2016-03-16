@@ -56,7 +56,7 @@ c.execute("SELECT * FROM COMPANY")
 print(c.fetchall())
 
 
-"Array with people we wish to put into our table:"
+"List with people we wish to put into our table:"
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('Charles', 50, 'Texas', 25000.00),
                 ('Wolf', 28, 'Sweden', 19000.00),
