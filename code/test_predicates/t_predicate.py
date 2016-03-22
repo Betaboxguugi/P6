@@ -49,10 +49,6 @@ class TPredicate:
         """
         :param conns: a dictionary of object connections to the data we need to test.
         """
-<<<<<<< HEAD
-        self.tables = self.dictify(conns)
-=======
-
         tables = self.dictify(conns)
         self.run()
         print(self.report())
@@ -69,4 +65,3 @@ dic['sal2s'] = dic['sales']
 dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
 TPredicate(dic)
 """
->>>>>>> origin/master
