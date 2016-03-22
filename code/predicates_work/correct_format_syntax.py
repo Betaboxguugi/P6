@@ -54,24 +54,23 @@ def table_column_syntax_check(table_name, column_name, peg, verbose=False):
     for x in range(0, column_length):
         c.execute("SELECT {} FROM {}".format(column_name, table_name))
         list_column.insert(0, c.fetchall()[x][0])
-    # print(list_column)
     parser = apeg.ParserPython(peg)
     correct_parse = 0
     incorrect_parse = 0
+    parse_trees = []
     for entry in list_column:
-        # print(entry)
         try:
-            parser.parse(str(entry))
+            parse_trees.append(parser.parse(str(entry)))
             correct_parse += 1
             if verbose:
-                print(str(entry) + " fits the grammar")
+                print("{} fits the grammar".format(entry))
         except apeg.NoMatch as e:
             incorrect_parse += 1
             e = e.__str__().replace(".", "")
-            print("SYNTAX ERROR: " + e + " in " + column_name + " column")
-    print(str(correct_parse) + " fields parsed correctly " + str(incorrect_parse) + " fields parsed incorrectly")
-
-
+            print("SYNTAX ERROR: {} in {} column".format(e, column_name))
+    print("{} fields parsed correctly and {} fields parsed incorrectly".format(correct_parse, incorrect_parse) +
+          " in {} column".format(column_name))
+    return parse_trees
 
 
 
@@ -96,8 +95,13 @@ def salary_format(): return apeg.RegExMatch(r'\d+\.\d+'), apeg.EOF
 
 """Not PEG stuff"""
 
-table_column_syntax_check('COMPANY', 'ID', id_format)
-table_column_syntax_check('COMPANY', 'NAME', name_format)
-table_column_syntax_check('COMPANY', 'ADDRESS', address_format)
-table_column_syntax_check('COMPANY', 'SALARY', salary_format())
+parse_trees1 = table_column_syntax_check('COMPANY', 'ID', id_format)
+parse_trees2 = table_column_syntax_check('COMPANY', 'NAME', name_format)
+parse_trees3 = table_column_syntax_check('COMPANY', 'ADDRESS', address_format)
+parse_trees4 = table_column_syntax_check('COMPANY', 'SALARY', salary_format())
+
+print(parse_trees1)
+print(parse_trees2)
+print(parse_trees3)
+print(parse_trees4)
 
