@@ -18,15 +18,17 @@ class TPredicate:
         """ Creates an iterable of dicts from our connection
         :param  conn: a pygrametl connection object, which we wish to fetch data from"""
         bicdic = {}
+        #Runs over all data source objects
         for table_name, content in conns.items():
             if not isinstance(content, DictReader):
+                #Creates a temporary SQLSource object, as we cannot iterate over the same cursor twice.
                 temp = SQLSource(connection=content.connection, query=content.query,
                                  names=content.names, parameters=content.parameters)
             else:
                 temp = content
 
             data = []
-
+            #Runs over all entries resulting from the cursor
             for row in temp:
                 data.append(row)
             bicdic[table_name] = data
@@ -45,9 +47,6 @@ class TPredicate:
 
     def __init__(self, conns):
         """
-        :param conns: a tuple of object connections to the data we need to test.
+        :param conns: a dictionary of object connections to the data we need to test.
         """
-
-        tables = self.dictify(conns)
-        self.run()
-        self.report()
+        self.tables = self.dictify(conns)
