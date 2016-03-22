@@ -43,7 +43,7 @@ class TPredicate:
         self.run()
         print(self.report())
 
-
+"""
 SALES_DB_NAME = './sales.db'
 CSV_NAME = './region.csv'
 sales_conn = sqlite3.connect(SALES_DB_NAME)
@@ -52,4 +52,4 @@ csv_file_handle = open(CSV_NAME, "r")
 dic = {}
 dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
 dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
-TPredicate(dic)
+TPredicate(dic)"""
