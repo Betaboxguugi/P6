@@ -66,5 +66,5 @@ dic = {}
 dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
 dic['sal2s'] = dic['sales']
 dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
-"""
 TPredicate(dic)
+"""

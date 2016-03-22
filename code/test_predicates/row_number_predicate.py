@@ -23,3 +23,4 @@ class RowPredicate(TPredicate):
             self.__result__ = True
         else:
             self.__result__ = False
+
