@@ -4,7 +4,7 @@ import sqlite3
 import pygrametl
 from pygrametl.datasources import *
 from csv import DictReader
-import copy
+
 
 
 class TPredicate:
@@ -49,22 +49,5 @@ class TPredicate:
         """
 
         tables = self.dictify(conns)
-        print(tables['sales'])
-        print(tables['sal2s'])
-        print(tables['region'])
-        print(self.report())
         self.run()
-        print(self.report())
-
-"""
-SALES_DB_NAME = './sales.db'
-CSV_NAME = './region.csv'
-sales_conn = sqlite3.connect(SALES_DB_NAME)
-csv_file_handle = open(CSV_NAME, "r")
-
-dic = {}
-dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
-dic['sal2s'] = dic['sales']
-dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
-"""
-TPredicate(dic)
+        self.report()
