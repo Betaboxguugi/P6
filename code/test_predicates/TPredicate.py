@@ -20,10 +20,8 @@ class TPredicate:
         bicdic = {}
         for table_name, content in conns.items():
             if not isinstance(content, DictReader):
-                c = copy.deepcopy(content.cursor)
                 temp = SQLSource(connection=content.connection, query=content.query,
                                  names=content.names, parameters=content.parameters)
-                temp.cursor = c
             else:
                 temp = content
 
