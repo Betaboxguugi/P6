@@ -1,8 +1,7 @@
 import os
 import sqlite3
 from code.test_predicates.row_number_predicate import RowPredicate
-
-
+from pygrametl.datasources import SQLSource, CSVSource
 
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
@@ -34,9 +33,10 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 print('Data inserted into table')
-
-RowTest = RowPredicate(c, "COMPANY", 5)
-RowTest.run()
+dic = {}
+dic['company'] = SQLSource(connection=conn, query="SELECT * FROM company")
+RowTest = RowPredicate(dic)
+RowTest.run('company', 5)
 print(RowTest.report())
 
 
