@@ -1,6 +1,7 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 
+
 class TestPredicate:
     """A class that implements basic functionality of a predicate.
     It is the superclass to all predicates of the framework.
@@ -11,7 +12,6 @@ class TestPredicate:
     def dictify(self, conn):
         """ Creates an iterable of dicts from our connection
         :param  conn: a pygrametl connection object, which we wish to fetch data from"""
-
 
     def run(self):
         """ Runs the actual test. Stores result in __result__"""
