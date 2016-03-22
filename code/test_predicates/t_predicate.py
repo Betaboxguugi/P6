@@ -33,7 +33,7 @@ class TPredicate:
 
         return bicdic
 
-    def run(self):
+    def run(self, *args):
         """ Runs the actual test. Stores result in __result__"""
         self.__result__ = True
 

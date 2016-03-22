@@ -66,6 +66,28 @@ def table_column_contain_unique_keys(table_name, column_name):
         print('All entries in column {} in table {} are unique'.format(column_name, table_name))
 
 
+def has_null(table_name, column_name):
+    c.execute("SELECT {} FROM {}".format(column_name, table_name))
+    cc = c.fetchall()
+    column_length = len(cc)
+    for x in range(0, column_length):
+        if cc[x][0] is None:
+            print("NULL DETECTED ABANDON SHIP!")
+            break
+        else:
+            print("All is well")
+
+def smarter_has_null(table_name, column_name):
+    c.execute("SELECT {} FROM {} ORDER BY {}".format(column_name, table_name, column_name))
+    cc = c.fetchall()
+    column_length = len(cc)
+    if cc[0][0] is None:
+        print("NULL DETECTED ABANDON SHIP!!")
+    elif cc[column_length-1][0] is None:
+        print("NULL DETECTED ABANDON SHIP!!!")
+    else:
+        print('All is well')
+
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
     os.remove('test.db')
@@ -88,9 +110,10 @@ print("Table created successfully")
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('Charles', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Wolf', 28, None, 19000.00),
                 ('Hannibal', 45, 'America', 65000.00),
-                ('Buggy', 67, 'America', 2000)
+                ('Buggy', 67, 'America', 2000),
+                ('Bombay', 34, 'Sweden', 35000.00)
                 ]
 
 # ... and inserting the necessary data.
@@ -99,7 +122,7 @@ print('Data inserted into table')
 
 # IGNORE, experimental area for various smaller things.
 print('WAT ---------------------------------------------------------------------------------------')
-c.execute("SELECT NAME FROM '%s'" % 'COMPANY')
+c.execute("SELECT ADDRESS FROM '%s'" % 'COMPANY')
 print(c.fetchall())
 
 c.execute("PRAGMA table_info(COMPANY)")
@@ -120,3 +143,7 @@ table_column_contain_unique_keys('COMPANY', 'ID')
 table_column_contain_unique_keys('COMPANY', 'NAME')
 
 table_column_contain_unique_keys('COMPANY', 'ADDRESS')
+
+has_null('COMPANY', 'ADDRESS')
+
+smarter_has_null('COMPANY', 'ADDRESS')
