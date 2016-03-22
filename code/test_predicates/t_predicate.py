@@ -35,7 +35,7 @@ class TPredicate:
 
         return bicdic
 
-    def run(self):
+    def run(self, *args):
         """ Runs the actual test. Stores result in __result__"""
         self.__result__ = True
 
@@ -49,4 +49,24 @@ class TPredicate:
         """
         :param conns: a dictionary of object connections to the data we need to test.
         """
+<<<<<<< HEAD
         self.tables = self.dictify(conns)
+=======
+
+        tables = self.dictify(conns)
+        self.run()
+        print(self.report())
+
+"""
+SALES_DB_NAME = './sales.db'
+CSV_NAME = './region.csv'
+sales_conn = sqlite3.connect(SALES_DB_NAME)
+csv_file_handle = open(CSV_NAME, "r")
+
+dic = {}
+dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
+dic['sal2s'] = dic['sales']
+dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
+TPredicate(dic)
+"""
+>>>>>>> origin/master
