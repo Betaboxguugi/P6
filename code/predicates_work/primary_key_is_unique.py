@@ -40,21 +40,6 @@ def table_contain_primary_keys(table_name):
             print(c.fetchall()[x][1] + ' is NOT a primary key')
 
 
-# Function, takes a SQL table and name of a column in it, then prints a line,
-# stating whether all entries in that column are unique
-def table_column_contain_unique_keys(table_name, column_name):
-    c.execute("SELECT {} FROM {}".format(column_name, table_name))
-    column_length = len(c.fetchall())
-    list_column = []
-    for x in range(0, column_length):
-        c.execute("SELECT {} FROM {}".format(column_name, table_name))
-        list_column.insert(0, c.fetchall()[x][0])
-    if any_dup(list_column) is True:
-        print('All entries in column {} in table {} are NOT unique'.format(column_name, table_name))
-    else:
-        print('All entries in column {} in table {} are unique'.format(column_name, table_name))
-
-
 # Function, returns true if it finds any duplicates in a list or false if none are found.
 # Used in function table_column_contain_unique_keys
 def any_dup(the_list):
@@ -64,6 +49,22 @@ def any_dup(the_list):
             return True
         seen.add(x)
     return False
+
+
+# Function, takes a SQL table and name of a column in it, then prints a line,
+# stating whether all entries in that column are unique
+def table_column_contain_unique_keys(table_name, column_name):
+    c.execute("SELECT {} FROM {}".format(column_name, table_name))
+    column_length = len(c.fetchall())
+    list_column = []
+    for x in range(0, column_length):
+        c.execute("SELECT {} FROM {}".format(column_name, table_name))
+        list_column.append(c.fetchall()[x][0])
+    if any_dup(list_column) is True:
+        print('All entries in column {} in table {} are NOT unique'.format(column_name, table_name))
+    else:
+        print('All entries in column {} in table {} are unique'.format(column_name, table_name))
+
 
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
