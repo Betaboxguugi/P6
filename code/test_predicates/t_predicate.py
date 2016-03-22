@@ -4,7 +4,7 @@ import sqlite3
 import pygrametl
 from pygrametl.datasources import *
 from csv import DictReader
-import copy
+
 
 
 class TPredicate:
@@ -49,10 +49,6 @@ class TPredicate:
         """
 
         tables = self.dictify(conns)
-        print(tables['sales'])
-        print(tables['sal2s'])
-        print(tables['region'])
-        print(self.report())
         self.run()
         print(self.report())
 
