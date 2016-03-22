@@ -2,7 +2,10 @@ __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 import sqlite3
 import pygrametl
-from pygrametl.datasources import SQLSource, CSVSource
+from pygrametl.datasources import *
+from csv import DictReader
+import copy
+
 
 class TPredicate:
     """A class that implements basic functionality of a predicate.
@@ -16,10 +19,18 @@ class TPredicate:
         :param  conn: a pygrametl connection object, which we wish to fetch data from"""
         bicdic = {}
         for table_name, content in conns.items():
+            if not isinstance(content, DictReader):
+                temp = SQLSource(connection=content.connection, query=content.query,
+                                 names=content.names, parameters=content.parameters)
+            else:
+                temp = content
+
             data = []
-            for row in content:
-               data.append(row)
+
+            for row in temp:
+                data.append(row)
             bicdic[table_name] = data
+
         return bicdic
 
     def run(self):
@@ -36,8 +47,10 @@ class TPredicate:
         """
         :param conns: a tuple of object connections to the data we need to test.
         """
+
         tables = self.dictify(conns)
         print(tables['sales'])
+        print(tables['sal2s'])
         print(tables['region'])
         print(self.report())
         self.run()
@@ -51,5 +64,7 @@ csv_file_handle = open(CSV_NAME, "r")
 
 dic = {}
 dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
+dic['sal2s'] = dic['sales']
 dic['region'] = CSVSource(f=csv_file_handle, delimiter=',')
-TPredicate(dic)"""
+"""
+TPredicate(dic)
