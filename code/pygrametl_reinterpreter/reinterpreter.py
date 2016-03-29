@@ -10,6 +10,7 @@ class Reinterpreter(object):
     """ Class in charge of reinterpreting a pygrametl program, using different
     connections.
     """
+
     def __init__(self, program, conn_scope, program_is_path=False):
         """ 
         :param program: A string containing the program that is to be 
@@ -26,31 +27,28 @@ class Reinterpreter(object):
         self.program_is_path = program_is_path
         self.varname = 'extract_src_dict'
 
-        
     def __transform(self, node):
         """ Swaps out the connections in the old program, with the ones given.
         """
         tv = TransformVisitor(self.conn_scope)
         tv.start(node)
 
-        
     def __extract(self, node):
         """ Makes and extracts DataSource objects for each dimension/facttable
         in the program.
+        :param: Root node of AST
         :return: An AST node that represents a dictionary containing all the 
         dimension/facttable datasources. 
         """
         ev = ExtractVisitor(self.varname)
         return ev.start(node)
 
-    
     def __compile_exec(self, node, gscope=None, lscope=None):
         """ Compiles and executes an AST node
         """
         p = compile(source=node, filename='<string>', mode='exec')
         exec(p, gscope, lscope)
 
-        
     def run(self):
         """ Reinterpretes the pygrametl program, returns a dict containing 
         :return: A dictionary with all the dimension/facttable datasources.
@@ -62,13 +60,15 @@ class Reinterpreter(object):
                 program = f.read()
         else:
             program = self.program
-            
-        tree = ast.parse(program)
-        
-        self.__transform(tree)
-        self.__compile_exec(node=tree, gscope=None, lscope=scope)
 
-        src_module = self.__extract(tree)
-        self.__compile_exec(node=src_module, gscope=None, lscope=scope)
-        
+        tree = ast.parse(program) # Parsing the pygrametl program to an AST
+
+        self.__transform(tree)  # Transforming the AST to include the user defined connections
+        self.__compile_exec(node=tree, gscope=None, lscope=scope)  # Executing the transformed AST
+
+        src_module = self.__extract(tree)  # Creating a new AST for extracting DW tables
+        self.__compile_exec(node=src_module, gscope=None, lscope=scope)  # Executing executing extract AST
+
+        # The extract AST extends the scope to include source objects for all DW tables.
+        # This is returned here for the user to test upon.
         return scope[self.varname]
