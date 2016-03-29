@@ -12,10 +12,13 @@ FT_CLASSES = ['FactTable']
 MODIFY_LIST = ATOMIC_SOURCES + WRAPPERS
 
 class TransformVisitor(ast.NodeVisitor):
-    """
+    """ Class responsible for making changes to an AST so that it can be run with
+    specific connections
     """
     def __init__(self, conn_scope):
         """
+        :param conn_scope: A dictionary of the connections that will replace the 
+        ones already found in the pygrametl program.
         """
         self.conn_scope = conn_scope
         self._counter = 0
@@ -64,7 +67,8 @@ class TransformVisitor(ast.NodeVisitor):
 
         
     def visit_Call(self, node):
-        """
+        """ The visit of a call node
+        :param node: A call node
         """
         name = self.__find_call_name(node)
         if name in MODIFY_LIST:
@@ -72,7 +76,8 @@ class TransformVisitor(ast.NodeVisitor):
 
         
     def start(self, node):
-        """
+        """ We start the visitor.
+        :param node: the root of an AST.
         """
         self._counter = 0
         self.visit(node)
