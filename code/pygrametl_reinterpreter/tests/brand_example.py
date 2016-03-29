@@ -3,12 +3,21 @@ __author__ = 'Alexander'
 from reinterpreter import Reinterpreter
 import sqlite3
 
+DB = 'brandtest.db'
+DW = 'dwtest.db'
+CSV = 'weapontest.csv''
+
 program_path = 'brand_sample.py'
 
-conn1 = sqlite3.connect('a.db')
+setup_input_db(DB)
+setup_out_dw(DW)
+setup_input_csv(CSV)
 
+db_conn = sqlite3.connect(DB)
+dw_conn = sqlite3.connect(DW)
+csv_conn = sqlite3.connect(CSV)
 
-conn_dict  = {'conn1': conn1, 'conn2': conn2}
+conn_dict  = {'conn1': db_conn, 'conn2': dw_conn, 'conn4': csv_conn}
 
 tc = Reinterpreter(program=program_path, conn_scope=conn_dict, program_is_path=True)
 scope = tc.run()
