@@ -44,7 +44,8 @@ RowTest.run('company', 5)
 print(RowTest.report())"""
 
 tuple_predicate = DuplicatePredicate(dic)
-tuple_predicate.run('company', ('name', 'age', 'address', 'salary'))
+tuple_predicate.run('company', ('NAME', 'AGE', 'ADDRESS', 'SALARY'))
+
 """
 c.execute('''
           SELECT
