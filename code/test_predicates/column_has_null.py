@@ -10,7 +10,7 @@ test_parent = test_predicates.t_predicate.TPredicate
 conn = sqlite3.connect('test.db')
 
 
-
+'''
 class column_has_null(test_parent):
 
     def __init__(self):
@@ -31,5 +31,26 @@ class column_has_null(test_parent):
             #return true
         else:
             #return false
+'''
 
 
+class ColumnHasNull(test_parent):
+
+    def __init__(self, conn):
+        """"""
+        self.__result__ = False
+        self.table = self.dictify(conn)
+        self.table_name = ''
+        self.column_name = ''
+
+
+    def run(self, table_name, column_name):
+
+        self.table_name = table_name
+        self.column_name = column_name
+        column_list = []
+        for x in range(0, len(self.table[self.table_name])):
+            column_list.append(self.table[self.table_name].pop(x))
+
+        print(column_list)
+        print(abc.get('AGE'))
