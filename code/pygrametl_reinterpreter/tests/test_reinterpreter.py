@@ -1,5 +1,7 @@
 import sys
 sys.path.append('../')
+import os.path
+import unittest
 from unittest import *
 from reinterpreter import Reinterpreter
 import sqlite3
@@ -7,8 +9,11 @@ import sqlite3
 
 class TestReinterpreter(TestCase):
     def setUp(self):
-        self.conn1 = sqlite3.Connection('a.db')
-        self.conn2 = sqlite3.Connection('b.db')
+        BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
+        db_path_a = os.path.join(BASE_DIR, "a.db")
+        db_path_b = os.path.join(BASE_DIR, "b.db")
+        self.conn1 = sqlite3.Connection(db_path_a)
+        self.conn2 = sqlite3.Connection(db_path_b)
         self.conn_scope = {'conn_a': self.conn1, 'conn_b': self.conn2}
         self.program = \
 """import pygrametl
@@ -50,6 +55,7 @@ output_conn.close()
         self.conn1.close()
         self.conn2.close()
 
+    #@unittest.skip('')
     def test_run(self):
         # Arrange
         reinterpreter = self.reinterpreter
@@ -62,6 +68,18 @@ output_conn.close()
         self.assertIn('dim2', scope)
         self.assertIn('ft1', scope)
         self.assertEqual(len(scope), 3)
+
+    def test_run_not_enough_conns_in_scope(self):
+        # Arrange
+        conn_scope = {'conn_a': self.conn1} # We give too few connections
+        reinterpreter = Reinterpreter(program=self.program,
+                                      conn_scope=conn_scope,
+                                      program_is_path=False)
+
+        # Act/Assert
+        with self.assertRaises(StopIteration):
+            scope = reinterpreter.run() # Should throw an StopIteration exception
+            
         
         
 suite = makeSuite(TestReinterpreter)
