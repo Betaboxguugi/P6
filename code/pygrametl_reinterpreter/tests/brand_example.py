@@ -5,7 +5,7 @@ import sqlite3
 
 DB = 'brandtest.db'
 DW = 'dwtest.db'
-CSV = 'weapontest.csv''
+CSV = 'weapontest.csv'
 
 program_path = 'brand_sample.py'
 
