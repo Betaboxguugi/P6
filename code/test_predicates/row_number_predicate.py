@@ -1,4 +1,16 @@
-from code.test_predicates.t_predicate import TPredicate
+try:
+    from code.test_predicates.t_predicate import TPredicate
+    import_error = False
+except ImportError:
+    import_error = True
+finally:
+    if import_error == False:
+        #What works for Arash
+        from code.test_predicates.t_predicate import TPredicate
+    else:
+        #What works for Mikael
+        from test_predicates.t_predicate import TPredicate
+
 
 
 class RowPredicate(TPredicate):

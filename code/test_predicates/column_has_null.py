@@ -6,7 +6,7 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 import sqlite3
 import test_predicates.t_predicate
 
-test_parent = test_predicates.t_predicate.TPredicate
+parent = test_predicates.t_predicate.TPredicate
 conn = sqlite3.connect('test.db')
 
 
@@ -34,7 +34,7 @@ class column_has_null(test_parent):
 '''
 
 
-class ColumnHasNull(test_parent):
+class ColumnHasNull(parent):
 
     def __init__(self, conn):
         """"""
@@ -45,6 +45,10 @@ class ColumnHasNull(test_parent):
 
 
     def run(self, table_name, column_name):
+        '''
+        :param table_name: is used to open the specified table after connection has been dictified
+        :param column_name: the specific column which needs to be tested
+        '''
 
         self.table_name = table_name
         self.column_name = column_name
