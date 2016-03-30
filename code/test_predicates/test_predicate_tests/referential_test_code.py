@@ -1,0 +1,15 @@
+import sqlite3
+import pygrametl
+from test_predicates.referential_integrity_predicate import ReferentialPredicate
+from pygrametl.datasources import SQLSource, CSVSource
+
+
+dw_name = '.\dw.db'  #The one found in pygrametl_examples
+dw_conn = sqlite3.connect(dw_name)
+fact_table = 'sales'
+dic = {}
+dic[fact_table] = SQLSource(connection=dw_conn, query="SELECT * FROM factTable")
+dic['book'] = SQLSource(connection=dw_conn, query="SELECT * FROM bookDim")
+dic['location'] = SQLSource(connection=dw_conn, query="SELECT * FROM locationDim")
+dic['time'] = SQLSource(connection=dw_conn, query="SELECT * FROM timeDim")
+ref_tester = ReferentialPredicate(dic, fact_table)
