@@ -1,21 +1,49 @@
 from test_predicates.t_predicate import TPredicate
 
 
-
 class ReferentialPredicate(TPredicate):
 
-    def __init__(self, conn, foreign_key_tables):
+    def __init__(self, conn, foreign_key_tables, foreign_keys):
+        """
+        :param foreign_keys:
+        :param conn: you know by now
+        :param foreign_key_tables: a string of one table name or tuple of table names that need their foreign keys
+        tested
+        """
         self.warehouse = self.dictify(conn)
-        print(self.warehouse)
-        for foreign_key_table in foreign_key_tables
-        self.fact_table = self.warehouse.__getitem__(foreign_key_table)  # isolate the foreign_key_tables
-        self.warehouse.__delitem__(foreign_key_table)                    # remove it from the other tables
-        print(self.fact_table)                                    # how should this work for snowflake dimensions?
-        print(self.warehouse)
-        # TODO: make this work for a tuple of tables with foreign keys
+        self.foreign_key_tables = {}
+        self.foreign_keys = foreign_keys
+        for table_name, table in self.warehouse.items():
+                if isinstance(foreign_key_tables, tuple)\
+                        or isinstance(foreign_key_tables, list):
+                    for foreign_key_table in foreign_key_tables:
+                        if table_name == foreign_key_table:
+                            self.foreign_key_tables[table_name] = table
+                elif isinstance(foreign_key_tables, str):
+                    if table_name == foreign_key_tables:
+                        self.foreign_key_tables[table_name] = table
+                else:  # TODO: exception if we end up here
+                    pass
 
     def run(self):
-        pass
+        """
+
+        """
+        for foreign_key_table_name, foreign_key_table in self.foreign_key_tables.items():
+            print(foreign_key_table_name)
+            print(foreign_key_table)
+            for table_name, table in self.warehouse.items():
+                if table_name != foreign_key_table_name:
+                    print(table_name)
+                    for row in table:
+                        print(row)
+                        flag = False
+                        for key in self.foreign_keys:
+                            x = row.get(key)
+                            if x:
+                                print(x)
+                                flag = True
+                                break
 
     def report(self):
         pass
