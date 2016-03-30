@@ -10,19 +10,19 @@ from pygrametl.datasources import *
 
 DB = 'brand.db'
 DW = 'dw.db'
-CSV = 'weapons.csv'
+#CSV = 'weapons.csv'
 
 setup_input_db(DB)
 setup_out_dw(DW)
-setup_input_csv(CSV)
+#setup_input_csv(CSV)
 
 db = connect(DB)
 dw = connect(DW)
 
 dw_conn_wrapper = ConnectionWrapper(connection=dw)
 
-csv_file_handle = open(CSV, "r")
-weapons = CSVSource(f=csv_file_handle, delimiter=',')
+#csv_file_handle = open(CSV, "r")
+#weapons = CSVSource(f=csv_file_handle, delimiter=',')
 brands = SQLSource(connection=db, query="SELECT * FROM brand")
 
 # We create and object for each dimension in the DW and the FactTable
@@ -38,12 +38,12 @@ fact_table = FactTable(
     measures=['name','kills'])
 
 
-[wep_dimension.insert(row) for row in weapons]
-csv_file_handle.close()
+#[wep_dimension.insert(row) for row in weapons]
+#csv_file_handle.close()
 
-for row in brands:
-    row['weapon'] = wep_dimension.ensure(row)
-    fact_table.insert(row)
+#for row in brands:
+    #row['weapon'] = wep_dimension.ensure(row)
+    #fact_table.insert(row)
 
 dw_conn_wrapper.commit()
 dw_conn_wrapper.close()
