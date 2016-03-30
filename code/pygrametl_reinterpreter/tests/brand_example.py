@@ -5,15 +5,9 @@ from reinterpreter import Reinterpreter
 from db_test_setup import *
 import sqlite3
 
-<<<<<<< HEAD
-DB = 'brandtest.db'
-DW = 'dwtest.db'
-CSV = 'weapontest.csv'
-=======
 DB = './brandtest.db'
 DW = './dwtest.db'
 CSV = './weapontest.csv'
->>>>>>> a835dca50f2cee5817424019e3506fad6d399114
 
 program_path = './brand_sample.py'
 
