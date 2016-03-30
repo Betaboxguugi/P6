@@ -4,7 +4,7 @@ __author__ = 'Mathias Claus Jensen'
 __maintainer__ = 'Mathias Claus Jensen'
 __all__ = ['TransformVisitor']
 
-ATOMIC_SOURCES = ['SQLSource', 'CSVSource']
+ATOMIC_SOURCES = ['SQLSource', 'CSVSource'] # TODO Get TypedCSVSource in there.
 AGGREGATED_SOURCES = ['JoiningSource']
 WRAPPERS = ['ConnectionWrapper']
 DIM_CLASSES = ['Dimension']
@@ -37,18 +37,20 @@ class TransformVisitor(ast.NodeVisitor):
         
         
     def __replace_connection(self, node):
-        """ Replaces a connection in the given node with use specified ones.
+        """ Replaces a connection in the given node with user specified ones.
         :param node: The node for which a connection will be replaced.
         """
         id = self.__get_id()
-        newode = ast.Name(id=id, ctx=ast.Load())
+        newnode = ast.Name(id=id, ctx=ast.Load())
         if len(node.args) != 0:    # Conn given as positional arg
-            node.args[0] = newode
-        else:                      # Conn given by keyword
+            node.args[0] = newnode
+        else:                      # Conn given by keyword i.e. "connection = x"
             for keyword in node.keywords:
                 if keyword.arg == 'connection':
-                    keyword.value = newode
-        ast.fix_missing_locations(node)   
+                    keyword.value = newnode
+
+        # Call to fill in line number and indentation information for the new node and its children.
+        ast.fix_missing_locations(node)
         
         
     def __find_call_name(self, node):
@@ -59,7 +61,7 @@ class TransformVisitor(ast.NodeVisitor):
         name = None
         if hasattr(node.func, 'id'):       # SQLSource() type call
             name = node.func.id
-        elif hasattr(node.func, 'attr'): # pygrametl.SQLSource() type call
+        elif hasattr(node.func, 'attr'): # pygrametl.SQLSource() type call. Occurs when we don't import with "From".
             name = node.func.attr
         else:
             raise NotImplementedError('Cannot get the name of ' + str(node))
@@ -67,7 +69,8 @@ class TransformVisitor(ast.NodeVisitor):
 
         
     def visit_Call(self, node):
-        """ The visit of a call node
+        """ The visit of a call node.
+         Is an overwrite of Visit_Call ignoring all calls except for those we need to modify.
         :param node: A call node
         """
         name = self.__find_call_name(node)

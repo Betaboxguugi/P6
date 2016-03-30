@@ -10,7 +10,6 @@ class RowPredicate(TPredicate):
         self.table_name = ''
         self.number_of_rows = None
 
-
     def run(self, table_name, number_of_rows):
         """
         :param table_name: name of the table we are testing
@@ -23,4 +22,8 @@ class RowPredicate(TPredicate):
             self.__result__ = True
         else:
             self.__result__ = False
+        self.report()
+
+    def report(self):
+        print(self.__result__)
 
