@@ -1,25 +1,23 @@
-from code.test_predicates.t_predicate import TPredicate  # undskyld Morten
+from test_predicates.t_predicate import TPredicate
 
 
 class DuplicatePredicate(TPredicate):
 
     def __init__(self, conn):
         self.table = self.dictify(conn)
-        self.table_name = ''
         self.columns = ()
         self.duplicates = []
         set(self.duplicates)
         self.verbose = False
 
-    def run(self, table_name, column_names=None, verbose=False):
+    def run(self, column_names=None, verbose=False):
         """
-        :param table_name: is used to open the table after connection has been dictified
         :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
         duplicates without looking at primary keys for example.
         :param verbose: if this is set to true information from each step in remove_unique is printed
         """
-        self.table_name = table_name[:].lower()  # This makes sure that the table name is lowercase,
-        self.table = self.table[self.table_name]  # otherwise it won't work. We then collect the list of rows.
+        key = list(self.table.keys())
+        self.table = self.table[key.__getitem__(0)]  # We assume there is only one sql object, and thus only one table
         if not column_names:
             row = self.table.__getitem__(0)  # if no columns are given we collect them from the first row
             self.columns = row.keys()
@@ -44,7 +42,7 @@ class DuplicatePredicate(TPredicate):
                     x = dic.get(column)
                     y = row.get(column)
                     if self.verbose:
-                        print("Looking at column {}".format(x))
+                        print("Looking at column {}".format(column))
                         print("Looking for value {} with key {}".format(x, column))
                         print("Found value {}".format(y))
                     if x != y:  # if two values between the rows are not duplicates, the rows are not duplicates,
@@ -61,7 +59,7 @@ class DuplicatePredicate(TPredicate):
                         print('Duplicate row found')
                     self.duplicates.append(dic)
                 if flag and row not in self.duplicates:
-                     self.duplicates.append(row)
+                    self.duplicates.append(row)
         if len(self.duplicates) < 1:
             self.__result__ = True
 
