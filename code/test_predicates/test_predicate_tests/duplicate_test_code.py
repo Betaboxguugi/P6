@@ -53,6 +53,8 @@ print(RowTest.report())"""
 
 columns = ('name', 'age', 'address', 'salary')
 columns_cap = ('NAME', 'AGE', 'ADDRESS', 'SALARY')
-tuple_predicate = DuplicatePredicate(dic, columns, verbose=True)
-tuple_predicate = DuplicatePredicate(dic, verbose=True)
+dup_predicate = DuplicatePredicate(dic, columns, verbose=True)
+dup_predicate.run()
+dup_predicate2 = DuplicatePredicate(dic, verbose=True)
+dup_predicate2.run()
 

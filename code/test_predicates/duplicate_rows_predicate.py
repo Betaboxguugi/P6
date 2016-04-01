@@ -15,8 +15,6 @@ class DuplicatePredicate(TPredicate):
         self.duplicates = []
         set(self.duplicates)
         self.verbose = verbose
-        self.run()
-        self.report()
 
     def run(self):
         """
@@ -24,8 +22,9 @@ class DuplicatePredicate(TPredicate):
         duplicates without looking at primary keys for example.
         :param verbose: if this is set to true information from each step in remove_unique is printed
         """
+        table = self.table
         while len(self.table) > 1:
-            dic = self.table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
+            dic = table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
             if self.verbose:
                 print('Start predicate duplicates')
                 print("Rows remaining {}".format(len(self.table)))
@@ -59,6 +58,7 @@ class DuplicatePredicate(TPredicate):
                     self.duplicates.append(row)
         if len(self.duplicates) < 1:
             self.__result__ = True
+        self.report()
 
     def report(self):
         if not self.__result__:
