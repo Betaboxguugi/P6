@@ -3,19 +3,19 @@ from test_predicates.t_predicate import TPredicate
 
 class ReferentialPredicate(TPredicate):
 
-    def __init__(self, conn):
+    def __init__(self, conn, referring_table_name, referred_table_name, key):
         """
         :param conn: you know by now
         """
         self.warehouse = self.dictify(conn)
-        self.referring_table = []
-        self.referred_table = []
         self.missing_keys = ()
-        self.referring_table_name = ''
-        self.referred_table_name = ''
-        self.key = ''
+        self.referring_table_name = referring_table_name
+        self.referred_table_name = referred_table_name
+        self.key = key
+        self.referring_table = self.warehouse.get(referring_table_name)
+        self.referred_table = self.warehouse.get(referred_table_name)
 
-    def run(self, referring_table_name, referred_table_name, key):
+    def run(self):
         """
         :param referring_table_name: Name of the table we are checking for referential integrity, the predicate is false
         if there exists one key without a reference in the other table.
@@ -24,18 +24,13 @@ class ReferentialPredicate(TPredicate):
         reversed.
         :param key: name of the key or ID that is tested for referential integrity
         """
-        self.referring_table_name = referring_table_name
-        self.referred_table_name = referred_table_name
-        self.key = key
-        self.referring_table = self.warehouse.get(referring_table_name)
-        self.referred_table = self.warehouse.get(referred_table_name)
         self.missing_keys = ()
         self.__result__ = True
         for referring_row in self.referring_table:
             flag = False
             for referred_row in self.referred_table:
-                x = referring_row[key]
-                y = referred_row[key]
+                x = referring_row[self.key]
+                y = referred_row[self.key]
                 if x == y:
                     flag = True
                     break
