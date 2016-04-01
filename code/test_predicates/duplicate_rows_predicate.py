@@ -3,19 +3,8 @@ from test_predicates.t_predicate import TPredicate
 
 class DuplicatePredicate(TPredicate):
 
-    def __init__(self, conn):
+    def __init__(self, conn, column_names=None, verbose=False):
         self.table = self.dictify(conn)
-        self.columns = ()
-        self.duplicates = []
-        set(self.duplicates)
-        self.verbose = False
-
-    def run(self, column_names=None, verbose=False):
-        """
-        :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
-        duplicates without looking at primary keys for example.
-        :param verbose: if this is set to true information from each step in remove_unique is printed
-        """
         key = list(self.table.keys())
         self.table = self.table[key.__getitem__(0)]  # We assume there is only one sql object, and thus only one table
         if not column_names:
@@ -23,14 +12,22 @@ class DuplicatePredicate(TPredicate):
             self.columns = row.keys()
         else:
             self.columns = column_names  # Otherwise we check for duplicates with the columns specified
+        self.duplicates = []
+        set(self.duplicates)
         self.verbose = verbose
-        self.find_dup()
+        self.run()
         self.report()
 
-    def find_dup(self):
+    def run(self):
+        """
+        :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
+        duplicates without looking at primary keys for example.
+        :param verbose: if this is set to true information from each step in remove_unique is printed
+        """
         while len(self.table) > 1:
             dic = self.table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
             if self.verbose:
+                print('Start predicate duplicates')
                 print("Rows remaining {}".format(len(self.table)))
             for row in self.table:
                 if self.verbose:
