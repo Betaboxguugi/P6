@@ -8,51 +8,74 @@ from t_predicate import TPredicate
 import itertools
 from functools import reduce
 
+
 class HierachyPredicate(TPredicate):
     def run(self):
+        sqlunion = []
+
         for f in self.func_dependencies:
-            alpha = str(f[0])
-            beta = str(f[1])
+            alpha = f[0]
+            beta = f[1]
 
-            sql = "SELECT * FROM " + self.name + " AS A, " + self.name + " AS B " \
-                "WHERE A." + alpha + "=B." + alpha + \
-                " AND A." + beta + "<>B." + beta
+            alphasql = set()
+            for a in alpha:
+                alphasql.add(" A." + a + "=B." + a + " ")
 
-            print(sql)
+            s = " AND "
+            where_alpha = s.join(alphasql)
 
-            cursor = source.connection.cursor()
-            cursor.execute(sql)
-            result = cursor.fetchall()
-            if(not result):
-                self.results.append(True)
-            else:
-                self.results.append(False)
+            t = " OR "
+            betasql = set()
+            for b in beta:
+                betasql.add(" A." + b + "<>B." + b + " ")
 
-        #SELECT * from R AS r1, R AS r2 WHERE r1.A=r2.A AND r1.B <> r2.B
+            where_beta = t.join(betasql)
 
+            fsql = "SELECT *,  AS funcd FROM " + self.name + " AS A, " + self.name + " AS B " \
+                  "WHERE" + where_alpha + " AND (" + where_beta + ")"
+
+            sqlunion.append(fsql)
+
+
+        func_dep_sql = " UNION ".join(sqlunion)
+
+        self.cursor.execute(func_dep_sql)
+        result = self.cursor.fetchall()
+        print(result)
+        if not result:
+            self.results.append(True)
+        else:
+            self.results.append(False)
 
     def report(self):
         for res in self.results:
             print(res)
 
-    def __init__(self, name, table, func_dependencies):
+    def __init__(self, connection, tables, func_dependencies):
 
-        self.name = name
-        self.table = table
-        self.connection = table.connection
+        self.connection = connection
         self.func_dependencies = func_dependencies
         self.results = []
+        self.cursor = self.connection.cursor()
+
+        if len(tables) == 1:
+            tablesql = "SELECT * FROM " + tables[0] + " AS JIM"
+            print(tablesql)
+
+        else:
+            tablesql = "SELECT * FROM " + " NATURAL JOIN".join(tables)
+
+        self.cursor.execute(tablesql)
 
         self.run()
         self.report()
 
 
-SALES_DB_NAME = './sales.db'
+DW_NAME = './sales.db'
 
-sales_conn = sqlite3.connect(SALES_DB_NAME)
-source = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
+dw_conn = sqlite3.connect(DW_NAME)
 
-l = [('saleid','book'),('city','book')]
+tables = ['sales']
+funcd = [(['saleid', 'book'], ['genre']), (['city'], ['book'])]
 
-a =  HierachyPredicate('sales', source, l)
-
+a = HierachyPredicate(dw_conn, tables, funcd)
