@@ -10,61 +10,52 @@ class ReferentialPredicate(TPredicate):
         self.warehouse = self.dictify(conn)
         self.referring_table = []
         self.referred_table = []
-        """self.foreign_key_tables = {}
-        self.foreign_keys = foreign_keys"""
-        """for table_name, table in self.warehouse.items():
-                if isinstance(foreign_key_tables, tuple)\
-                        or isinstance(foreign_key_tables, list):
-                    for foreign_key_table in foreign_key_tables:
-                        if table_name == foreign_key_table:
-                            self.foreign_key_tables[table_name] = table
-                elif isinstance(foreign_key_tables, str):
-                    if table_name == foreign_key_tables:
-                        self.foreign_key_tables[table_name] = table
-                else:  # TODO: exception if we end up here
-                    pass"""
+        self.missing_keys = ()
+        self.referring_table_name = ''
+        self.referred_table_name = ''
+        self.key = ''
 
-    def run(self, referring_table, referred_table, key):
+    def run(self, referring_table_name, referred_table_name, key):
         """
-        :param referring_table:
-        :param referred_table
-        :param key
+        :param referring_table_name: Name of the table we are checking for referential integrity, the predicate is false
+        if there exists one key without a reference in the other table.
+        :param referred_table_name: Name of the table that should contain references to the keys in the former table,
+        the method does not test referential integrity of this table. Recommend calling run() again with the table names
+        reversed.
+        :param key: name of the key or ID that is tested for referential integrity
         """
-        self.referring_table = self.warehouse.get(referring_table)
-        self.referred_table = self.warehouse.get(referred_table)
-        print(self.referring_table)
-        print(self.referred_table)
+        self.referring_table_name = referring_table_name
+        self.referred_table_name = referred_table_name
+        self.key = key
+        self.referring_table = self.warehouse.get(referring_table_name)
+        self.referred_table = self.warehouse.get(referred_table_name)
+        self.missing_keys = ()
+        self.__result__ = True
         for referring_row in self.referring_table:
             flag = False
-            print(referring_row)
             for referred_row in self.referred_table:
-                print(referred_row)
                 x = referring_row[key]
                 y = referred_row[key]
-                print(x)
-                print(y)
                 if x == y:
                     flag = True
-                    print('match')
                     break
             if not flag:
-                pass
-
-        """# print(self.foreign_keys)
-        # print(self.warehouse)
-        keys = self.get_keys()
-        foreign_keys = self.collect_foreign_key(keys)
-        primary_keys = self.collect_primary_key(keys)"""
-        """for foreign_key_table_name, foreign_key_table in self.foreign_key_tables.items():
-            x = ()
-            print(foreign_key_table_name)
-            print(foreign_key_table)
-            for table_name, table in self.warehouse.items():
-                if table_name != foreign_key_table_name:
-                    print(table_name)
-                    for row in table:
-                        print(row)"""
+                self.missing_keys += referring_row,
+                self.__result__ = False
+        self.report()
 
     def report(self):
-        pass
+        if not self.__result__:
+            for row in self.missing_keys:
+                print("row {} in '{}' table does not have corresponding reference '{}' in '{}' table".format(
+                    row,
+                    self.referring_table_name,
+                    self.key,
+                    self.referred_table_name))
+        else:
+            print("No rows in '{}' table are missing a reference in table '{}' for '{}'".format(
+                self.referring_table_name,
+                self.referred_table_name,
+                self.key))
+        # print(self.__result__)
 
