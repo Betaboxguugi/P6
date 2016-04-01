@@ -28,12 +28,12 @@ class TransformVisitor(ast.NodeVisitor):
         """ Iterates through the keys of the conn_dict.
         """
         key_list = [key for key in self.conn_scope.keys()]
-        id = key_list[self._counter]
         if self._counter == len(key_list):
             raise StopIteration('There are no more mappings to use')
         else:
+            id = key_list[self._counter]
             self._counter += 1
-        return id
+            return id
         
         
     def __replace_connection(self, node):

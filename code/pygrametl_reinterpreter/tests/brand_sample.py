@@ -46,5 +46,5 @@ fact_table = FactTable(
     #fact_table.insert(row)
 
 dw_conn_wrapper.commit()
-dw_conn_wrapper.close()
+#dw_conn_wrapper.close()
 
