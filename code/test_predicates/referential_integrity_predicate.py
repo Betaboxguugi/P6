@@ -23,8 +23,10 @@ class ReferentialPredicate(TPredicate):
     def run(self):
         self.__result__ = True
         self.ref_check()
+        self.report_first()
         self.swap_tables()
         self.ref_check()
+        self.report()
         self.swap_tables()
 
     def swap_tables(self):
@@ -44,20 +46,26 @@ class ReferentialPredicate(TPredicate):
             if not flag:
                 self.missing_keys += referring_row,
                 self.__result__ = False
-        self.report()
 
-    def report(self):
-        if not self.__result__:
-            for row in self.missing_keys:
-                print("row {} in '{}' table does not have corresponding reference '{}' in '{}' table".format(
-                    row,
-                    self.referring_table_name,
-                    self.key,
-                    self.referred_table_name))
-        else:
+    def report_first(self):
+        # This is the basic report function when we don't print the result.
+        flag = True
+        for row in self.missing_keys:
+            flag = False
+            print("row {} in '{}' table does not have corresponding reference '{}' in '{}' table".format(
+                row,
+                self.referring_table_name,
+                self.key,
+                self.referred_table_name))
+        if flag:
             print("No rows in '{}' table are missing a reference in table '{}' for '{}'".format(
                 self.referring_table_name,
                 self.referred_table_name,
                 self.key))
+
+    def report(self):
+        self.report_first()
         print(self.__result__)
+
+
 
