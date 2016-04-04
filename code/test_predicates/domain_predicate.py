@@ -3,7 +3,6 @@ from test_predicates.t_predicate import TPredicate
 class DomainPredicate (TPredicate):
 
     def __init__(self, conn, table_name, column_name, constraint_function):
-        # TODO: Make a proper explanation of inputs
         """
         :param conn: a SQL connection object, which we fetch data from.
         :param table_name: name of specified table which needs to be tested
@@ -32,5 +31,7 @@ class DomainPredicate (TPredicate):
 
     def report(self):
         if self.wrong_values:
-            print(self.wrong_values)
+            print('In the column "{}", the following values does now following the constraint: {}'.format(
+                self.column_name,
+                self.wrong_values))
         print(self.__result__)
