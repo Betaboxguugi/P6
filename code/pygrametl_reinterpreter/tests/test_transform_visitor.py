@@ -105,11 +105,7 @@ class TestTransformVisitor(TestCase):
 
         # Act/Assert
         with self.assertRaises(StopIteration):
-            transform_visitor.start(actual)
-        
-
-
-            
+            transform_visitor.start(actual)      
 
             
 suite = makeSuite(TestTransformVisitor)

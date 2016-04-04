@@ -28,6 +28,7 @@ conn_dict = {'conn0': db_conn, 'conn1': dw_conn}
 
 try:
     tc = Reinterpreter(program=program_path, conn_scope=conn_dict, program_is_path=True)
+
     scope = tc.run()
 finally:
     db_conn.close()
