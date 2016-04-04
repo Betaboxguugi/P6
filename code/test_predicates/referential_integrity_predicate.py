@@ -19,24 +19,20 @@ class ReferentialPredicate(TPredicate):
         self.key = key
         self.referring_table = self.warehouse.get(referring_table_name)
         self.referred_table = self.warehouse.get(referred_table_name)
-        self.temp = None
-        self.temp_name = None
 
     def run(self):
+        self.__result__ = True
         self.ref_check()
+        self.swap_tables()
         self.ref_check()
+        self.swap_tables()
 
     def swap_tables(self):
-        self.temp = self.referring_table
-        self.referring_table = self.referred_table
-        self.referred_table = self.temp
-        self.temp_name = self.referring_table_name
-        self.referring_table_name = self.referred_table_name
-        self.referred_table_name = self.temp_name
+        self.referred_table, self.referring_table = self.referring_table, self.referred_table
+        self.referred_table_name, self.referring_table_name = self.referring_table_name, self.referred_table_name
 
     def ref_check(self):
         self.missing_keys = ()
-        self.__result__ = True
         for referring_row in self.referring_table:
             flag = False
             for referred_row in self.referred_table:
@@ -49,7 +45,6 @@ class ReferentialPredicate(TPredicate):
                 self.missing_keys += referring_row,
                 self.__result__ = False
         self.report()
-        self.swap_tables()
 
     def report(self):
         if not self.__result__:
@@ -64,5 +59,5 @@ class ReferentialPredicate(TPredicate):
                 self.referring_table_name,
                 self.referred_table_name,
                 self.key))
-        # print(self.__result__)
+        print(self.__result__)
 
