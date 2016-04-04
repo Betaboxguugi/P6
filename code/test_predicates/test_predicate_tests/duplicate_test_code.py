@@ -1,11 +1,7 @@
 import os
 import sqlite3
-from test_predicates.row_number_predicate import RowPredicate
 from test_predicates.duplicate_rows_predicate import DuplicatePredicate
-from pygrametl.datasources import SQLSource, CSVSource
-
-
-
+from pygrametl.datasources import SQLSource
 
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
@@ -43,16 +39,13 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 print('Data inserted into table')
 
-
 dic = {}
 dic['company'] = SQLSource(connection=conn, query="SELECT * FROM company")
 
-"""RowTest = RowPredicate(dic)
-RowTest.run('company', 5)
-print(RowTest.report())"""
-
 columns = ('name', 'age', 'address', 'salary')
 columns_cap = ('NAME', 'AGE', 'ADDRESS', 'SALARY')
-tuple_predicate = DuplicatePredicate(dic)
-tuple_predicate.run(columns, verbose=True)
+dup_predicate = DuplicatePredicate(dic, columns, verbose=True)
+dup_predicate.run()
+dup_predicate2 = DuplicatePredicate(dic, verbose=True)
+dup_predicate2.run()
 

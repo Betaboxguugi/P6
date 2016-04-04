@@ -41,6 +41,6 @@ print('Data inserted into table')
 dic = {}
 dic['company'] = SQLSource(connection=conn, query="SELECT * FROM company")
 
-RowTest = RowPredicate(dic)
-RowTest.run('company', 5)
+RowTest = RowPredicate(dic, 'company', 5)
+RowTest.run()
 
