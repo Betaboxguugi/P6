@@ -15,7 +15,7 @@ class TPredicate:
 
     def dictify(self, conns):
         """ Creates an iterable of dicts from our connection
-        :param  conns: a pygrametl connection object, which we wish to fetch data from"""
+        :param  conns: a pygrametl connection object, which we fetch data from"""
         bicdic = {}
         # Runs over all data source objects
         for table_name, content in conns.items():
