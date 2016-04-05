@@ -4,6 +4,7 @@ class RowPredicate(TPredicate):
 
     def __init__(self, conn, table_name, number_of_rows):
         """
+        :param conn: a dictionary of SQLSource objects
         :param table_name: name of the table we are testing
         :param number_of_rows: number of rows we are testing for
         """
