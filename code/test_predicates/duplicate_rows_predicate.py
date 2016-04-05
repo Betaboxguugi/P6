@@ -5,12 +5,15 @@ class DuplicatePredicate(TPredicate):
 
     def __init__(self, conn, table_name=None, column_names=None, verbose=False):
         """
-        :param conn: god morgen
+        :param conn: a connection object to a database, which we fetch data from.
         :param table_name: If not provided, a random table will be selected. This won't matter if there is only one
         table.
+        :type table_name: str
         :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
         duplicates without looking at primary keys for example.
+        :type column_names: str
         :param verbose: if this is set to true information from each step in remove_unique is printed
+        :type verbose: bool
         """
         self.database = self.dictify(conn)
 
