@@ -1,10 +1,10 @@
 from test_predicates.t_predicate import TPredicate
 
-class DomainPredicate (TPredicate):
 
+class DomainPredicate(TPredicate):
     def __init__(self, conn, table_name, column_name, constraint_function):
         """
-        :param conn: a SQL connection object, which we fetch data from.
+        :param conn: a connection object to a database, which we fetch data from.
         :param table_name: name of specified table which needs to be tested
         :type table_name: str
         :param column_name: name of the specified column, which needs to be tested within the table
@@ -17,21 +17,30 @@ class DomainPredicate (TPredicate):
         self.table = self.database.get(table_name)
         self.column_name = column_name
         self.constraint_function = constraint_function
-        self.wrong_values = ()
+        self.wrong_elements = ()
 
     def run(self):
+        """
+        Provides each element of the specified column to the given constraint function.
+        Then logs which elements the constraint function returned false on if any, then finally calls report
+        """
+
         self.__result__ = True
-        self.wrong_values = ()
+        self.wrong_elements = ()
         for row in self.table:
-            value = row.get(self.column_name)
-            if not self.constraint_function(value):
-                self.wrong_values += value,
+            element = row.get(self.column_name)  # returns the elements at the specified column from each row
+            if not self.constraint_function(element):  # the given constraint function are given the elements here
+                self.wrong_elements += element,
                 self.__result__ = False
         self.report()
 
     def report(self):
-        if self.wrong_values:
-            print('In the column "{}", the following values does now following the constraint: {}'.format(
+        """
+        Reports results of tests. If results return false, it also report which elements the constraint function
+        returned false upon and in which column these elements belong too.
+        """
+        if self.wrong_elements:
+            print('In the column "{}", the following elements does now uphold the constraint: {}'.format(
                 self.column_name,
-                self.wrong_values))
+                self.wrong_elements))
         print(self.__result__)
