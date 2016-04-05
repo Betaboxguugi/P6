@@ -2,6 +2,7 @@ from test_predicates.t_predicate import TPredicate
 
 
 class ReferentialPredicate(TPredicate):
+    # TODO: Name mapping for keys
 
     def __init__(self, conn, referring_table_name, referred_table_name, key):
         """
