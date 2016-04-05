@@ -225,3 +225,10 @@ Temporary Items
 pyvenv.cfg
 pip-selfcheck.json
 
+### DATABASE STUFF ###
+*.csv
+*.db
+
+
+*.dot
+documentation/article/master.tcp
