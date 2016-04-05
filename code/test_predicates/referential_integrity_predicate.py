@@ -22,11 +22,12 @@ class ReferentialPredicate(TPredicate):
 
     def run(self):
         self.__result__ = True
-        self.ref_check()
-        self.report_first()
-        self.swap_tables()
+        self.ref_check()   # We first check the 'referring' table with the 'referred'
+        self.report()
+        self.swap_tables()  # we swap the two tables and do it the other way around
         self.ref_check()
         self.report()
+        print(self.__result__)
         self.swap_tables()
 
     def swap_tables(self):
@@ -34,23 +35,22 @@ class ReferentialPredicate(TPredicate):
         self.referred_table_name, self.referring_table_name = self.referring_table_name, self.referred_table_name
 
     def ref_check(self):
-        self.missing_keys = ()
+        self.missing_keys = ()  # This is reset to make sure we do not report keys from a previous check
         for referring_row in self.referring_table:
             flag = False
             for referred_row in self.referred_table:
                 x = referring_row[self.key]
                 y = referred_row[self.key]
                 if x == y:
-                    flag = True
-                    break
+                    flag = True  # We find a reference match
+                    break        # And immediately break out of the inner for and continue
             if not flag:
-                self.missing_keys += referring_row,
+                self.missing_keys += referring_row,  # we note rows that missed their reference in the other table
                 self.__result__ = False
 
-    def report_first(self):
-        # This is the basic report function when we don't print the result.
+    def report(self):
         flag = True
-        for row in self.missing_keys:
+        for row in self.missing_keys:  # if missing_keys is empty this code will not run
             flag = False
             print("row {} in '{}' table does not have corresponding reference '{}' in '{}' table".format(
                 row,
@@ -63,9 +63,6 @@ class ReferentialPredicate(TPredicate):
                 self.referred_table_name,
                 self.key))
 
-    def report(self):
-        self.report_first()
-        print(self.__result__)
 
 
 

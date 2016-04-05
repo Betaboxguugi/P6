@@ -1,10 +1,7 @@
 import os
 import sqlite3
 from test_predicates.row_number_predicate import RowPredicate
-from pygrametl.datasources import SQLSource, CSVSource
-
-
-
+from pygrametl.datasources import SQLSource
 
 # This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
