@@ -5,7 +5,7 @@ import pygrametl
 from t_predicate import TPredicate
 
 
-class HierachyPredicate(TPredicate):
+class HierarchyPredicate(TPredicate):
     def run(self):
         """ Creates SQL for checking functional dependencies, runs it and saves results"""
 
