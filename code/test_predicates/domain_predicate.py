@@ -7,12 +7,12 @@ from test_predicates.t_predicate import TPredicate
 class DomainPredicate(TPredicate):
     def __init__(self, conn, table_name, column_name, constraint_function):
         """
-        :param conn: a connection object to a database, which we fetch data from.
+        :param conn: a dictionary of SQLSource objects
         :param table_name: name of specified table which needs to be tested
         :type table_name: str
         :param column_name: name of the specified column, which needs to be tested within the table
         :type column_name: str
-        :param constraint_function: a function that represent the constraint which need to be tested. Must return true or false
+        :param constraint_function: a predicate that represent the constraint which need to be tested.
         :type constraint_function: def
         """
 
