@@ -6,6 +6,7 @@ from t_predicate import TPredicate
 
 
 class HierachyPredicate(TPredicate):
+
     def run(self):
         """ Creates SQL for checking functional dependencies, runs it and saves results"""
 
@@ -77,7 +78,7 @@ class HierachyPredicate(TPredicate):
 
     def __init__(self, connection, tables, func_dependencies):
         """
-        :param connection: PEP249 connection to database
+        :param connection: a connection object to a database, which we fetch data from.
         :param tables: tables from the database, which we wish to join
         :param func_dependencies: functional dependencies between attributes
         """
@@ -90,13 +91,3 @@ class HierachyPredicate(TPredicate):
 
         self.run()
         self.report()
-
-
-#DW_NAME = './dw.db'
-
-#dw_conn = sqlite3.connect(DW_NAME)
-
-#tables = ['factTable', 'locationDim', 'bookDim', 'timeDim']
-#funcd = [(['bookid'], ['sale']), (['city'], ['region']), (['city'], ['sale'])]
-
-#a = HierachyPredicate(dw_conn, tables, funcd)

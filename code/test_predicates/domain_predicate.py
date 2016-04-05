@@ -1,3 +1,6 @@
+__author__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
+__maintainer__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
+
 from test_predicates.t_predicate import TPredicate
 
 
