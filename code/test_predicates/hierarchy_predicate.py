@@ -4,11 +4,10 @@ import sqlite3
 import pygrametl
 from t_predicate import TPredicate
 
-
-class HierachyPredicate(TPredicate):
+class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
 
     def run(self):
-        """ Creates SQL for checking functional dependencies, runs it and saves results"""
+        """ Creates SQL for checking functional dependencies, runs it and saves results """
 
         sql_union = []
 
