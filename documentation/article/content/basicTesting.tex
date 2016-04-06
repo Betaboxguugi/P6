@@ -1,30 +1,36 @@
-\section{The Basics of Testing}
-This chapter details what testing is and the basics of using it in software development. The chapter purpose is to insure that we as well as our readers, understand what testing is.
-Testing is one or a series of deliberate actions or experiments, intend on finding out how well specific parts of a program work. These test are mainly done by developers or dedicated testers, but also by the end-user if the program in later development. 
-Testing help in insuring a given software product functions up to the specifications provided, which is why testing is a part of almost all development models such as waterfall, agile, xp and more.
-There are mainly 2 types of testing that gets conducted during a software development cycle\cite{BasicTesting1}, described below. 
+\section{The Basics of Software Testing}
+%BEMÆRK!: Dette kapitel kommer nok under en del ændringer for fremtiden, da det endnu er uvist hvad retning vi vil dreje det i og hvad der egentlig er brug for her.
+This chapter details basics of testing in software development. The chapter purpose is to insure that we as well as our readers, understand what testing is.
+Testing is one or a series of deliberate actions or experiments, intend on finding out how well specific parts of a program work. These test are mainly done by developers or dedicated testers, but also by the end-user if the program is later into its development. 
+Testing is done to insure that the program meets the requirement given by its design and development. The following is often the basic requirements given to each component of a program:
+\begin{enumerate}
+	\item Must have a proper use.
+	\item Able to run on its intended environment .
+	\item All inputs must be responded to and performed correctly. 
+	\item Most go through its functions within an acceptable time.
+\end{enumerate}
+%Testing help in insuring a given software product functions up to the specifications given, which is why testing is a part of almost all development models such as waterfall, agile, xp and more. 
+To insure that all requirements are uphold, a testers will employ various types of testing as well as various methods in conjunction with these types.
+There are 2 overall types of testing that gets conducted during a software development cycle\cite{BasicTesting1}, described below. Note that both of these has a lot of subtypes that testers will use.
 \begin{description}
-\item [Manuel Testing] is manual, in the sense that the testing is done without scripts or automated tools. In this type of testing, it is the testers goal to find any and identify defects and bugs that may reside in the program. This type of testing involves various stages of testing, such as unit testing, integration testing, system testing and user acceptance testing. These stages often follow a plan laid out by the tester, but manual testing can also be exploratory.  
-\item [Automatic Testing] is where the tester implements scripts or automated tools into the program. These are used to quickly re-run various test scenarios, which will for the most part look like those used in manual testing. The test purpose is however different, as the test are to detect future defects and bugs that further changes could inflict. This test type is considered superior when it comes to test coverage, accuracy and time spent on testing.
+\item [Manuel Testing] is testing without scripts or automated tools. In this type of testing, it is the testers goal to find and identify any defects and bugs that may reside in the program. This type of testing involves various stages of testing, such as unit testing, integration testing, system testing and user acceptance testing. These stages often follow a plan laid out by the tester, but manual testing can also be exploratory.  
+\item [Automatic Testing] is testing which implements scripts or automated tools into the program. These are used to quickly re-run various test scenarios, which will for the most part be like those used in manual testing. The test type purpose is however different, as the test are to detect future defects and bugs, that future changes to the program could inflict. This test type is considered superior when it comes to test coverage, accuracy and time spent on testing. Note time spent is only less when considering long term, as automatic testing takes longer to set up initially.
+%Nævn regression testing?
 \end{description}
 There are 3 main methods used in software testing, where the 3rd being a combination of the 2, described below:
 \begin{description}
 \item [White Box] is testing of the internal structure of a program and its internal logic. Helps in optimizing the code. The most expensive form of testing and hard to maintain. The tester needs to have access to and knowledge about the source code.
 \item [Black Box] is testing of the external structure of a program, without knowledge of the interior workings of the program. Usually test of the interface and the input(s) and output(s) of functions. More efficient when working with larger code segments. Does not need knowledge of the implementation of the program to make tests.
-\item [Grey Box] is testing both the external and internal structure for a program, with limited knowledge of the internal structure of the program. Grey Box combines the more straightforward approach of black box testing with \textbf{To be continued...}
+\item [Grey Box] is testing both the external and some of the internal structure for a program, with limited knowledge of the internal structure of the program. The tester does not test the source code, but will use and manipulate other internal components such as databases or log files. Grey Box combines the more straightforward approach of black box testing with the knowledge of how some of the more underlying concepts. Insuring that the tester is able to make more well informed choices.
 \end{description}
-
-
 
 
 %who does testing?
 
 %black box vs white box?
 
-%manuel vs automatic testing
+%manuel vs automatic testing 
 
-%verification vs validation 
+%verification vs validation - meh
 
-%Hvad har det at gøre med vore projekt
-
-%Ir - part of any form of software development in some capacity (see models, waterfall, agile and/or XP)
+%part of any form of software development in some capacity (see models, waterfall, agile and/or XP) - ikke super relevant
