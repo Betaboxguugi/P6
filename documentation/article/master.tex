@@ -13,7 +13,7 @@
 %
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
+% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
@@ -26,6 +26,8 @@
 
 \usepackage{lipsum} % Required to insert dummy text. To be removed otherwise
 
+\usepackage{tikz}
+\usepackage{todonotes}
 
 
 %----------------------------------------------------------------------------------------
@@ -53,7 +55,7 @@
 %	CUSTOM COMMANDS
 %----------------------------------------------------------------------------------------
 
-\newcommand{\FW}{ETLTESTFramework(WT)}
+\newcommand{\FW}{TestFramework}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
@@ -94,14 +96,14 @@
 
 \input{formalities/introduction.tex}
 \input{content/hwtest.tex}
-\input{content/reinterpreter.tex}
+\input{content/reinterpreter.tex} 
 
 %------------------------------------------------
 
 \phantomsection % Nessesary for hyperref to jump to the escorrect page
 
 \input{formalities/acknowledgments}
-
+ 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
@@ -110,5 +112,5 @@
 \bibliography{sample}
 
 %----------------------------------------------------------------------------------------
-
+ 
 \end{document}
