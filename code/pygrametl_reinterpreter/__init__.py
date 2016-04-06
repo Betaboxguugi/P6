@@ -1,6 +1,5 @@
 __author__ = 'Mathias Claus Jensen'
 __maintainer__ = 'Mathias Claus Jensen'
-__all__ = ['Reinterpreter']
 
-from reinterpreter import Reinterpreter
-from
+from .reinterpreter import Reinterpreter
+from .datwarehouse_representation import *

@@ -1,6 +1,6 @@
 import ast
-from transform_visitor import TransformVisitor
-from extract_visitor import ExtractVisitor
+from .transform_visitor import TransformVisitor
+from .extract_visitor import ExtractVisitor
 
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']

@@ -1,37 +1,39 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
-
+import os
+import sqlite3
+import sys
+sys.path.append('../')
 import sqlite3
 from pygrametl.datasources import *
 import itertools
-from test_predicates.t_predicate import TPredicate
+from t_predicate import TPredicate
+from pygrametl_reinterpreter import *
 
 
 class ComparePredicate(TPredicate):
-    def __init__(self, dw_table, test_table, ignore_att = None, sort_att = None, subset = False):
+    def __init__(self, dw_table_name, test_table, ignore_att = None, sort_att = None, subset = False):
         # TODO: The three last parameters still need to be implemented
         """
-        :param dw_table: the table from dw that we wish to compare with
-        :param test_table: user given table that we compare against
+        :param dw_table: name of the table from dw that we wish to compare with
+        :param test_table: list of dicts representing table we wish to compare against
         The other parameters are not finished, but here are their descriptions
         :param ignore_att: attributes, such as keys, that we wish to ignore for the comparison
         :param sort_att: user given attributes used for sorting tables before compare
         :param subset: flag that indicates whether the test table should only be a subset of the dw table
         """
 
-        # Creates the dw_table, a list of dicts.
-        dw_dict = super(ComparePredicate, self).dictify(dw_table)
-        self.dw_table = dw_dict[next(iter(dw_dict.keys()))]
+        # Fetching the DW table through its name
+        global Big
+        self.dw_table = []
+        for entry in (Big.get_data_representation(dw_table_name)):
+            self.dw_table.append(entry)
 
-        # Creates the test_table, a list of dicts.
-        test_dict = super(ComparePredicate, self).dictify(test_table)
-        self.test_table = test_dict[next(iter(test_dict.keys()))]
+        self.test_table = test_table
 
         self.dw_surplus = list(itertools.filterfalse(lambda x: x in self.dw_table, self.test_table))
         self.test_surplus = list(itertools.filterfalse(lambda x: x in self.test_table, self.dw_table))
 
-        self.run()
-        self.report()
 
     def run(self):
         """ Compares the two tables and sets their surpluses for reporting."""
@@ -53,18 +55,46 @@ class ComparePredicate(TPredicate):
             print("Exclusive to test:")
             print(self.test_surplus)
 
+
+
+
 """
-dic = {}
-dic2 = {}
+# Ensures a fresh database to work with.
+TEST_DB = 'test.db'
+if os.path.exists(TEST_DB):
+    os.remove(TEST_DB)
 
-SALES_DB_NAME = './sales.db'
-DW_NAME = './dw.db'
-CSV_NAME = './region.csv'
-sales_conn = sqlite3.connect(SALES_DB_NAME)
-csv_file_handle = open(CSV_NAME, "r")
+conn = sqlite3.connect(TEST_DB)
+c = conn.cursor()
 
-dic['sales'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
-dic2['sal2s'] = SQLSource(connection=sales_conn, query="SELECT * FROM sales")
+# Making table to test on...
+c.execute('''CREATE TABLE COMPANY
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
+    NAME           TEXT   NOT NULL,
+    AGE            INT    NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL);''')
 
-a = ComparePredicate(dw_table=dic, test_table=dic2)
+company_info = [('Anders', 43, 'Denmark', 21000.00),
+                ('CharLes', 50, 'Texas', 25000.00),
+                ('Wolf', 28, 'Swedden', 19000.00),
+                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Buggy Bug', 67, 'America', 2000)
+                ]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
+
+a = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
+b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
+Big = DWRepresentation([a], [b], conn)
+
+test_entries = []
+for entry in (Big.get_data_representation('COMPANY')):
+    test_entries.append(entry)
+test_entries.append(4)
+
+a = ComparePredicate(dw_table='COMPANY', test_table=test_entries)
+a.run()
+a.report()
 """
