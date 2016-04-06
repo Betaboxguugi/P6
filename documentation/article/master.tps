@@ -11,8 +11,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=master.tex
 
@@ -29,8 +29,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=formalities\introduction.tex
 
@@ -47,8 +47,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\hwtest.tex
 
