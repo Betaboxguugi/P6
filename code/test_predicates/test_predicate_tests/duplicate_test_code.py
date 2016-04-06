@@ -38,14 +38,10 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 print('Data inserted into table')
-
-dic = {}
+dic = dict()
 dic['company'] = SQLSource(connection=conn, query="SELECT * FROM company")
-
 columns = ('name', 'age', 'address', 'salary')
 columns_cap = ('NAME', 'AGE', 'ADDRESS', 'SALARY')
-dup_predicate = DuplicatePredicate(dic, columns, verbose=True)
+dup_predicate = DuplicatePredicate(dic, 'company', columns)
 dup_predicate.run()
-dup_predicate2 = DuplicatePredicate(dic, verbose=True)
-dup_predicate2.run()
 

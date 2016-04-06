@@ -3,10 +3,25 @@ from test_predicates.t_predicate import TPredicate
 
 class DuplicatePredicate(TPredicate):
 
-    def __init__(self, conn, column_names=None, verbose=False):
-        self.table = self.dictify(conn)
-        key = list(self.table.keys())
-        self.table = self.table[key.__getitem__(0)]  # We assume there is only one sql object, and thus only one table
+    def __init__(self, conn, table_name=None, column_names=None, verbose=False):
+        """
+        :param conn: a connection object to a database, which we fetch data from.
+        :param table_name: If not provided, a random table will be selected. This won't matter if there is only one
+        table.
+        :type table_name: str
+        :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
+        duplicates without looking at primary keys for example.
+        :type column_names: str
+        :param verbose: if this is set to true information from each step in remove_unique is printed
+        :type verbose: bool
+        """
+        self.database = self.dictify(conn)
+
+        if table_name:
+            self.table = self.database[table_name]
+        else:
+            keys = list(self.database.keys())
+            self.table = self.database[keys.__getitem__(0)]
         if not column_names:
             row = self.table.__getitem__(0)  # if no columns are given we collect them from the first row
             self.columns = row.keys()
@@ -17,24 +32,18 @@ class DuplicatePredicate(TPredicate):
         self.verbose = verbose
 
     def run(self):
-        """
-        :param column_names: Optional parameter. A tuple of column names. Recommended for when you want to check for
-        duplicates without looking at primary keys for example.
-        :param verbose: if this is set to true information from each step in remove_unique is printed
-        """
         table = self.table
-        while len(self.table) > 1:
+        while len(table) > 1:
             dic = table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
             if self.verbose:
                 print('Start predicate duplicates')
-                print("Rows remaining {}".format(len(self.table)))
-            for row in self.table:
+                print("Rows remaining {}".format(len(table)))
+            for row in table:
                 if self.verbose:
                     print("Checking table against row: {}".format(dic))
                     print("Checking table row: {}".format(row))
                 flag = False
                 for column in self.columns:  # Fun fact: columns may be unordered if not provided
-                    column = column[:].upper()  # Ensure that the column names are full caps. Are keys always full caps?
                     x = dic.get(column)
                     y = row.get(column)
                     if self.verbose:

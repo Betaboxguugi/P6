@@ -2,37 +2,6 @@ import os
 import sqlite3
 import arpeggio as apeg
 
-# This just insures we have a fresh database to work with.
-if os.path.isfile('test.db'):
-    os.remove('test.db')
-    print("Deleted previous database")
-    conn = sqlite3.connect('test.db')
-else:
-    conn = sqlite3.connect('test.db')
-
-c = conn.cursor()
-print("Opened database successfully")
-
-# Making table to test on...
-c.execute('''CREATE TABLE COMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-print("Table created successfully")
-
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
-                ('Buggy Bug', 67, 'America', 2000)
-                ]
-
-# ... and inserting the necessary data.
-c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
-print('Data inserted into table')
-
 
 def table_column_syntax_check(table_name, column_name, peg, verbose=False):
     """
@@ -48,16 +17,20 @@ def table_column_syntax_check(table_name, column_name, peg, verbose=False):
 
     It then generates a parser and tries to parse the fields in the column.
     """
-    c.execute("SELECT {} FROM {}".format(column_name, table_name))
-    column_length = len(c.fetchall())
+    # Fetches the specified column
     list_column = []
-    for x in range(0, column_length):
-        c.execute("SELECT {} FROM {}".format(column_name, table_name))
-        list_column.insert(0, c.fetchall()[x][0])
+    c.execute("SELECT {} FROM {}".format(column_name, table_name))
+    for e in c.fetchall():
+        list_column.append(next(iter(e)))
+
+    # Instantiates parser
     parser = apeg.ParserPython(peg)
+
     correct_parse = 0
     incorrect_parse = 0
     parse_trees = []
+
+    # Determines for each column entry, whether it can be parsed.
     for entry in list_column:
         try:
             parse_trees.append(parser.parse(str(entry)))
@@ -73,35 +46,47 @@ def table_column_syntax_check(table_name, column_name, peg, verbose=False):
     return parse_trees
 
 
+# Ensures a fresh database to work with.
+TEST_DB = 'test.db'
+if os.path.exists(TEST_DB):
+    os.remove(TEST_DB)
+
+conn = sqlite3.connect(TEST_DB)
+c = conn.cursor()
+
+# Making table to test on...
+c.execute('''CREATE TABLE COMPANY
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
+    NAME           TEXT   NOT NULL,
+    AGE            INT    NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL);''')
+
+company_info = [('Anders', 43, 'Denmark', 21000.00),
+                ('CharLes', 50, 'Texas', 25000.00),
+                ('Wolf', 28, 'Swedden', 19000.00),
+                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Buggy Bug', 67, 'America', 2000)
+                ]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 
 
-
-
-"""PEG Stuff"""
-# PEG Parsing Expression Grammar
-
-
+# PEG to ensure that entry is at least one digit
 def id_format(): return apeg.RegExMatch(r'\d+'), apeg.EOF
+print(table_column_syntax_check('COMPANY', 'ID', id_format))
 
 
+# PEG to ensure that entry begins with capital letter proceeded by lower case letters
 def name_format(): return apeg.RegExMatch(r'[A-Z][a-z]+'), apeg.EOF
+print(table_column_syntax_check('COMPANY', 'NAME', name_format))
 
 
+# PEG to ensure that entry is within the given set
 def address_format(): return apeg.OrderedChoice(["Denmark", "Texas", "Sweden", "America"]), apeg.EOF
+print(table_column_syntax_check('COMPANY', 'ADDRESS', address_format))
 
-
+# PEG tp ensure that entry is a decimal number
 def salary_format(): return apeg.RegExMatch(r'\d+\.\d+'), apeg.EOF
-
-
-"""Not PEG stuff"""
-
-parse_trees1 = table_column_syntax_check('COMPANY', 'ID', id_format)
-parse_trees2 = table_column_syntax_check('COMPANY', 'NAME', name_format)
-parse_trees3 = table_column_syntax_check('COMPANY', 'ADDRESS', address_format)
-parse_trees4 = table_column_syntax_check('COMPANY', 'SALARY', salary_format())
-
-print(parse_trees1)
-print(parse_trees2)
-print(parse_trees3)
-print(parse_trees4)
-
+print(table_column_syntax_check('COMPANY', 'SALARY', salary_format()))
