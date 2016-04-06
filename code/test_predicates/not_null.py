@@ -9,7 +9,7 @@ parent = test_predicates.t_predicate.TPredicate
 conn = sqlite3.connect('test.db')
 
 
-class HasNull(parent):
+class NotNull(parent):
     def __init__(self, conn, table_name, column_name):
         """
         :param conn: a dictionary of SQLSource objects
@@ -29,10 +29,10 @@ class HasNull(parent):
         self.__result__ into False. Finally calls self.report()
         """
         self.__result__ = True
-        self.has_null()
+        self.not_null()
         self.report()
 
-    def has_null(self):
+    def not_null(self):
         """
         Checks each element in the specified column, if any are null, it sets self.__result__ to false
         """
