@@ -148,6 +148,8 @@ class FTRepresentation(TableRepresentation):
             self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
         else:
             self.query = query
+
+
 """
 # Ensures a fresh database to work with.
 TEST_DB = 'test.db'

@@ -2,6 +2,7 @@ __author__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 __maintainer__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 
 from test_predicates.t_predicate import TPredicate
+from test_predicates.report import Report
 
 
 class DomainPredicate(TPredicate):
@@ -42,8 +43,16 @@ class DomainPredicate(TPredicate):
         Reports results of tests. If results return false, it also report which elements the constraint function
         returned false upon and in which column these elements belong too.
         """
+        Report(self.__class__.__name__,
+               self.__result__,
+               ': All is well',
+               ': All is not well',
+               self.wrong_elements)
+
+        """
         if self.wrong_elements:
             print('In the column "{}", the following elements does now uphold the constraint: {}'.format(
                 self.column_name,
                 self.wrong_elements))
         print(self.__result__)
+        """
