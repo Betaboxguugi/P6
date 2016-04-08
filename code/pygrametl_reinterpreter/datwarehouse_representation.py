@@ -11,7 +11,7 @@ class DWRepresentation(object):
     def __init__(self, dims, fts, connection):
         """
         :param dims: A list of DimensionRepresentation Objects
-        :param fts: A lost of FTRepresentation Objects
+        :param fts: A list of FTRepresentation Objects
         :param connection: A PEP 249 connection to a database
         """
 
@@ -33,10 +33,19 @@ class DWRepresentation(object):
             if len(name_list) != len(list(set(name_list))):
                 raise ValueError("Table names are not unique")
 
-            # Fills the up our dictionary with tables keyed by their names.
+            # Fills up our combined dictionary with tables keyed by their names.
             self.tabledict = {}
             for entry in rep:
                 self.tabledict[entry.name] = entry
+
+            # Fills the up our dictionary with tables keyed by their names.
+            self.dimdict = {}
+            for entry in self.dims:
+                self.dimdict[entry.name] = entry
+
+            self.factdict = {}
+            for entry in self.fts:
+                self.factdict[entry.name] = entry
 
         finally:
             try:
@@ -51,6 +60,21 @@ class DWRepresentation(object):
         """
         return self.tabledict[name.lower()]
 
+    def get_dim_representation(self, name):
+       """
+       :param name: Name of the requested table
+       :return: A TableRepresentation Object corresponding to the name
+       """
+       return self.dimdict[name.lower()]
+
+    def get_fact_representation(self, name):
+        """
+        :param name: Name of the requested table
+        :return: A TableRepresentation Object corresponding to the name
+        """
+        return self.factdict[name.lower()]
+
+# TODO Implementer metode til join af tabeller
 
 class TableRepresentation(object):
     """
@@ -148,7 +172,7 @@ class FTRepresentation(TableRepresentation):
             self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
         else:
             self.query = query
-"""
+
 # Ensures a fresh database to work with.
 TEST_DB = 'test.db'
 if os.path.exists(TEST_DB):
@@ -157,6 +181,7 @@ if os.path.exists(TEST_DB):
 conn = sqlite3.connect(TEST_DB)
 c = conn.cursor()
 
+"""
 # Making table to test on...
 c.execute('''CREATE TABLE COMPANY
     (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
@@ -200,5 +225,11 @@ c = DWRepresentation([a], [b], conn)
 
 print(c.get_data_representation('BOMPANY').name)
 for d in c.get_data_representation('BOMPANY').itercolumns(['ID']):
+    print(d['ID'])
+
+for d in c.get_fact_representation('BOMPANY').itercolumns(['ID']):
+    print(d['ID'])
+
+for d in c.get_dim_representation('COMPANY').itercolumns(['ID']):
     print(d['ID'])
 """
