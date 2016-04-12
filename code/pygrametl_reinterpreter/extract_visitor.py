@@ -93,10 +93,10 @@ class ExtractVisitor(NodeVisitor):
         elif name in FT_CLASSES:
             self.fts.append(node)
         elif name in WRAPPERS:
-            if self.wrapper_conn is not None:
+            if self.wrapper_conn is None:
                 self.wrapper_conn = self.__pluck_wrapper_conn(node)
             else:
-                raise RuntimeError('The ConnectionWrapper is already set')
+                pass #raise RuntimeError('The ConnectionWrapper is already set')
 
 
     def make_dict_assign(self, dictionary):
