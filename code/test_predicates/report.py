@@ -4,7 +4,6 @@ import sys
 import sqlite3
 sys.path.append('../')
 from pygrametl.datasources import *
-from t_predicate import TPredicate
 from pygrametl_reinterpreter import *
 
 

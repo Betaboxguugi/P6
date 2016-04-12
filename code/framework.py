@@ -4,33 +4,36 @@ __maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 import sqlite3
 import os
 from pygrametl_reinterpreter import *
+from test_predicates import *
+
 
 class Framework:
     """
-    Framework for running tests on a pygrametl program given a set of sources
+    Framework for running predicate tests on a pygrametl program given a set of sources
     """
 
-    def __init__(self, path, mapping, pred_list):
+    def __init__(self, program, mapping, pred_list, program_is_path):
         """
-
-        :param path:
-        :param mapping:
-        :param pred_list:
-        :return:
+        :param program: A path or string of a pygrametl program
+        :param mapping: A map of sources
+        :param pred_list: A list of predicates we wish to run
         """
-        self.path = path
+        self.program = program
         self.mapping = mapping
         self.pred_list = pred_list
-        tc = Reinterpreter(self.path, self.mapping)
-        self.dw_rep = tc.run()
-        self.result_list = []
+        self.program_is_path = program_is_path
 
+        # Sets up and runs reinterpreter getting DWRepresentation object
+        tc = Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
+        self.dw_rep = tc.run()
+
+        # Runs all predicates and reports their results
         for p in self.pred_list:
             p.run(self.dw_rep)
             report = p.report()
             report.run()
 
-
+"""
 program_path = 'sample_program.py'
 
 if os.path.isfile('a.db'):
@@ -60,10 +63,9 @@ conn2.commit()
 
 conn_dict  = {'conn1': conn1, 'conn2': conn2}
 
-tc = Reinterpreter(program=program_path, conn_scope=conn_dict, program_is_path=True)
-scope = tc.run()
-
-
+a = RowPredicate('DIM1', 0)
+Framework(program_path, conn_dict, [a], True)
+"""
 
 
 
