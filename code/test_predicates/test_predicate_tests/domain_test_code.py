@@ -1,6 +1,10 @@
 import sqlite3
-from test_predicates.domain_predicate import DomainPredicate
-from pygrametl.datasources import SQLSource
+import sys
+
+sys.path.append('../')
+from  domain_predicate import *
+sys.path.append('../../')
+from pygrametl_reinterpreter import *
 
 
 def constraint1(a):
@@ -19,15 +23,15 @@ def constraint2(a=''):
 
 dw_name = '.\dw.db'  # The one found in pygrametl_examples
 dw_conn = sqlite3.connect(dw_name)
-dic = dict()
-dic['sales'] = SQLSource(connection=dw_conn, query="SELECT * FROM factTable")
-dic['book'] = SQLSource(connection=dw_conn, query="SELECT * FROM bookDim")
-dic['location'] = SQLSource(connection=dw_conn, query="SELECT * FROM locationDim")
-dic['time'] = SQLSource(connection=dw_conn, query="SELECT * FROM timeDim")
 
-constrain_tester1 = DomainPredicate(dic, 'sales', 'sale', constraint1)
-constrain_tester2 = DomainPredicate(dic, 'book', 'genre', constraint2)
+f =  FTRepresentation('factTable', ['bookid','locationid','timeid'],['sale'], dw_conn)
+b = DimRepresentation('bookDim', 'bookid', ['genre'], ['book'], dw_conn)
+l = DimRepresentation('locationDim', 'locationid', ['region'], ['city'], dw_conn)
+t = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'], [], dw_conn)
+Big = DWRepresentation([b,l,t],[f],dw_conn)
 
+constraint_tester1 = DomainPredicate(Big, 'factTable', 'sale', constraint1)
+constraint_tester2 = DomainPredicate(Big, 'bookDim', 'genre', constraint2)
 
-constrain_tester1.run()
-constrain_tester2.run()
+constraint_tester1.run()
+constraint_tester2.run()

@@ -18,7 +18,19 @@ Entity integrity concerns primary keys. It states that every table should have a
 Through the ETL process, data from sources makes its way into a DW. This new data contains information relevant to future business analysis performed by users. However, information may get lost during the process. Data loss may occur in any of the three subprocesses. It is possible that the wrong data is extracted from the sources. Transformations may be faulty and produce an incorrect result. Loss during load may occur  through truncation. Truncation occurs, when the datatype of a DW attribute cannot store the amount of data necessary. This often results in the data being cut to fit the data type, and thus data is lost.  The result of any data loss is a DW not containing the needed information. This leads to poor business analysis. The framework should assist in ensuring that no data loss occurs during the process.
 
 \subsection{Business Rules}
-The term business rule is generally used for all rules applied to data stored in a database. This also includes data integrity as spoken about before. However data integrity could be seen as an ideal from which the business rules may differ. In the case of DWs the actual business rules often do not enforce entity integrity upon the fact table as the access of a specific entry may be unnecessary. Business rules however do not only pertain to data integrity as it is a rather broad term. An example of this could be an attribute relationships such as hierarchies. Another type of business rule could describe the schema of a specific table. 
+The term business rule is generally used for all rules applied to data stored in a database. This also includes data integrity as spoken about before. However data integrity could be seen as an ideal from which the business rules may differ. In the case of DWs the actual business rules often do not enforce entity integrity upon the fact table as the access of a specific entry may be unnecessary. Business rules however do not only pertain to data integrity as it is a rather broad term. An example of this could be an attribute relationships such as hierarchies. Another type of business rule could describe the schema of a specific table.
+
+\begin{figure}
+  \centering
+		\includegraphics[width=0.5\textwidth]{figures/scenario.pdf}
+  \caption{Diagram of source to target test}
+	\label{fig:sourcetotarget}
+\end{figure}
+
+%%Men skal det ligger her? Jeg er ikke sikker.
+
+\subsection{Source to Target Test}
+The purpose of a source to target test is to find errors in the ETL process. If we know what the sources look like, as well as how the transformations should perform, we can make general assertions on how the resulting DW should look. When we make assertions on the DW that is the result of the ETL process,  we may refer to this as a source to target test, see Figure \ref{fig:sourcetotarget}. This kind of test can be wide and include many small to big test cases, and may thus be expensive to execute on large DWs. Note that a DW that is in use by a business, may have had its transformations re-factored due to changes to business rules. This means that our assertions about the current implementation could fail even though they are correct. Thus this kind of test should focus on smaller sources, that transform into a fresh DW that is then easy and fast to conduct tests on. These sources in turn would preferably be set up as mock sources rather than large business sources. The results of such tests should give information on how the transformations perform according to specification and in turn help lower the risk of the ETL program.
 
 
 

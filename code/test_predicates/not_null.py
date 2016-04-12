@@ -4,6 +4,8 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 # IMPORTS
 import sqlite3
 import test_predicates.t_predicate
+from test_predicates.report import Report
+
 
 parent = test_predicates.t_predicate.TPredicate
 conn = sqlite3.connect('test.db')
@@ -45,9 +47,5 @@ class NotNull(parent):
         """
         If null is found, prints what table and column null resides in, otherwise prints true
         """
-        if not self.__result__:
-            print('False - Found in table "{}", column "{}"'.format(self.table_name, self.column_name))
-            # print(self.__result__)
-        else:
-            print(self.__result__)
+        Report(self.__class__.__name__, self.__result__)
 
