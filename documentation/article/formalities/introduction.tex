@@ -9,6 +9,15 @@ Looking into the current market of ETL testing toolkits, we find that much testi
 
 Based on this brief look into the state of the art, we deem that no tool is well fit to couple with pygrametl. At least in the case where we want to not only do regression testing, but functional testing in general. Thus, we set out to develop our own testing framework. We want tests to be fast to define and fast to run. This means that we do not want to bother with comparing DWs. Instead we introduce our own concept of test predicates. A test case will take as input; a set of sources, a DW to load data into and a set of predicates. During test the ETL will be run with the given sources and DW. After load, the DW  is placed under the scrutiny of the predicates. A predicate should be seen as a quality that we assert the DW to posses. An example could be a predicate stating that the foreign key constraint is upheld through the entire DW. The test will only pass, if all given predicates are fulfilled by the DW. The whole idea behind predicates is that they can be used to express functional requirements during system testing. They may also be used to express test requirements during integration testing after the extract and load components have been finished. This enables continuous integration of data transformation components. In extension, the predicates can also be used for regression testing. We decide that the testing framework should not be geared towards the earlier component test phase. In this phase individual components are tested, usually during unit tests. We assume the users of pygrametl to be able to test the individual functions of their ETL system, Thus, our aim is to build a framework that instead assist in later phases of testing, which are deemed to be more difficult for users to implement. 
 
+The rest of this paper is organized as followed
+\begin{itemize}
+	\item{\cref{sect:btesting} where we summarize the basic concepts of software testing}
+	\item{\cref{sect:hwtest} in which we look how testing may work in an ETL context}
+	\item{\cref{sect:reinterpreter} where we present the reinterpreter part of \FW}
+\end{itemize}
+
+
+
 %Terra incognita
 %Here be related works.
 
