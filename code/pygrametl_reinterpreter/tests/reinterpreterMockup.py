@@ -23,8 +23,8 @@ class ReinterpreterMockup(object):
         # Ensures a fresh database to work with.
 
         TEST_DB = 'C:/Users/MikaelFox/Documents/GitHub/P6/code/test.db'
-        if os.path.exists(TEST_DB):
-            os.remove(TEST_DB)
+        #if os.path.exists(TEST_DB):
+        #    os.remove(TEST_DB)
 
         conn = sqlite3.connect(TEST_DB)
         c = conn.cursor()

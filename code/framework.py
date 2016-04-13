@@ -5,7 +5,8 @@ import sqlite3
 import os
 from pygrametl_reinterpreter import *
 from test_predicates import *
-
+from pygrametl_reinterpreter.tests.reinterpreterMockup import ReinterpreterMockup
+from test_predicates.row_number_predicate import RowPredicate
 
 class Framework:
     """
@@ -24,7 +25,8 @@ class Framework:
         self.program_is_path = program_is_path
 
         # Sets up and runs reinterpreter getting DWRepresentation object
-        tc = Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
+        tc = ReinterpreterMockup()
+            #Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
         self.dw_rep = tc.run()
 
         # Runs all predicates and reports their results
@@ -32,6 +34,11 @@ class Framework:
             p.run(self.dw_rep)
             report = p.report()
             report.run()
+
+rowp = RowPredicate('company', 5)
+pl = [rowp]
+framework = Framework(None, None, pl, None)
+
 
 """
 program_path = 'sample_program.py'
