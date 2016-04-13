@@ -1,4 +1,4 @@
-__author__ = 'Alexander Brandborg'
+__co-author__ = 'Alexander Brandborg'
 
 """Function which test if all keys in a table is unique and the functions necessary to achieve this"""
 

@@ -4,7 +4,6 @@ import sys
 import sqlite3
 sys.path.append('../')
 from pygrametl.datasources import *
-from t_predicate import TPredicate
 from pygrametl_reinterpreter import *
 
 
@@ -20,15 +19,13 @@ class Report(object):
         :type message_if_false: str
         :param message_if_false: message which will be printed if results are False
         :type message_if_false: str
-        :param list_of_wrong_elements: list of all the elements which the predicate returned false to
-        :type list_of_wrong_elements: list
+        :param list_of_wrong_elements: list of all the elements in which the predicate returned false
         """
         self.nop = name_of_predicate
         self.r = result
         self.mit = message_if_true
         self.mif = message_if_false
         self.l = list_of_wrong_elements
-        self.run()
 
     def run(self):
         """

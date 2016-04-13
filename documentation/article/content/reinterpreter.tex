@@ -5,8 +5,10 @@
   \label{fig:reinterpreter}
 \end{figure*}
 
+
 \section{pygrametl Reinterpreter}
 With  \FW{} we want testing to be as easy as possible. Users should not need to  change their ETL system when testing. To support this, \FW{} takes as input a pygrametl program and a set of mappings between user-defined test data and data sources found in the program. It is important that test data can be used, as actual data from live systems may be off limits to testers. Furthermore, as dummy DW also needs to be given to \FW{}, as testers might again not have access to the real DW. Once specified, \FW{} will run the pygrametl program using the test data and populating the dummy DW. The resulting populated dummy DW can then be extracted and used in user specified test predicates. To acheive the specified goal, we must answer the following four subproblems: 
+
 
 \begin{itemize}
 \item How should users specify their inputs, and how do we normalize it?

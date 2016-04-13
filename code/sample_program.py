@@ -11,7 +11,7 @@ import sqlite3
 input_conn = sqlite3.connect('input.db')
 output_conn = sqlite3.connect('output.db')
 
-input_src = SQLSource(input_conn, query='SELECT * FROM table')
+input_src = SQLSource(input_conn, query='SELECT * dim1')
 output_wrapper = pygrametl.ConnectionWrapper(connection=output_conn)
 
 dim1 = Dimension(

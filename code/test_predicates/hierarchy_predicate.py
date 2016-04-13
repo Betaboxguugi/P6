@@ -3,14 +3,31 @@ import sys
 sys.path.append('../')
 import sqlite3
 import pygrametl
-from t_predicate import TPredicate
+from test_predicates.t_predicate import TPredicate
 from pygrametl_reinterpreter import *
 import os
+from .report import Report
+
 
 class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
 
-    def run(self):
+    def __init__(self, tables, func_dependencies):
+        """
+        :param connection: a connection object to a database, which we fetch data from.
+        :param tables: tables from the database, which we wish to join
+        :param func_dependencies: functional dependencies between attributes
+        """
+
+        #global Big
+        #self.cursor = Big.connection.cursor()
+        self.cursor = None
+        self.tables = tables
+        self.func_dependencies = func_dependencies
+        self.results = []
+
+    def run(self, dw_rep):
         """ Creates SQL for checking functional dependencies, runs it and saves results """
+        self.cursor = dw_rep.connection.cursor()
 
         sql_union = []
 
@@ -74,22 +91,12 @@ class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
     def report(self):
         """ Prints the list of results """
 
-        for id, res in enumerate(self.results):
-            func_dependency = self.func_dependencies[id]
-            print(",".join(func_dependency[0]) + " --> " + ",".join(func_dependency[1]) + " : " + str(res))
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
 
-    def __init__(self, tables, func_dependencies):
-        """
-        :param connection: a connection object to a database, which we fetch data from.
-        :param tables: tables from the database, which we wish to join
-        :param func_dependencies: functional dependencies between attributes
-        """
 
-        global Big
-        self.cursor = Big.connection.cursor()
-        self.tables = tables
-        self.func_dependencies = func_dependencies
-        self.results = []
+
 
 """
 # Ensures a fresh database to work with.

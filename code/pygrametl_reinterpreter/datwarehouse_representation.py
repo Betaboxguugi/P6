@@ -23,8 +23,8 @@ class DWRepresentation(object):
             # Turns all our names to lower case as SQL is case insensitive
             # Also collects a list of names for a later check
             name_list = []
-            rep = self.dims + self.fts
-            for entry in rep:
+            self.rep = self.dims + self.fts
+            for entry in self.rep:
                 low = entry.name.lower()
                 entry.name = low
                 name_list.append(low)
@@ -35,7 +35,7 @@ class DWRepresentation(object):
 
             # Fills the up our dictionary with tables keyed by their names.
             self.tabledict = {}
-            for entry in rep:
+            for entry in self.rep:
                 self.tabledict[entry.name] = entry
 
         finally:
@@ -43,6 +43,12 @@ class DWRepresentation(object):
                 pass
             except Exception:
                 pass
+
+    def __str__(self):
+        return self.tabledict.__str__()
+
+    def __repr__(self):
+        return self.__str__()
 
     def get_data_representation(self, name):
         """
@@ -125,6 +131,16 @@ class DimRepresentation(TableRepresentation):
         else:
             self.query = query
 
+    def __str__(self):
+        row_list = []
+        for row in self.itercolumns(self.all):
+            row_list.append(row)
+        text = "{} {}".format(self.name, row_list)
+        return text
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class FTRepresentation(TableRepresentation):
     """
@@ -149,6 +165,16 @@ class FTRepresentation(TableRepresentation):
         else:
             self.query = query
 
+    def __str__(self):
+        row_list = []
+        for gen in self.itercolumns(self.all):
+            row_list.append(gen)
+        text = "{} {}".format(self.name, row_list)
+        return text
+
+    def __repr__(self):
+        return self.__str__()
+
 
 """
 # Ensures a fresh database to work with.
@@ -169,8 +195,8 @@ c.execute('''CREATE TABLE COMPANY
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Hannibal', 45, 'America', 65000.00),
                 ('Buggy Bug', 67, 'America', 2000)
                 ]
 
@@ -188,8 +214,8 @@ p.execute('''CREATE TABLE BOMPANY
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Hannibal', 45, 'America', 65000.00),
                 ('Buggy Bug', 67, 'America', 2000)
                 ]
 
@@ -197,10 +223,9 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 p.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 
 a = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
+print(a)
 b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
-c = DWRepresentation([a], [b], conn)
-
-print(c.get_data_representation('BOMPANY').name)
-for d in c.get_data_representation('BOMPANY').itercolumns(['ID']):
-    print(d['ID'])
+print(b)
+cc = DWRepresentation([a], [b], conn)
+print(cc)
 """
