@@ -1,0 +1,15 @@
+\section{Predicates}
+\todo[inline]{Skriv introduktion, der linker dette med den forrige sektion.}
+somethin something, all predicates takes data from a database.
+
+\begin{description}
+\item [TPredicate] The super class of all the predicates that are in our framework, contains the basic implementations of a predicate. The functions that can be inherited from this class are , run and report. _init_ The constructor. run Runs the tests, takes a data warehouse representation object as an argument from our reinterpreter. report Returns an Report object, which contains the result(s) of our test.
+\item [ComparePredicate] Checks that two given tables do not have the same elements in any row. The rows in either table do not need to be that same order though.
+\item [DomainPredicate] Checks each elements in a given column, against a given constraint, reporting a list of elements which failed. The constraint is a function supplied by the user, which must return false or true.
+\item [DuplicatePredicate] Checks for duplications of all elements in the rows of a table. Can be specified to only look in a specific list of columns, if provided. With the the specification one can thereby forego looking at what is know to be unique, such as keys.
+\item [HierarchyPredicate] Checks if the data in an number of given tables, complies with a hierarchical data structure.
+\item [NotNull] Checks if any elements in a given column has any null values.
+\item [UniqueKeyPredicate] Checks if all elements in a given column are unique so they can be used as keys.
+\item [ReferentialPredicate] Checks if all keys in column between 2 tables are valid and not null. So that it can conclude whether the tables has referential integrity or not.
+\item [RowPredicate] Check if the number of rows in a table are the same as the given number.
+\end{description}
