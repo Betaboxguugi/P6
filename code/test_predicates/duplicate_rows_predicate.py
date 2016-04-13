@@ -1,9 +1,10 @@
 from test_predicates.t_predicate import TPredicate
+from test_predicates.report import Report
 
 
 class DuplicatePredicate(TPredicate):
 
-    def __init__(self, table_name=None, column_names=None, verbose=False):
+    def __init__(self, table_name, column_names, verbose=False):
         """
         :param table_name: If not provided, a random table will be selected. This won't matter if there is only one
         table.
@@ -26,20 +27,27 @@ class DuplicatePredicate(TPredicate):
 
     def run(self, dw_rep):
         self.dw_rep = dw_rep
+        table = []
+
         if self.table_name:
             self.table = self.dw_rep.get_data_representation(self.table_name)
+            for e in self.table:
+                table.append(e)
         else:
+            print('This is totally not good! D:')
+
+        if not self.column_names:
+            print('This is totally not good! D:')
+        else:
+            self.columns = self.column_names  # Otherwise we check for duplicates with the columns specified
+
+        """else:
             keys = list(self.dw_rep.keys())
             self.table = self.dw_rep[keys.__getitem__(0)]
         if not self.column_names:
             row = self.table.__getitem__(0)  # if no columns are given we collect them from the first row
             self.columns = row.keys()
-        else:
-            self.columns = self.column_names  # Otherwise we check for duplicates with the columns specified
-
-        table = []
-        for e in self.table:
-            table.append(e)
+        """
 
         while len(table) > 1:
             dic = table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
@@ -78,6 +86,8 @@ class DuplicatePredicate(TPredicate):
         self.report()
 
     def report(self):
-        if not self.__result__:
-            print(self.duplicates)
-        print(self.__result__)
+        return Report(self.__class__.__name__,
+                      self.__result__,
+                      ': All is well',
+                      ': All is not well',
+                      self.duplicates)

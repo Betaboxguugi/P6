@@ -41,4 +41,6 @@ cc = DWRepresentation([aa], [bb], conn)
 
 dup_predicate = DuplicatePredicate('company', columns, verbose=True)
 dup_predicate.run(cc)
+report = dup_predicate.report()
+report.run()
 
