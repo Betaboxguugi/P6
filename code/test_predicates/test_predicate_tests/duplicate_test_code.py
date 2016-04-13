@@ -3,7 +3,7 @@ import sqlite3
 from test_predicates.duplicate_rows_predicate import DuplicatePredicate
 from pygrametl.datasources import SQLSource
 
-# This just ensures we have a fresh database to work with.
+# This just insures we have a fresh database to work with.
 if os.path.isfile('test.db'):
     os.remove('test.db')
     print("Deleted previous database")
