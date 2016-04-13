@@ -1,5 +1,5 @@
 from test_predicates.t_predicate import TPredicate
-
+from .report import Report
 
 class ReferentialPredicate(TPredicate):
     # TODO: Name mapping for keys
@@ -50,6 +50,10 @@ class ReferentialPredicate(TPredicate):
                 self.__result__ = False
 
     def report(self):
+        Report(self.__class__.__name__,
+               self.__result__
+               )
+        """
         flag = True
         for row in self.missing_keys:  # if missing_keys is empty this code will not run
             flag = False
@@ -63,7 +67,7 @@ class ReferentialPredicate(TPredicate):
                 self.referring_table_name,
                 self.referred_table_name,
                 self.key))
-
+        """
 
 
 

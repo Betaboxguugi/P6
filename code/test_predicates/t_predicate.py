@@ -4,6 +4,8 @@ import sqlite3
 import pygrametl
 from pygrametl.datasources import *
 from csv import DictReader
+from .report import Report
+
 
 
 class TPredicate:
@@ -42,7 +44,9 @@ class TPredicate:
         """
         returns the result of the test
         """
-        return self.__result__
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
 
     def __init__(self, conns):
         """

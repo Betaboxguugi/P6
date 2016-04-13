@@ -27,7 +27,6 @@ class Report(object):
         self.mit = message_if_true
         self.mif = message_if_false
         self.l = list_of_wrong_elements
-        self.run()
 
     def run(self):
         """
