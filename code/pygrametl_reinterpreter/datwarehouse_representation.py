@@ -168,7 +168,7 @@ class FTRepresentation(TableRepresentation):
         return self.__str__()
 
 
-
+"""
 # Ensures a fresh database to work with.
 TEST_DB = 'test.db'
 if os.path.exists(TEST_DB):
@@ -220,3 +220,4 @@ b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], co
 print(b)
 cc = DWRepresentation([a], [b], conn)
 print(cc)
+"""
