@@ -11,9 +11,7 @@ class ReinterpreterMockup(object):
     connections.
     """
 
-    def __init__(self):
 
-      pass
 
     def run(self):
         """ Reinterpretes the pygrametl program, returns a dict containing 
@@ -72,12 +70,10 @@ class ReinterpreterMockup(object):
         """print(cc.get_data_representation('BOMPANY').name)
         for d in cc.get_data_representation('BOMPANY').itercolumns(['ID']):
             print(d['ID'])"""
-
-
         return cc
 
 
-        """scope = self.conn_scope.copy()
+"""     scope = self.conn_scope.copy()
         program = ''
         if self.program_is_path:
             with open(self.program, 'r') as f:
