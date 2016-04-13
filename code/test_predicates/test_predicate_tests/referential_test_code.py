@@ -13,6 +13,10 @@ dic['book'] = SQLSource(connection=dw_conn, query="SELECT * FROM bookDim WHERE b
 dic['location'] = SQLSource(connection=dw_conn, query="SELECT * FROM locationDim")
 dic['time'] = SQLSource(connection=dw_conn, query="SELECT * FROM timeDim")
 
+aa = DimRepresentation('factTable', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)  # TODO Fix all this shit
+bb = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
+cc = DWRepresentation([aa], [bb], conn)
+
 ref_tester = ReferentialPredicate(dic, fact_table, 'book', 'bookid')
 ref_tester2 = ReferentialPredicate(dic, fact_table, 'location', 'locationid')
 ref_tester3 = ReferentialPredicate(dic, fact_table, 'time', 'timeid')

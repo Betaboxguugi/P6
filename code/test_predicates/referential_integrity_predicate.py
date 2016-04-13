@@ -2,33 +2,29 @@ from test_predicates.t_predicate import TPredicate
 from .report import Report
 
 class ReferentialPredicate(TPredicate):
-    # TODO: Name mapping for keys
 
-    def __init__(self, conn, referring_table_name, referred_table_name, key):
+    def __init__(self, referring_table_name, referred_table_name, key):
         """
-        :param conn: you know by now
         :param referring_table_name: Name of the table we are checking for referential integrity, the predicate is false
         if there exists one key without a reference in the other table.
         :param referred_table_name: Name of the table that should contain references to the keys in the former table,
         the method also tests the 'reverse' integrity of this table
         :param key: name of the key or ID that is tested for referential integrity
         """
-        self.warehouse = self.dictify(conn)
+        self.dw_rep = None
         self.missing_keys = ()
         self.referring_table_name = referring_table_name
         self.referred_table_name = referred_table_name
         self.key = key
+
         self.referring_table = self.warehouse.get(referring_table_name)
         self.referred_table = self.warehouse.get(referred_table_name)
 
     def run(self):
         self.__result__ = True
         self.ref_check()   # We first check the 'referring' table with the 'referred'
-        self.report()
         self.swap_tables()  # we swap the two tables and do it the other way around
         self.ref_check()
-        self.report()
-        print(self.__result__)
         self.swap_tables()
 
     def swap_tables(self):
