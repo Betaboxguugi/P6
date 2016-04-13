@@ -2,6 +2,7 @@ __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
 import os
 import sqlite3
 
+
 class DWRepresentation(object):
     """
     Class used to represent an entire DW.
@@ -11,7 +12,7 @@ class DWRepresentation(object):
     def __init__(self, dims, fts, connection):
         """
         :param dims: A list of DimensionRepresentation Objects
-        :param fts: A lost of FTRepresentation Objects
+        :param fts: A list of FTRepresentation Objects
         :param connection: A PEP 249 connection to a database
         """
 
