@@ -26,7 +26,6 @@ class DuplicatePredicate(TPredicate):
 
     def run(self, dw_rep):
         self.dw_rep = dw_rep
-
         if self.table_name:
             self.table = self.dw_rep.get_data_representation(self.table_name)
         else:
@@ -38,21 +37,23 @@ class DuplicatePredicate(TPredicate):
         else:
             self.columns = self.column_names  # Otherwise we check for duplicates with the columns specified
 
-        table = self.table
+        table = []
+        for e in self.table:
+            table.append(e)
 
         while len(table) > 1:
             dic = table.pop(0)  # this dict(row) is the one we will check against all other rows in the table
             if self.verbose:
                 print('Start predicate duplicates')
                 print("Rows remaining {}".format(len(table)))
-            for row in table.itercolumns(self.columns):
+            for row in table:
                 if self.verbose:
                     print("Checking table against row: {}".format(dic))
                     print("Checking table row: {}".format(row))
                 flag = False
                 for column in self.columns:  # Fun fact: columns may be unordered if not provided
-                    x = dic.get(column)
-                    y = row.get(column)
+                    x = dic.get(column.upper())
+                    y = row.get(column.upper())
                     if self.verbose:
                         print("Looking at column '{}'".format(column))
                         print("Looking for value {} with key '{}'".format(x, column))
