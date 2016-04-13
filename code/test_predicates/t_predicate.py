@@ -6,8 +6,6 @@ from pygrametl.datasources import *
 from csv import DictReader
 from .report import Report
 
-
-
 class TPredicate:
     """A class that implements basic functionality of a predicate.
     It is the superclass to all predicates of the framework.

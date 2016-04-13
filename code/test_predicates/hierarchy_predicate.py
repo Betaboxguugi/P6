@@ -18,14 +18,16 @@ class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
         :param func_dependencies: functional dependencies between attributes
         """
 
-        global Big
-        self.cursor = Big.connection.cursor()
+        #global Big
+        #self.cursor = Big.connection.cursor()
+        self.cursor = None
         self.tables = tables
         self.func_dependencies = func_dependencies
         self.results = []
 
-    def run(self):
+    def run(self, dw_rep):
         """ Creates SQL for checking functional dependencies, runs it and saves results """
+        self.cursor = dw_rep.connection.cursor()
 
         sql_union = []
 
@@ -89,14 +91,11 @@ class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
     def report(self):
         """ Prints the list of results """
 
-        Report(self.__class__.__name__,
-               self.__result__
-               )
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
 
-        """for id, res in enumerate(self.results):
-            func_dependency = self.func_dependencies[id]
-            print(",".join(func_dependency[0]) + " --> " + ",".join(func_dependency[1]) + " : " + str(res))
-        """
+
 
 
 """

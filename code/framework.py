@@ -7,6 +7,10 @@ from pygrametl_reinterpreter import *
 from test_predicates import *
 from pygrametl_reinterpreter.tests.reinterpreterMockup import ReinterpreterMockup
 from test_predicates.row_number_predicate import RowPredicate
+from test_predicates.not_null import NotNull
+from test_predicates.domain_predicate import DomainPredicate
+from test_predicates.hierarchy_predicate import HierarchyPredicate
+from test_predicates.compare_predicate import ComparePredicate
 
 class Framework:
     """
@@ -26,7 +30,7 @@ class Framework:
 
         # Sets up and runs reinterpreter getting DWRepresentation object
         tc = ReinterpreterMockup()
-            #Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
+        # Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
         self.dw_rep = tc.run()
 
         # Runs all predicates and reports their results
@@ -35,10 +39,25 @@ class Framework:
             report = p.report()
             report.run()
 
-rowp = RowPredicate('company', 5)
-pl = [rowp]
-framework = Framework(None, None, pl, None)
 
+
+
+
+def constraint(a=''):
+    if a == 'America':
+        return True
+    else:
+        return False
+
+dom = DomainPredicate('company', 'ADDRESS', constraint)
+nn = NotNull('company', 'salary')
+rowp = RowPredicate('company', 5)
+hi = HierarchyPredicate(['COMPANY'], [(['ADDRESS'], ['NAME'])])
+com = ComparePredicate('company', 'bompany')
+
+
+pl = [nn, rowp, dom, hi]
+framework = Framework(None, None, pl, None)
 
 """
 program_path = 'sample_program.py'
@@ -73,9 +92,3 @@ conn_dict  = {'conn1': conn1, 'conn2': conn2}
 a = RowPredicate('DIM1', 0)
 Framework(program_path, conn_dict, [a], True)
 """
-
-
-
-
-
-

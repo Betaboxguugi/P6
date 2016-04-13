@@ -19,8 +19,7 @@ class Report(object):
         :type message_if_false: str
         :param message_if_false: message which will be printed if results are False
         :type message_if_false: str
-        :param list_of_wrong_elements: list of all the elements which the predicate returned false to
-        :type list_of_wrong_elements: list
+        :param list_of_wrong_elements: list of all the elements in which the predicate returned false
         """
         self.nop = name_of_predicate
         self.r = result

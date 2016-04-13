@@ -48,18 +48,19 @@ class ComparePredicate(TPredicate):
     def report(self):
         """ Reports results of tests. If it fails it will print tuples with no match."""
 
-        Report(self.__class__.__name__,
-               self.__result__
-               )
-        """if self.__result__:
-            print(self.__result__)
-        else:
-            print(self.__result__)
-            print("Exclusive to dw:")
-            print(self.dw_surplus)
-            print("Exclusive to test:")
-            print(self.test_surplus)
-        """
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
+
+    """if self.__result__:
+        print(self.__result__)
+    else:
+        print(self.__result__)
+        print("Exclusive to dw:")
+        print(self.dw_surplus)
+        print("Exclusive to test:")
+        print(self.test_surplus)
+    """
 
 
 
