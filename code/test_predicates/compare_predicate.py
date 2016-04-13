@@ -7,7 +7,8 @@ sys.path.append('../')
 import sqlite3
 from pygrametl.datasources import *
 import itertools
-from t_predicate import TPredicate
+from test_predicates.t_predicate import TPredicate
+from .report import Report
 from pygrametl_reinterpreter import *
 
 
@@ -46,7 +47,11 @@ class ComparePredicate(TPredicate):
 
     def report(self):
         """ Reports results of tests. If it fails it will print tuples with no match."""
-        if self.__result__:
+
+        Report(self.__class__.__name__,
+               self.__result__
+               )
+        """if self.__result__:
             print(self.__result__)
         else:
             print(self.__result__)
@@ -54,7 +59,7 @@ class ComparePredicate(TPredicate):
             print(self.dw_surplus)
             print("Exclusive to test:")
             print(self.test_surplus)
-
+        """
 
 
 

@@ -1,4 +1,5 @@
 from .t_predicate import TPredicate
+from .report import Report
 
 class RowPredicate(TPredicate):
 
@@ -29,4 +30,8 @@ class RowPredicate(TPredicate):
             self.__result__ = False
 
     def report(self):
-        print(self.__result__)
+
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
+

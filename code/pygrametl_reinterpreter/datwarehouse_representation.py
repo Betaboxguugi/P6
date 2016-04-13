@@ -169,8 +169,8 @@ c.execute('''CREATE TABLE COMPANY
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Hannibal', 45, 'America', 65000.00),
                 ('Buggy Bug', 67, 'America', 2000)
                 ]
 
@@ -188,8 +188,8 @@ p.execute('''CREATE TABLE BOMPANY
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Hannibal', 45, 'America', 65000.00),
                 ('Buggy Bug', 67, 'America', 2000)
                 ]
 
