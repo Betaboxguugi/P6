@@ -132,7 +132,11 @@ class DimRepresentation(TableRepresentation):
             self.query = query
 
     def __str__(self):
-        return self.all.__str__()
+        row_list = []
+        for row in self.itercolumns(self.all):
+            row_list.append(row)
+        text = "{} {}".format(self.name, row_list)
+        return text
 
     def __repr__(self):
         return self.__str__()
@@ -162,7 +166,11 @@ class FTRepresentation(TableRepresentation):
             self.query = query
 
     def __str__(self):
-        return self.all.__str__()
+        row_list = []
+        for gen in self.itercolumns(self.all):
+            row_list.append(gen)
+        text = "{} {}".format(self.name, row_list)
+        return text
 
     def __repr__(self):
         return self.__str__()
