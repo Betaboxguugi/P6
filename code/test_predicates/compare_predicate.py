@@ -13,7 +13,7 @@ from pygrametl_reinterpreter import *
 
 
 class ComparePredicate(TPredicate):
-    def __init__(self, dw_table_name, test_table, ignore_att = None, sort_att = None, subset = False):
+    def __init__(self, dw_table_name, test_table_name, ignore_att = None, sort_att = None, subset = False):
         # TODO: The three last parameters still need to be implemented
         """
         :param dw_table: name of the table from dw that we wish to compare with
@@ -25,19 +25,24 @@ class ComparePredicate(TPredicate):
         """
 
         # Fetching the DW table through its name
-        global Big
+        self.dw_table_name = dw_table_name
         self.dw_table = []
-        for entry in (Big.get_data_representation(dw_table_name)):
+        self.test_table_name = test_table_name
+        self.test_table = []
+        self.dw_surplus = None
+        self.test_surplus = None
+
+    def run(self, dw_rep):
+        """ Compares the two tables and sets their surpluses for reporting."""
+
+        for entry in (dw_rep.get_data_representation(self.dw_table_name)):
             self.dw_table.append(entry)
 
-        self.test_table = test_table
+        for entry in (dw_rep.get_data_representation(self.test_table_name)):
+            self.test_table.append(entry)
 
         self.dw_surplus = list(itertools.filterfalse(lambda x: x in self.dw_table, self.test_table))
         self.test_surplus = list(itertools.filterfalse(lambda x: x in self.test_table, self.dw_table))
-
-
-    def run(self):
-        """ Compares the two tables and sets their surpluses for reporting."""
 
         # If both surplus lists are empty, it means that each tuple has a match, and the test passes.
         if len(self.dw_surplus) == 0 and len(self.test_surplus) == 0:

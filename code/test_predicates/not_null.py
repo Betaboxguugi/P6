@@ -39,5 +39,7 @@ class NotNull(parent):
         """
         If null is found, prints what table and column null resides in, otherwise prints true
         """
-        return Report(self.__class__.__name__, self.__result__)
+        return Report(self.__class__.__name__,
+                      self.__result__
+                      )
 

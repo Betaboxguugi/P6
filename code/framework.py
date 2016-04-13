@@ -11,6 +11,7 @@ from test_predicates.not_null import NotNull
 from test_predicates.domain_predicate import DomainPredicate
 from test_predicates.hierarchy_predicate import HierarchyPredicate
 from test_predicates.compare_predicate import ComparePredicate
+from  test_predicates.primary_key_is_unique import UniqueKeyPredicate
 
 class Framework:
     """
@@ -40,9 +41,6 @@ class Framework:
             report.run()
 
 
-
-
-
 def constraint(a=''):
     if a == 'America':
         return True
@@ -54,9 +52,10 @@ nn = NotNull('company', 'salary')
 rowp = RowPredicate('company', 5)
 hi = HierarchyPredicate(['COMPANY'], [(['ADDRESS'], ['NAME'])])
 com = ComparePredicate('company', 'bompany')
+uk = UniqueKeyPredicate('company', 'NAME')
 
 
-pl = [nn, rowp, dom, hi]
+pl = [nn, rowp, dom, hi, com, uk]
 framework = Framework(None, None, pl, None)
 
 """

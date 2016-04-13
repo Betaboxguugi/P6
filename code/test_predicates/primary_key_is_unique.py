@@ -1,21 +1,36 @@
 __author__ = 'Mikael Vind Mikkelsen'
+#_co-author_ = 'Alexander Brandborg'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 import sqlite3
 import os, sys
 import os.path
-from t_predicate import TPredicate
+from test_predicates.t_predicate import TPredicate
+from test_predicates.report import Report
 
 class UniqueKeyPredicate(TPredicate):
     """
     Class for testing whether a given primary key is unique on a table
     """
 
-    def run(self):
+    def __init__(self, table_name, column_names):
+        """
+        :param connection: A PEP249 connection to a database
+        :param table_name: Name of table, which we want to test on
+        :param column_names: List of attributes names making up the primary key
+        """
+        self.cursor = None
+        self.table_name = table_name
+        self.column_names = column_names
+        self.results = []
+
+    def run(self, dw_rep):
         """
         Creates a list of all primary key instances, of which there are duplicates
         """
         # Gets only the primary key of each entry in the table
+        self.cursor = dw_rep.connection.cursor()
+
         self.cursor.execute("SELECT {} FROM {}".format(",".join(self.column_names), self.table_name))
 
         # Finds duplicates in the resulting SQL table
@@ -39,38 +54,23 @@ class UniqueKeyPredicate(TPredicate):
         Reports if the primary key was unique
         If not we report the key instances, of which there are duplicates
         """
-        if self.results:
-            print('All entries in column {} in table {} are NOT unique'.format(self.column_names, self.table_name))
-            print('The key instances of which there are duplicates:')
-            for entry in self.results:
-                print(entry)
-        else:
-            print('All entries in column {} in table {} are unique'.format(self.column_names, self.table_name))
+        return Report(self.__class__.__name__,
+                      self.__result__,
+                      'All entries in column {} in table {} are unique'.format(self.column_names, self.table_name),
+                      'All entries in column {} in table {} are NOT unique'.format(self.column_names, self.table_name),
+                      self.results
+                      )
 
-    def __init__(self, connection, table_name, column_names):
-        """
-        :param connection: A PEP249 connection to a database
-        :param table_name: Name of table, which we want to test on
-        :param column_names: List of attributes names making up the primary key
-        """
-        self.connection = connection
-        self.cursor = connection.cursor()
-        self.table_name = table_name
-        self.column_names = column_names
-        self.results = []
-
-        self.run()
-        self.report()
-
+"""
 # Function, takes a SQL table and print a line for each column, stating whether or not it is a primary key
 def table_contain_primary_keys(table_name):
-    """"
-    :param table_name: name of table we work with
-    PRAGMA, is SQL extension specific to SQLite, used to modify the operation of the SQLite
-    library or to query the SQLite library for internal (non-table) data, as is the case here.
-    table_info returns one row for each column in the named table, which contains various information.
-    The important here is the "pk" column provided, which tells if the column in our table is a primary key.
-    """
+
+    #:param table_name: name of table we work with
+    #PRAGMA, is SQL extension specific to SQLite, used to modify the operation of the SQLite
+    #library or to query the SQLite library for internal (non-table) data, as is the case here.
+    #table_info returns one row for each column in the named table, which contains various information.
+    #The important here is the "pk" column provided, which tells if the column in our table is a primary key.
+
     c.execute("PRAGMA table_info('%s')" % table_name)
     number_of_columns = len(c.fetchall())
     for x in range(0, number_of_columns):
@@ -136,3 +136,4 @@ UniqueKeyPredicate(conn, 'COMPANY', ['ID', 'NAME'])
 UniqueKeyPredicate(conn, 'COMPANY', ['NAME'])
 
 UniqueKeyPredicate(conn, 'COMPANY', ['ADDRESS'])
+"""
