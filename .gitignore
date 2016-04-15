@@ -233,3 +233,4 @@ pip-selfcheck.json
 *.dot
 
 documentation/article/compileme.bat
+documentation/article/master.tps
