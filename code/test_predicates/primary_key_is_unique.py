@@ -23,6 +23,7 @@ class UniqueKeyPredicate(TPredicate):
         self.table_name = table_name
         self.column_names = column_names
         self.results = []
+        self.__result__ = True
 
     def run(self, dw_rep):
         """
@@ -30,7 +31,7 @@ class UniqueKeyPredicate(TPredicate):
         """
         # Gets only the primary key of each entry in the table
         self.cursor = dw_rep.connection.cursor()
-
+        print(",".join(self.column_names))
         self.cursor.execute("SELECT {} FROM {}".format(",".join(self.column_names), self.table_name))
 
         # Finds duplicates in the resulting SQL table
@@ -41,6 +42,7 @@ class UniqueKeyPredicate(TPredicate):
                 found.add(item)
             else:
                 duplicates.append(item)
+                self.__result__ = False
 
         # Makes the resulting duplicate list unique, so that we do not report the same duplicate twice
         unique_data = [list(x) for x in set(tuple(x) for x in duplicates)]
@@ -56,8 +58,10 @@ class UniqueKeyPredicate(TPredicate):
         """
         return Report(self.__class__.__name__,
                       self.__result__,
-                      'All entries in column {} in table {} are unique'.format(self.column_names, self.table_name),
-                      'All entries in column {} in table {} are NOT unique'.format(self.column_names, self.table_name),
+                      ': All elements in column(s) {} in table \'{}\' are unique'.format(self.column_names,
+                                                                                          self.table_name),
+                      ': All elements in column(s) {} in table \'{}\' are NOT unique'.format(self.column_names,
+                                                                                              self.table_name),
                       self.results
                       )
 
