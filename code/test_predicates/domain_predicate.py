@@ -24,7 +24,7 @@ class DomainPredicate(TPredicate):
     def run(self, dw_rep):
         """
         Provides each element of the specified column to the given constraint function.
-        Then logs which elements the constraint function returned false on if any, then finally calls report
+        Then logs which elements the constraint function returned false on if any.
         """
         self.__result__ = True
         self.wrong_elements = ()
@@ -41,7 +41,7 @@ class DomainPredicate(TPredicate):
         returned false upon and in which column these elements belong too.
         """
         return Report(self.__class__.__name__,
-               self.__result__,
-               ': All is well',
-               ': All is not well',
-               self.wrong_elements)
+                      self.__result__,
+                      ': All is well',
+                      ': All is not well',
+                      self.wrong_elements)

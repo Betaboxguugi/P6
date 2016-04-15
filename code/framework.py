@@ -5,12 +5,14 @@ import sqlite3
 import os
 from pygrametl_reinterpreter import *
 from test_predicates import *
+import inspect
 from pygrametl_reinterpreter.tests.reinterpreterMockup import ReinterpreterMockup
 from test_predicates.row_number_predicate import RowPredicate
 from test_predicates.not_null import NotNull
 from test_predicates.domain_predicate import DomainPredicate
 from test_predicates.hierarchy_predicate import HierarchyPredicate
 from test_predicates.compare_predicate import ComparePredicate
+from test_predicates.domain_table_predicate import DomainTablePredicate
 from  test_predicates.primary_key_is_unique import UniqueKeyPredicate
 
 class Framework:
@@ -41,21 +43,62 @@ class Framework:
             report.run()
 
 
-def constraint(a=''):
-    if a == 'America':
+def constraint1(a):
+    #print(a)
+    return True
+
+
+def constraint2(a, b):
+    #print(a, b)
+    return True
+
+
+def properconstraint(a, b):
+    if a > 0 and b > 0:
         return True
     else:
         return False
 
-dom = DomainPredicate('company', 'ADDRESS', constraint)
-nn = NotNull('company', 'salary')
-rowp = RowPredicate('company', 5)
+
+def unlimited_args(aa, *bb):
+    if isinstance(aa, str) and bb > 0:
+        return True
+    else:
+        False
+
+
+def unlimited_args2(*ab):
+    if ab > 0:
+        return True
+    else:
+        return False
+
+print(inspect.getargspec(properconstraint))
+print(inspect.getargspec(unlimited_args))
+
+dom = DomainPredicate('company', 'ADDRESS', constraint1)
+
+column_names1 = ["salary", 'age']
+column_names2 = ["name", 'salary', 'age']
+domt1 = DomainTablePredicate('company', 'ADDRESS', constraint1)
+domt2 = DomainTablePredicate('company', ['ADDRESS'], constraint2)
+domt3 = DomainTablePredicate('company', column_names1, constraint2)
+#domt4 = DomainTablePredicate('company', column_names2, unlimited_args)
+domt4 = DomainTablePredicate('company', column_names1, properconstraint)
+
+nn1 = NotNull('company', 'ADDRESS')
+nn2 = NotNull('company', 'AGE')
+rowp1 = RowPredicate('company', 5)
+rowp2 = RowPredicate('company', 6)
 hi = HierarchyPredicate(['COMPANY'], [(['ADDRESS'], ['NAME'])])
 com = ComparePredicate('company', 'bompany')
-uk = UniqueKeyPredicate('company', 'NAME')
+column_names1 = ["salary", 'age']
+column_names2 = ["ADDRESS"]
+uk1 = UniqueKeyPredicate('company', column_names1)
+uk2 = UniqueKeyPredicate('company', column_names2)
 
 
-pl = [nn, rowp, dom, hi, com, uk]
+pl = [domt4]
 framework = Framework(None, None, pl, None)
 
 """
