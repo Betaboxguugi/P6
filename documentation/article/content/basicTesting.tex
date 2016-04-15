@@ -1,36 +1,16 @@
 \section{The Basics of Software Testing}\label{sect:btesting}
-%BEMÆRK!: Dette kapitel kommer nok under en del ændringer for fremtiden, da det endnu er uvist hvad retning vi vil dreje det i og hvad der egentlig er brug for her.
-This section introduces the basics of testing in software development. The section's purpose is to give a brief introduction to the basics of software testing to the reader, as the concepts here are further expanded in the following sections.
-Testing is one or a series of deliberate actions or experiments, intend on finding out how well specific parts of a program work. These test are mainly done by developers or dedicated testers, but also by the end-user if the program is later into its development. 
-Testing is done to ensure that the program meets the requirement given by its design and development. The following is often the basic requirements given to each component of a program:
-\begin{enumerate}
-	\item Must have a proper use.
-	\item Able to run on its intended environment .
-	\item All inputs must be responded to and performed correctly. 
-	\item Most go through its functions within an acceptable time.
-\end{enumerate}
-%Testing help in ensuring a given software product functions up to the specifications given, which is why testing is a part of almost all development models such as waterfall, agile, xp and more. 
-To insure that all requirements are uphold, a testers will employ various types of testing as well as various methods in conjunction with these types.
-There are 2 overall types of testing that gets conducted during a software development cycle\cite{BasicTesting1}, described below. Note that both of these has a lot of subtypes that testers will use.
-\begin{description}
-\item [Manuel Testing] is testing without scripts or automated tools. In this type of testing, it is the testers goal to find and identify any defects and bugs that may reside in the program. This type of testing involves various stages of testing, such as unit testing, integration testing, system testing and user acceptance testing. These stages often follow a plan laid out by the tester, but manual testing can also be exploratory.  
-\item [Automatic Testing] is testing which implements scripts or automated tools into the program. These are used to quickly re-run various test scenarios, which will for the most part be like those used in manual testing. The test type purpose is however different, as the test are to detect future defects and bugs, that future changes to the program could inflict. This test type is considered superior when it comes to test coverage, accuracy and time spent on testing. Note time spent is only less when considering long term, as automatic testing takes longer to set up initially.
-%Nævn regression testing?
-\end{description}
-There are 3 main methods used in software testing, where the 3rd being a combination of the 2, described below:
-\begin{description}
-\item [White Box] is testing of the internal structure of a program and its internal logic. Helps in optimizing the code. The most expensive form of testing and hard to maintain. The tester needs to have access to and knowledge about the source code.
-\item [Black Box] is testing of the external structure of a program, without knowledge of the interior workings of the program. Usually test of the interface and the input(s) and output(s) of functions. More efficient when working with larger code segments. Does not need knowledge of the implementation of the program to make tests.
-\item [Grey Box] is testing both the external and some of the internal structure for a program, with limited knowledge of the internal structure of the program. The tester does not test the source code, but will use and manipulate other internal components such as databases or log files. Grey Box combines the more straightforward approach of black box testing with the knowledge of how some of the more underlying concepts. Insuring that the tester is able to make more well informed choices.
-\end{description}
+This section introduces some of the basics of software testing. These will assist in understanding the work documented in later sections. The definitions used in this section are taken from the books textit{Guide to Advanced Software Testing} by Anne Mette Jonassen Hass\cite{Hass} and \textit{Software Testing Techniques} by Boris Beizer\cite{Beizer}.
+
+Testing is an integral part of the software development process at large. It is included in many different software process models. But, what is testing exactly Hass defines it as follows: 
+ \begin{quotation} \textit{Testing gathers information about the quality of the object under test.}\end{quotation}  
+Knowing the quality of a piece of software allows an organization to evaluate, whether it is fit for purpose. If not, test results may guide an effort to increase quality.
+
+Before tests can be executed they must be designed.  Design can be done from two different points of view: Functional and Structural. With functional, software is treated like a black box receiving input and computing output. Tests are designed to verify, whether the software conforms to specified behavior. Structural involves designing based on the internal structure of the software. Here a tester could for instance test the logical branching of the software. The structural approach is often used, when testing individual components. Functional is more apt to use, when testing a set of integrated units or an entire system. 
+
+As with any other process, testing is restricted by both time and resources available. These greatly affect the quality of testing performed, often called test coverage. Because of this, testers are almost never able to perform exhaustive testing. Here, tests involve all combinations of input and preconditions. Instead, the most important areas to test are selected for testing.  
+
+Tools are often used to assist in the testing process. An example is the testing framework, which assist in the automatic execution of tests. By the push of a button, a framework can execute a set of user-defined test cases, setting up and tearing down objects as needed. A test case is a well defined set of preconditions and input given to a component. This is  accompanied by a set of expected output and postconditions. A test case passes or fails, depending whether actual output and postconditions match expectations.  The needed amount of test coverage is often acquired by designing a set of test cases. An advantage of the framework is that testers can spend more time on test design. Less time will have to be spend on how to implement tests.  In theory this leads to higher quality tests.
+
+Another bonus of using a framework is that it allows for regression testing. This becomes mostly relevant in the maintenance part of the software life cycle. During this time, new features may be added and bugs fixed. Testers want to ensure that such changes do not lead to regression,  where software quality deteriorates. With a framework, regression testing is simple. Once a set of test cases have been set up, they can be run after a change has been made. This will then  gauge whether regression has occurred.
 
 
-%who does testing?
-
-%black box vs white box?
-
-%manuel vs automatic testing 
-
-%verification vs validation - meh
-
-%part of any form of software development in some capacity (see models, waterfall, agile and/or XP) - ikke super relevant
