@@ -1,7 +1,4 @@
-import os
-import sqlite3
 from test_predicates.duplicate_rows_predicate import DuplicatePredicate
-from pygrametl.datasources import SQLSource
 from pygrametl_reinterpreter import *
 
 # This just insures we have a fresh database to work with.

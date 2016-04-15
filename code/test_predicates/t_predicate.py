@@ -46,10 +46,10 @@ class TPredicate:
                       self.__result__
                       )
 
-    def __init__(self, conns):
-        """
-        :param conns: a dictionary of object connections to the data we need to test.
-        """
-        tables = self.dictify(conns)
-        self.run()
-        print(self.report())
+    # def __init__(self, conns):  # It pleases PEP8 when this init is gone
+        # """
+        # :param conns: a dictionary of object connections to the data we need to test.
+        # """
+        # tables = self.dictify(conns)
+        # self.run()
+        # print(self.report())

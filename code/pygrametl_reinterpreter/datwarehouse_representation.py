@@ -110,7 +110,7 @@ class DimRepresentation(TableRepresentation):
     """
     An object for representing data in a DW dimension
     """
-    def __init__(self, name, key, attributes, lookupatts, connection, query=None):
+    def __init__(self, name, key, attributes, connection, lookupatts=None, query=None):
         """
         :param name: Name of table
         :param key: Name of primary key attribute
@@ -122,7 +122,10 @@ class DimRepresentation(TableRepresentation):
         self.name = name
         self.key = key
         self.attributes = attributes
-        self.lookupatts = lookupatts
+        if lookupatts:
+            self.lookupatts = lookupatts
+        else:
+            self.lookupatts = self.attributes
         self.connection = connection
         self.all = [self.key] + self.attributes + self.lookupatts
 

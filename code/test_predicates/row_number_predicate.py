@@ -11,6 +11,7 @@ class RowPredicate(TPredicate):
         self.__result__ = False
         self.table_name = table_name
         self.number_of_rows = number_of_rows
+        self.table = []
 
     def run(self, dw_rep):
         """
@@ -19,7 +20,6 @@ class RowPredicate(TPredicate):
         """
 
         # Extracts contents of table into a list[Dict]
-        self.table = []
         for row in dw_rep.get_data_representation(self.table_name):
             self.table.append(row)
 
