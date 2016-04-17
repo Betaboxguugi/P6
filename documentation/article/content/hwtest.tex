@@ -1,4 +1,6 @@
 \section{Overview of \FW{}}
+\todo[inline]{FORBIND DET HER TIL TIDLIGERE AFSNIT OF BASIC TESTING. GØR DET LANGT NEMMERE AT FORKLARE HVAD VI ØNSKER AT LAVE.}
+
 \FW{} is developed to assist in performing source to target testing of pygrametl programs. Testing is performed at the system level, once an ETL has been put together. We illustrate this type of test in \cref{fig:sourcetotarget}. Here the ETL populates a DW using a set of sources. The DW is then tested, and test results are reported. In \FW{} the testing process evaluates a set of assertions that the tester makes about the resulting DW. Once testing is completed, \FW{} reports on each assertion, and whether it holds or not. Assertions are based upon the initial state of the system, which includes the contents of sources and DW before run. \FW{} can be used both to test new functionality and perform regression testing. Thus it is a tool useful both during before and after release. 
 
 \begin{figure}
