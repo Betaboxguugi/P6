@@ -1,11 +1,3 @@
-import os
-import sqlite3
-import sys
-import sqlite3
-sys.path.append('../')
-from pygrametl.datasources import *
-from pygrametl_reinterpreter import *
-
 
 class Report(object):
     def __init__(self, name_of_predicate='', result=False, message_if_true='', message_if_false='',

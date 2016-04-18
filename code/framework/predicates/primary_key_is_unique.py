@@ -2,13 +2,12 @@ __author__ = 'Mikael Vind Mikkelsen'
 #_co-author_ = 'Alexander Brandborg'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
-import sqlite3
-import os, sys
-import os.path
-from test_predicates.t_predicate import TPredicate
-from test_predicates.report import Report
+import sys
+sys.path.append('../')
+from predicate import Predicate
+from predicate_report import Report
 
-class UniqueKeyPredicate(TPredicate):
+class UniqueKeyPredicate(Predicate):
     """
     Class for testing whether a given primary key is unique on a table
     """
