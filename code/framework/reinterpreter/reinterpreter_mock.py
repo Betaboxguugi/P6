@@ -1,5 +1,5 @@
 import ast
-from pygrametl_reinterpreter import *
+from .reinterpreter import *
 import time
 
 __author__ = 'Mathias Claus Jensen'
