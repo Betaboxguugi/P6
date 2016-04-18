@@ -1,4 +1,4 @@
-__co-author__ = 'Alexander Brandborg'
+__maintainer____ = 'Alexander Brandborg'
 
 """Function which test if all keys in a table is unique and the functions necessary to achieve this"""
 
@@ -7,7 +7,6 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 # IMPORTS
 import sqlite3
-import os, sys
 import os.path
 
 

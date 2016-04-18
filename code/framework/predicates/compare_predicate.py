@@ -1,18 +1,11 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
-import os
-import sqlite3
-import sys
-sys.path.append('../')
-import sqlite3
-from pygrametl.datasources import *
 import itertools
-from test_predicates.t_predicate import TPredicate
-from .report import Report
-from pygrametl_reinterpreter import *
+from ..predicates.predicate import Predicate
+from ..predicate_report import Report
 
 
-class ComparePredicate(TPredicate):
+class ComparePredicate(Predicate):
     def __init__(self, dw_table_name, test_table_name, ignore_att = None, sort_att = None, subset = False):
         # TODO: The three last parameters still need to be implemented
         """

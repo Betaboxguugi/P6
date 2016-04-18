@@ -3,15 +3,12 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 # IMPORTS
 import sqlite3
-import test_predicates.t_predicate
-from test_predicates.report import Report
+from ..predicates.predicate import Predicate
+from ..predicate_report import Report
 
-
-parent = test_predicates.t_predicate.TPredicate
 conn = sqlite3.connect('test.db')
 
-
-class NotNull(parent):
+class NotNull(Predicate):
     def __init__(self, table_name, column_name):
         """
         :param table_name: name of specified table which needs to be tested

@@ -1,5 +1,9 @@
-from test_predicates.referential_integrity_predicate import ReferentialPredicate
-from pygrametl_reinterpreter import *
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
+
+import sqlite3
+from framework.predicates.referential_integrity_predicate import ReferentialPredicate
+from framework.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
 
 
 dw_name = '.\dw.db'  # The one found in pygrametl_examples
