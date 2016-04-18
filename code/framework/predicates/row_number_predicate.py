@@ -1,7 +1,11 @@
-from .t_predicate import TPredicate
-from test_predicates.report import Report
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
 
-class RowPredicate(TPredicate):
+from .predicate import Predicate
+from ..predicate_report import Report
+
+
+class RowPredicate(Predicate):
 
     def __init__(self, table_name, number_of_rows):
         """

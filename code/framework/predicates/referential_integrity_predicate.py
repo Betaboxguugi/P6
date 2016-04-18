@@ -1,8 +1,11 @@
-from test_predicates.t_predicate import TPredicate
-from .report import Report
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
+
+from .predicate import Predicate
+from ..predicate_report import Report
 
 
-class ReferentialPredicate(TPredicate):
+class ReferentialPredicate(Predicate):
 
     def __init__(self):
         self.missing_ft_keys = ()

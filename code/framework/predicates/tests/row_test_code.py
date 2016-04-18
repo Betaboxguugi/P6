@@ -1,11 +1,9 @@
-import os
-import sqlite3
-from pygrametl.datasources import SQLSource
 import sys
 sys.path.append('../')
-from  row_number_predicate import *
 sys.path.append('../../')
-from pygrametl_reinterpreter import *
+import sqlite3
+from row_number_predicate import RowPredicate
+from datwarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
 
 
 dw_name = '.\dw.db'  # The one found in pygrametl_examples
