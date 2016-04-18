@@ -1,5 +1,10 @@
-from test_predicates.duplicate_rows_predicate import DuplicatePredicate
-from pygrametl_reinterpreter import *
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
+
+import sqlite3
+import os
+from framework.predicates import DuplicatePredicate
+from framework.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
 
 # This just insures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')
@@ -32,7 +37,7 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 columns = ['name', 'age', 'address', 'salary']
 
-aa = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
+aa = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], conn, ['NAME'])
 bb = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
 cc = DWRepresentation([aa], [bb], conn)
 
