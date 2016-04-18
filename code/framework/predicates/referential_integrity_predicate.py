@@ -8,8 +8,8 @@ from ..predicate_report import Report
 class ReferentialPredicate(Predicate):
 
     def __init__(self):
-        self.missing_ft_keys = ()
-        self.missing_dim_keys = ()
+        self.missing_ft_keys = []
+        self.missing_dim_keys = []
         self.referring_table_name = None
         self.referred_table_name = None
         self.dw_rep = None
@@ -26,17 +26,14 @@ class ReferentialPredicate(Predicate):
             self.dw_dims.append(dw_rep.get_data_representation(dim.name))
         for ft in dw_rep.fts:
             self.dw_fts.append(dw_rep.get_data_representation(ft.name))
+
         self.__result__ = True
-        self.missing_ft_keys = ()
-        self.missing_dim_keys = ()
+        self.missing_ft_keys = []
+        self.missing_dim_keys = []
         self.find_ft_refs()
         self.find_dim_refs()
-
-        self.dim_check()  # TODO there is some funny business with overwriting the elements that fail the predicate
+        self.dim_check()
         self.ft_check()
-
-
-
 
     def find_ft_refs(self):
         """
@@ -86,12 +83,13 @@ class ReferentialPredicate(Predicate):
                 key_dic = self.ft_dic.get(ft.name)
                 for key, table_name in key_dic.items():
                     dim = self.dw_rep.tabledict.get(table_name)
-                    for row in dim:
-                        if row.get(key) == f_row.get(key):
+                    for dim_row in dim:
+                        if dim_row.get(key) == f_row.get(key):
                             flag = True
                             break
                     if not flag:
-                        self.missing_ft_keys += ft.name, f_row,
+                        what = ft.name, f_row,
+                        self.missing_ft_keys.append(what)
                         self.__result__ = False
 
     def dim_check(self):
@@ -102,16 +100,18 @@ class ReferentialPredicate(Predicate):
                 key_dic = self.dim_dic.get(dim.name)
                 for key, table_name in key_dic.items():
                     ft = self.dw_rep.tabledict.get(table_name)
-                    for row in ft:
-                        if row.get(key) == dim_row.get(key):
+                    for ft_row in ft:
+                        if ft_row.get(key) == dim_row.get(key):
                             flag = True
                             break
                     if not flag:
-                        self.missing_dim_keys += dim.name, dim_row,
+                        what = dim.name, dim_row,
+                        self.missing_dim_keys.append(what)
                         self.__result__ = False
 
     def report(self):
-        if self.missing_ft_keys:
+        missing_keys = None
+        if self.missing_ft_keys: # TODO Can we actually have errors in both table and one dim table???
             if self.missing_dim_keys:
                 missing_keys = self.missing_ft_keys, self.missing_dim_keys,
             else:
@@ -125,21 +125,3 @@ class ReferentialPredicate(Predicate):
                       ': All is not well',
                       missing_keys
                       )
-"""
-flag = True
-for row in self.missing_keys:  # if missing_keys is empty this code will not run
-    flag = False
-    print("row {} in '{}' table does not have corresponding reference '{}' in '{}' table".format(
-        row,
-        self.referring_table_name,
-        self.key,
-        self.referred_table_name))
-if flag:
-    print("No rows in '{}' table are missing a reference in table '{}' for '{}'".format(
-        self.referring_table_name,
-        self.referred_table_name,
-        self.key))
-"""
-
-
-

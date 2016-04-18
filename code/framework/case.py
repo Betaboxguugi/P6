@@ -5,13 +5,22 @@ __maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 # Nok ikke så vigtig from test_predicates import *
 import inspect
 from .reinterpreter.reinterpreter_mock import ReinterpreterMockup as Reinterpreter
+=======
+from framework.reinterpreter import Reinterpreter
+from framework.reinterpreter import ReinterpreterMockup
+# from .reinterpreter.reinterpreter_mock import ReinterpreterMockup
+from framework.predicates import DomainTablePredicate
+# from .predicates.domain_table_predicate import DomainTablePredicate
+
+"""
+>>>>>>> origin/master:code/framework/framework_test_case.py
 from .predicates.row_number_predicate import RowPredicate
 from .predicates.not_null import NotNull
 from .predicates.domain_predicate import DomainPredicate
 from .predicates.hierarchy_predicate import HierarchyPredicate
 from .predicates.compare_predicate import ComparePredicate
-from .predicates.domain_table_predicate import DomainTablePredicate
 from .predicates.primary_key_is_unique import UniqueKeyPredicate
+"""
 
 class Case:
     """
@@ -58,6 +67,14 @@ def properconstraint(a, b):
         return False
 
 
+def list_constraint(a=[]):
+    if a.__getitem__(0) > 0 and a.__getitem__(1) > 0:
+        # print('True')
+        return True
+    else:
+        # print('False')
+        return False
+
 def unlimited_args(aa, *bb):
     if isinstance(aa, str) and bb > 0:
         return True
@@ -71,31 +88,31 @@ def unlimited_args2(*ab):
     else:
         return False
 
+
+
 print(inspect.getargspec(properconstraint))
 print(inspect.getargspec(unlimited_args))
 
-dom = DomainPredicate('company', 'ADDRESS', constraint1)
 
 column_names1 = ["salary", 'age']
 column_names2 = ["name", 'salary', 'age']
 domt1 = DomainTablePredicate('company', 'ADDRESS', constraint1)
 domt2 = DomainTablePredicate('company', ['ADDRESS'], constraint2)
 domt3 = DomainTablePredicate('company', column_names1, constraint2)
-#domt4 = DomainTablePredicate('company', column_names2, unlimited_args)
 domt4 = DomainTablePredicate('company', column_names1, properconstraint)
+domt5 = DomainTablePredicate('company', column_names1, list_constraint, True)
 
+"""
+dom = DomainPredicate('company', 'ADDRESS', constraint1)
 nn1 = NotNull('company', 'ADDRESS')
 nn2 = NotNull('company', 'AGE')
 rowp1 = RowPredicate('company', 5)
 rowp2 = RowPredicate('company', 6)
 hi = HierarchyPredicate(['COMPANY'], [(['ADDRESS'], ['NAME'])])
 com = ComparePredicate('company', 'bompany')
-column_names1 = ["salary", 'age']
-column_names2 = ["ADDRESS"]
 uk1 = UniqueKeyPredicate('company', column_names1)
 uk2 = UniqueKeyPredicate('company', column_names2)
-
-
-pl = [domt4]
-framework = Case(None, None, pl, None)
+column_names1 = ["salary", 'age']
+column_names2 = ["ADDRESS"]
 """
+
