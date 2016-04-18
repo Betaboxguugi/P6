@@ -1,23 +1,21 @@
 __author__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 __maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 
-import sqlite3
-import os
-from pygrametl_reinterpreter import *
-from test_predicates import *
+# Bliver vist ikke brugt from .reinterpreter.reinterpreter import *
+# Nok ikke så vigtig from test_predicates import *
 import inspect
-from pygrametl_reinterpreter.tests.reinterpreterMockup import ReinterpreterMockup
-from test_predicates.row_number_predicate import RowPredicate
-from test_predicates.not_null import NotNull
-from test_predicates.domain_predicate import DomainPredicate
-from test_predicates.hierarchy_predicate import HierarchyPredicate
-from test_predicates.compare_predicate import ComparePredicate
-from test_predicates.domain_table_predicate import DomainTablePredicate
-from  test_predicates.primary_key_is_unique import UniqueKeyPredicate
+from .reinterpreter.reinterpreter_mock import ReinterpreterMockup
+from .predicates.row_number_predicate import RowPredicate
+from .predicates.not_null import NotNull
+from .predicates.domain_predicate import DomainPredicate
+from .predicates.hierarchy_predicate import HierarchyPredicate
+from .predicates.compare_predicate import ComparePredicate
+from .predicates.domain_table_predicate import DomainTablePredicate
+from .predicates.primary_key_is_unique import UniqueKeyPredicate
 
-class Framework:
+class FrameworkTestCase:
     """
-    Framework for running predicate tests on a pygrametl program given a set of sources
+    FrameworkTestCase for running predicate tests on a pygrametl program given a set of sources
     """
 
     def __init__(self, program, mapping, pred_list, program_is_path):
@@ -99,38 +97,4 @@ uk2 = UniqueKeyPredicate('company', column_names2)
 
 
 pl = [domt4]
-framework = Framework(None, None, pl, None)
-
-"""
-program_path = 'sample_program.py'
-
-if os.path.isfile('a.db'):
-    os.remove('a.db')
-    conn1 = sqlite3.connect('a.db')
-else:
-    conn1 = sqlite3.connect('a.db')
-
-if os.path.isfile('b.db'):
-    os.remove('b.db')
-    conn2 = sqlite3.connect('b.db')
-else:
-    conn2 = sqlite3.connect('b.db')
-
-c = conn1.cursor()
-c.execute('''CREATE TABLE DB (DIM1 INTEGER);''')
-
-DB_info = [(1,), (2,), (3,)]
-c.executemany("INSERT INTO DB(DIM1) VALUES (?);", DB_info)
-conn1.commit()
-
-c = conn2.cursor()
-c.execute("CREATE TABLE DIM1 (key1 INTEGER PRIMARY KEY, attr1 TEXT, attr2 TEXT)")
-c.execute("CREATE TABLE DIM2 (key2 INTEGER PRIMARY KEY, attr3 TEXT, attr4 TEXT)")
-c.execute("CREATE TABLE FT1 (key1 INTEGER)")
-conn2.commit()
-
-conn_dict  = {'conn1': conn1, 'conn2': conn2}
-
-a = RowPredicate('DIM1', 0)
-Framework(program_path, conn_dict, [a], True)
-"""
+framework = FrameworkTestCase(None, None, pl, None)
