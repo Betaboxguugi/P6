@@ -1,9 +1,6 @@
 __author__ = 'Alexander'
 from .predicate import Predicate
 from ..predicate_report import Report
-import sys
-sys.path.append('../')
-
 
 
 class HierarchyPredicate(Predicate): # TODO: Make this shit handle nulls
