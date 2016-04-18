@@ -1,19 +1,15 @@
 __author__ = 'Alexander'
+from .predicate import Predicate
+from ..predicate_report import Report
 import sys
 sys.path.append('../')
-import sqlite3
-import pygrametl
-from test_predicates.t_predicate import TPredicate
-from pygrametl_reinterpreter import *
-import os
-from .report import Report
 
 
-class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
+
+class HierarchyPredicate(Predicate): # TODO: Make this shit handle nulls
 
     def __init__(self, tables, func_dependencies):
         """
-        :param connection: a connection object to a database, which we fetch data from.
         :param tables: tables from the database, which we wish to join
         :param func_dependencies: functional dependencies between attributes
         """
@@ -94,47 +90,3 @@ class HierarchyPredicate(TPredicate): # TODO: Make this shit handle nulls
         return Report(self.__class__.__name__,
                       self.__result__
                       )
-
-
-
-
-"""
-# Ensures a fresh database to work with.
-TEST_DB = 'test.db'
-if os.path.exists(TEST_DB):
-    os.remove(TEST_DB)
-
-conn = sqlite3.connect(TEST_DB)
-c = conn.cursor()
-
-# Making table to test on...
-c.execute('''CREATE TABLE COMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'America', 65000.00),
-                ('Buggy Bug', 67, 'America', 2000)
-                ]
-
-# ... and inserting the necessary data.
-c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
-
-a = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
-b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
-Big = DWRepresentation([a], [b], conn)
-
-test_entries = []
-for entry in (Big.get_data_representation('COMPANY')):
-    test_entries.append(entry)
-test_entries.append(4)
-
-a = HierarchyPredicate(['COMPANY'],[(['ADDRESS'],['NAME'])])
-a.run()
-a.report()
-"""

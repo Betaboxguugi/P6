@@ -1,6 +1,6 @@
 import sqlite3
 from pygrametl.datasources import SQLSource, CSVSource
-from test_predicates.t_predicate import TPredicate
+from .predicate import Predicate
 
 
 def extract_columns(dic, table_name, column_name):
@@ -26,4 +26,4 @@ extract_columns(dic, 'sales', 'sale')
 
 
 
-TPredicate(dic)
+Predicate(dic)

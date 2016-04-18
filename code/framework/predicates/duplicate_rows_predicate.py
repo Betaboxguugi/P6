@@ -1,8 +1,8 @@
-from test_predicates.t_predicate import TPredicate
-from test_predicates.report import Report
+from .predicate import Predicate
+from ..predicate_report import Report
 
 
-class DuplicatePredicate(TPredicate):
+class DuplicatePredicate(Predicate):
 
     def __init__(self, table_name, column_names, verbose=False):
         """

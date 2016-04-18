@@ -6,6 +6,7 @@ from pygrametl.datasources import *
 from csv import DictReader
 from predicate_report import Report
 
+
 class Predicate:
     """A class that implements basic functionality of a predicate.
     It is the superclass to all predicates of the framework.
