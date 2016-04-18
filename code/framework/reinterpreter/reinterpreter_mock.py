@@ -1,12 +1,15 @@
 import ast
 from .reinterpreter import *
 import time
-
+import os
+import sqlite3
+import framework
+from ..datawarehouse_representation import *
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']
 
 
-class ReinterpreterMockup(object):
+class ReinterpreterMock(object):
     """ Class in charge of reinterpreting a pygrametl program, using different
     connections.
     """
