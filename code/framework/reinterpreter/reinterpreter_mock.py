@@ -1,6 +1,10 @@
+import sqlite3
+import os
 import ast
 from .reinterpreter import *
+from ..datawarehouse_representation import *
 import time
+
 
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']
@@ -10,8 +14,6 @@ class ReinterpreterMockup(object):
     """ Class in charge of reinterpreting a pygrametl program, using different
     connections.
     """
-
-
 
     def run(self):
         """ Reinterpretes the pygrametl program, returns a dict containing 
@@ -63,7 +65,7 @@ class ReinterpreterMockup(object):
         # ... and inserting the necessary data.
         p.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
 
-        aa = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
+        aa = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], conn, ['NAME'])
         bb = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
         cc = DWRepresentation([aa], [bb], conn)
 

@@ -1,4 +1,5 @@
 from .domain_predicate import *
+from .domain_table_predicate import *
 from .row_number_predicate import *
 from .predicate import *
 from .compare_predicate import *

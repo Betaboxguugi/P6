@@ -7,7 +7,7 @@ import inspect
 
 
 class DomainTablePredicate(Predicate):
-    def __init__(self, table_name, column_names, constraint_function):
+    def __init__(self, table_name, column_names, constraint_function, return_list = False):
         # TODO: Make predicate able to accept *args from constraint
         # TODO: Rewrite param and type of all arguments
         """
@@ -26,6 +26,7 @@ class DomainTablePredicate(Predicate):
         else:  # Otherwise just make the list as provided.
             self.column_names = column_names
         self.constraint_function = constraint_function
+        self.return_list = return_list
         self.wrong_elements = []
 
     def run(self, dw_rep):
@@ -35,25 +36,41 @@ class DomainTablePredicate(Predicate):
         """
         if inspect.getargspec(self.constraint_function).varargs:
             raise ValueError('Constraints using varargs is not yet supported')
-        if len(inspect.getargspec(self.constraint_function).args) != len(self.column_names):
-            # print('TESTCODE - Input NOT Acceptable')
-            raise ValueError('Number of columns and number of arguments do not match')
-        # print('TESTCODE - Input Acceptable')
+
 
         self.__result__ = True
-
-        for row in dw_rep.get_data_representation(self.table_name):
+        if self.return_list:
+            pass
+            for row in dw_rep.get_data_representation(self.table_name):
             # print(row)
-            element = []
-            for column_name in self.column_names:
-                element.append(row.get(column_name.upper()))
-            print(element)
-            if not self.constraint_function(*element):  # False
-                self.wrong_elements.append(element)
-            else:  # True
-                pass
-        if self.wrong_elements:
-            self.__result__ = False
+                element = []
+                for column_name in self.column_names:
+                    element.append(row.get(column_name.upper()))
+                # print(element)
+                if not self.constraint_function(element):  # False
+                    self.wrong_elements.append(element)
+                else:  # True
+                    pass
+            if self.wrong_elements:
+                self.__result__ = False
+        elif not self.return_list:
+            if len(inspect.getargspec(self.constraint_function).args) != len(self.column_names):
+                # print('TESTCODE - Input NOT Acceptable')
+                raise ValueError('Number of columns and number of arguments do not match')
+            for row in dw_rep.get_data_representation(self.table_name):
+                # print(row)
+                element = []
+                for column_name in self.column_names:
+                    element.append(row.get(column_name.upper()))
+                # print(element)
+                if not self.constraint_function(*element):  # False
+                    self.wrong_elements.append(element)
+                else:  # True
+                    pass
+            if self.wrong_elements:
+                self.__result__ = False
+        else:
+            raise TypeError('return_list must be type bool')
 
     def report(self):
         # TODO: Make proper explanation of report
