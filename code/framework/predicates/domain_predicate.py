@@ -1,11 +1,11 @@
 __author__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 __maintainer__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 
-from test_predicates.t_predicate import TPredicate
-from test_predicates.report import Report
+from .predicate import Predicate
+from ..predicate_report import Report
 
 
-class DomainPredicate(TPredicate):
+class DomainPredicate(Predicate):
     def __init__(self, table_name, column_name, constraint_function):
         """
         :param conn: a dictionary of SQLSource objects

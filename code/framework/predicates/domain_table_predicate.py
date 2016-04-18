@@ -1,12 +1,12 @@
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
-from test_predicates.t_predicate import TPredicate
-from test_predicates.report import Report
+from .predicate import Predicate
+from ..predicate_report import Report
 import inspect
 
 
-class DomainTablePredicate(TPredicate):
+class DomainTablePredicate(Predicate):
     def __init__(self, table_name, column_names, constraint_function):
         # TODO: Make predicate able to accept *args from constraint
         # TODO: Rewrite param and type of all arguments
