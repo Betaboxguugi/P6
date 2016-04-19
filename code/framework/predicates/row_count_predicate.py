@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class RowPredicate(Predicate):
+class RowCountPredicate(Predicate):
 
     def __init__(self, table_name, number_of_rows):
         """

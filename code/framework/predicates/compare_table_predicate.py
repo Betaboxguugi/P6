@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class ComparePredicate(Predicate):
+class CompareTablePredicate(Predicate):
     def __init__(self, dw_table_name, test_table_name, ignore_att = None, sort_att = None, subset = False):
         # TODO: The three last parameters still need to be implemented
         """
@@ -49,56 +49,3 @@ class ComparePredicate(Predicate):
         return Report(self.__class__.__name__,
                       self.__result__
                       )
-
-    """if self.__result__:
-        print(self.__result__)
-    else:
-        print(self.__result__)
-        print("Exclusive to dw:")
-        print(self.dw_surplus)
-        print("Exclusive to test:")
-        print(self.test_surplus)
-    """
-
-
-
-"""
-# Ensures a fresh database to work with.
-TEST_DB = 'test.db'
-if os.path.exists(TEST_DB):
-    os.remove(TEST_DB)
-
-conn = sqlite3.connect(TEST_DB)
-c = conn.cursor()
-
-# Making table to test on...
-c.execute('''CREATE TABLE COMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Swedden', 19000.00),
-                ('Hannibal', 45, 'Amerrica', 65000.00),
-                ('Buggy Bug', 67, 'America', 2000)
-                ]
-
-# ... and inserting the necessary data.
-c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
-
-a = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
-b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
-Big = DWRepresentation([a], [b], conn)
-
-test_entries = []
-for entry in (Big.get_data_representation('COMPANY')):
-    test_entries.append(entry)
-test_entries.append(4)
-
-a = ComparePredicate(dw_table='COMPANY', test_table=test_entries)
-a.run()
-a.report()
-"""

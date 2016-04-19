@@ -8,7 +8,7 @@ from .predicate_report import Report
 
 conn = sqlite3.connect('test.db')
 
-class NotNull(Predicate):
+class ColumnNotNullPredicate(Predicate):
     def __init__(self, table_name, column_name):
         """
         :param table_name: name of specified table which needs to be tested

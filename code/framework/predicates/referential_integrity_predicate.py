@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class ReferentialPredicate(Predicate):
+class  ReferentialIntegretyPredicate(Predicate):
 
     def __init__(self):
         self.missing_ft_keys = []

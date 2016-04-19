@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class DuplicatePredicate(Predicate):
+class NoDuplicateRowPredicate(Predicate):
 
     def __init__(self, table_name, column_names, verbose=False):
         """
@@ -44,13 +44,6 @@ class DuplicatePredicate(Predicate):
         else:
             self.columns = self.column_names  # Otherwise we check for duplicates with the columns specified
 
-        """else:
-            keys = list(self.dw_rep.keys())
-            self.table = self.dw_rep[keys.__getitem__(0)]
-        if not self.column_names:
-            row = self.table.__getitem__(0)  # if no columns are given we collect them from the first row
-            self.columns = row.keys()
-        """
 
         while len(table) > 1:
             dic = table.pop(0)  # this dict(row) is the one we will check against all other rows in the table

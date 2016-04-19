@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class DomainPredicate(Predicate):
+class RuleColumnPredicate(Predicate):
     def __init__(self, table_name, column_name, constraint_function):
         """
         :param conn: a dictionary of SQLSource objects

@@ -3,7 +3,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class HierarchyPredicate(Predicate): # TODO: Make this shit handle nulls
+class FunctionalDependencyPredicate(Predicate): # TODO: Make this shit handle nulls
 
     def __init__(self, tables, func_dependencies):
         """
@@ -11,8 +11,6 @@ class HierarchyPredicate(Predicate): # TODO: Make this shit handle nulls
         :param func_dependencies: functional dependencies between attributes
         """
 
-        #global Big
-        #self.cursor = Big.connection.cursor()
         self.cursor = None
         self.tables = tables
         self.func_dependencies = func_dependencies

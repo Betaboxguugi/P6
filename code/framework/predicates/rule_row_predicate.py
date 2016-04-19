@@ -6,7 +6,7 @@ from .predicate_report import Report
 import inspect
 
 
-class DomainTablePredicate(Predicate):
+class RuleRowPredicate(Predicate):
     def __init__(self, table_name, column_names, constraint_function, return_list = False):
         # TODO: Make predicate able to accept *args from constraint
         """
