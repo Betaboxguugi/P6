@@ -11,14 +11,17 @@ class DomainTablePredicate(Predicate):
         # TODO: Make predicate able to accept *args from constraint
         # TODO: Rewrite param and type of all arguments
         """
-        :param table_name: name of specified table which needs to be tested
+        :param table_name: name of table where the test will be run
         :type table_name: str
-        :param column_names: list of the column which need to tested against the predicates.
+        :param column_names: list of all the columns which need to tested against the predicates.
         Note their order in the list, as that is the order they will appear in the constraints args.
         :type column_names: list
-        :param constraint_function: a predicate that represent the constraint which need to be tested. May have
-        multiple args, but no varargs(no yet supported)
-        :type constraint_function:
+        :param constraint_function: a predicate that represent the constraint which need to be tested. May take
+        multiple args or a list, but no varargs(not yet supported). Must return true or false for each row given.
+        :type constraint_function: function
+        :param return_list: If true, constraint_function will be given lists as input, if false constraint_function will
+        be given args as input. Default is False
+        :type return_list: bool
         """
         self.table_name = table_name
         if isinstance(column_names, str):  # If column_names is just one string, insert it as list with one element
@@ -34,12 +37,11 @@ class DomainTablePredicate(Predicate):
         Provides a list of element of the specified columns to the given constraint function and its args.
         Then logs which list of elements the constraint function returned false on if any.
         """
-        if inspect.getargspec(self.constraint_function).varargs:
+        if inspect.getargspec(self.constraint_function).varargs:  # True
             raise ValueError('Constraints using varargs is not yet supported')
 
-
         self.__result__ = True
-        if self.return_list:
+        if self.return_list:  # True
             pass
             for row in dw_rep.get_data_representation(self.table_name):
             # print(row)
@@ -53,7 +55,7 @@ class DomainTablePredicate(Predicate):
                     pass
             if self.wrong_elements:
                 self.__result__ = False
-        elif not self.return_list:
+        elif not self.return_list:  # False
             if len(inspect.getargspec(self.constraint_function).args) != len(self.column_names):
                 # print('TESTCODE - Input NOT Acceptable')
                 raise ValueError('Number of columns and number of arguments do not match')
