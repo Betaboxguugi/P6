@@ -2,7 +2,7 @@ __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 from pygrametl.datasources import *
 from csv import DictReader
-from ..predicate_report import Report
+from .predicate_report import Report
 
 class Predicate:
     """A class that implements basic functionality of a predicate.

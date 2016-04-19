@@ -1,8 +1,7 @@
 __author__ = 'Alexander'
-import framework
-from framework import Case
+from framework.case import Case
+from framework.predicates.not_null import NotNull
+from framework.reinterpreter.datawarehouse_representation import *
 
-#from framework.predicates.not_null import  NotNull7
-from framework.predicates import *
-
-NotNull(3242)
+n = NotNull('Company', 'Name')
+Case(None,None, [n], True)

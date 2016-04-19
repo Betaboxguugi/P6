@@ -3,24 +3,9 @@ __maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 
 # Bliver vist ikke brugt from .reinterpreter.reinterpreter import *
 # Nok ikke så vigtig from test_predicates import *
-import inspect
-from .reinterpreter.reinterpreter_mock import ReinterpreterMockup as Reinterpreter
-=======
-from framework.reinterpreter import Reinterpreter
-from framework.reinterpreter import ReinterpreterMockup
-# from .reinterpreter.reinterpreter_mock import ReinterpreterMockup
-from framework.predicates import DomainTablePredicate
-# from .predicates.domain_table_predicate import DomainTablePredicate
+from .reinterpreter.reinterpreter_mock import ReinterpreterMock as Reinterpreter
+#from .reinterpreter.reinterpreter import Reinterpreter
 
-"""
->>>>>>> origin/master:code/framework/framework_test_case.py
-from .predicates.row_number_predicate import RowPredicate
-from .predicates.not_null import NotNull
-from .predicates.domain_predicate import DomainPredicate
-from .predicates.hierarchy_predicate import HierarchyPredicate
-from .predicates.compare_predicate import ComparePredicate
-from .predicates.primary_key_is_unique import UniqueKeyPredicate
-"""
 
 class Case:
     """
@@ -102,7 +87,7 @@ domt3 = DomainTablePredicate('company', column_names1, constraint2)
 domt4 = DomainTablePredicate('company', column_names1, properconstraint)
 domt5 = DomainTablePredicate('company', column_names1, list_constraint, True)
 
-"""
+
 dom = DomainPredicate('company', 'ADDRESS', constraint1)
 nn1 = NotNull('company', 'ADDRESS')
 nn2 = NotNull('company', 'AGE')

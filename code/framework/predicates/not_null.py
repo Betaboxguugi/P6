@@ -3,8 +3,8 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 # IMPORTS
 import sqlite3
-from ..predicates.predicate import Predicate
-from ..predicate_report import Report
+from .predicate import Predicate
+from .predicate_report import Report
 
 conn = sqlite3.connect('test.db')
 

@@ -3,7 +3,7 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 
 import sqlite3
 from framework.predicates import RowPredicate
-from framework.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
+from framework.reinterpreter.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
 
 dw_name = '.\dw.db'  # The one found in pygrametl_examples
 dw_conn = sqlite3.connect(dw_name)
