@@ -19,7 +19,8 @@ class RowCountPredicate(Predicate):
 
     def run(self, dw_rep):
         """
-        :param dw_rep: A DWRepresentation object allowing us to access our table by name
+        :param dw_rep: A DWRepresentation object allowing us to access our
+        table by name
         :return:
         """
 

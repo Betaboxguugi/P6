@@ -5,7 +5,7 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
-class  ReferentialIntegretyPredicate(Predicate):
+class ReferentialIntegrityPredicate(Predicate):
 
     def __init__(self):
         self.missing_ft_keys = []
@@ -114,8 +114,9 @@ class  ReferentialIntegretyPredicate(Predicate):
 
     def report(self):
         missing_keys = None
-        if self.missing_ft_keys: # TODO Can we actually have errors in both
-                                 # table and one dim table???
+        if self.missing_ft_keys:
+            # TODO Can we actually have errors in both
+            # TODO table and one dim table???
             if self.missing_dim_keys:
                 missing_keys = self.missing_ft_keys, self.missing_dim_keys,
             else:

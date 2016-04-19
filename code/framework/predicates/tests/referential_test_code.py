@@ -3,7 +3,7 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 
 import sqlite3
 from framework.predicates.referential_integrity_predicate \
-    import ReferentialPredicate
+    import ReferentialIntegrityPredicate
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
 
@@ -30,7 +30,7 @@ facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
 
 dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
 
-ref_tester = ReferentialPredicate()
+ref_tester = ReferentialIntegrityPredicate()
 ref_tester.run(dw)
 report = ref_tester.report()  # Not testing using the framework,
 report.run()                  # so it looks ugly this way
