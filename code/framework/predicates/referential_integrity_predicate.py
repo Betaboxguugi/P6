@@ -38,9 +38,11 @@ class ReferentialPredicate(Predicate):
     def find_ft_refs(self):
         """
         initiates the self.ft_dic to a dictionary of dictionaries like this:
-        {'facttable1':{'bookid':'bookdim', 'timeid':'timedim', 'locationid':'locationdim'},
+        {'facttable1':{'bookid':'bookdim', 'timeid':'timedim',
+        'locationid':'locationdim'},
         'facttable2':{' ':' ', ' ':' ', ' ':' '}}
-        With this we can lookup what facttables use what keys to reference which tables
+        With this we can lookup what facttables use what keys to reference
+        which tables
         """
         for ft in self.dw_fts:
             keyref_dic = {}
@@ -54,7 +56,8 @@ class ReferentialPredicate(Predicate):
 
     def find_dim_refs(self):
         """
-        See find_ft_refs above. initializes self.dim_dic to a dictionary of dictionaries like so:
+        See find_ft_refs above. initializes self.dim_dic to a dictionary of
+        dictionaries like so:
         {'timedim': {'timeid': 'facttable'},
          'bookdim': {'bookid': 'facttable'},
          'locationdim': {'locationid': 'facttable'}}
@@ -77,28 +80,28 @@ class ReferentialPredicate(Predicate):
 
     def ft_check(self):
         for ft in self.dw_fts:
-            flag = False
             fact_table = self.get_table(ft.name)
-            for f_row in fact_table:
-                key_dic = self.ft_dic.get(ft.name)
+            key_dic = self.ft_dic.get(ft.name)
+            for ft_row in fact_table:
                 for key, table_name in key_dic.items():
+                    flag = False
                     dim = self.dw_rep.tabledict.get(table_name)
                     for dim_row in dim:
-                        if dim_row.get(key) == f_row.get(key):
+                        if ft_row.get(key) == dim_row.get(key):
                             flag = True
                             break
                     if not flag:
-                        what = ft.name, f_row,
+                        what = ft.name, ft_row,
                         self.missing_ft_keys.append(what)
                         self.__result__ = False
 
     def dim_check(self):
         for dim in self.dw_dims:
-            flag = False
             dim_table = self.get_table(dim.name)
+            key_dic = self.dim_dic.get(dim.name)
             for dim_row in dim_table:
-                key_dic = self.dim_dic.get(dim.name)
                 for key, table_name in key_dic.items():
+                    flag = False
                     ft = self.dw_rep.tabledict.get(table_name)
                     for ft_row in ft:
                         if ft_row.get(key) == dim_row.get(key):
@@ -111,7 +114,8 @@ class ReferentialPredicate(Predicate):
 
     def report(self):
         missing_keys = None
-        if self.missing_ft_keys: # TODO Can we actually have errors in both table and one dim table???
+        if self.missing_ft_keys: # TODO Can we actually have errors in both
+                                 # table and one dim table???
             if self.missing_dim_keys:
                 missing_keys = self.missing_ft_keys, self.missing_dim_keys,
             else:
