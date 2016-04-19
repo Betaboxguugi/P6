@@ -1,9 +1,8 @@
-__maintainer____ = 'Alexander Brandborg'
 
 """Function which test if all keys in a table is unique and the functions necessary to achieve this"""
 
 __author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Alexander Brandborg'
 
 # IMPORTS
 import sqlite3
