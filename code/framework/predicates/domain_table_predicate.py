@@ -9,7 +9,6 @@ import inspect
 class DomainTablePredicate(Predicate):
     def __init__(self, table_name, column_names, constraint_function, return_list = False):
         # TODO: Make predicate able to accept *args from constraint
-        # TODO: Rewrite param and type of all arguments
         """
         :param table_name: name of table where the test will be run
         :type table_name: str
@@ -42,7 +41,6 @@ class DomainTablePredicate(Predicate):
 
         self.__result__ = True
         if self.return_list:  # True
-            pass
             for row in dw_rep.get_data_representation(self.table_name):
             # print(row)
                 element = []
