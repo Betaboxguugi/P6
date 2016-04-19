@@ -1,11 +1,9 @@
 __author__ = 'Mikael Vind Mikkelsen'
-#_co-author_ = 'Alexander Brandborg'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
-import sys
-sys.path.append('../')
-from predicate import Predicate
-from predicate_report import Report
+
+from .predicate import Predicate
+from .predicate_report import Report
 
 class UniqueKeyPredicate(Predicate):
     """

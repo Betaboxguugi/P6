@@ -2,7 +2,7 @@ __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
 from .predicate import Predicate
-from ..predicate_report import Report
+from .predicate_report import Report
 
 
 class RowPredicate(Predicate):

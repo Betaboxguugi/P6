@@ -1,6 +1,6 @@
 __author__ = 'Alexander'
 from .predicate import Predicate
-from ..predicate_report import Report
+from .predicate_report import Report
 
 
 class HierarchyPredicate(Predicate): # TODO: Make this shit handle nulls

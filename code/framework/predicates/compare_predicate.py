@@ -1,8 +1,8 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 import itertools
-from ..predicates.predicate import Predicate
-from ..predicate_report import Report
+from .predicate import Predicate
+from .predicate_report import Report
 
 
 class ComparePredicate(Predicate):

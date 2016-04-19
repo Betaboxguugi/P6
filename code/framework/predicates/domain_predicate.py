@@ -2,7 +2,7 @@ __author__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 __maintainer__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
 
 from .predicate import Predicate
-from ..predicate_report import Report
+from .predicate_report import Report
 
 
 class DomainPredicate(Predicate):

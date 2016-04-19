@@ -10,6 +10,7 @@ import sqlite3
 import os.path
 
 
+
 def has_null(table_name, column_name):
     c.execute("SELECT {} FROM {}".format(column_name, table_name))
     cc = c.fetchall()
