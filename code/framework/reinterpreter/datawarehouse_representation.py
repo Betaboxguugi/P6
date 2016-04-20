@@ -109,7 +109,7 @@ class DimRepresentation(TableRepresentation):
     """
     An object for representing data in a DW dimension
     """
-    def __init__(self, name, key, attributes, connection, lookupatts=None, query=None):
+    def __init__(self, name, key, attributes, connection, lookupatts=None):
         """
         :param name: Name of table
         :param key: Name of primary key attribute
@@ -128,10 +128,9 @@ class DimRepresentation(TableRepresentation):
         self.connection = connection
         self.all = [self.key] + self.attributes + self.lookupatts
 
-        if query is None:
-            self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
-        else:
-            self.query = query
+
+        self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
+
 
     def __str__(self):
         row_list = []
@@ -148,7 +147,7 @@ class FTRepresentation(TableRepresentation):
     """
     An Object for representing data in a DW fact table
     """
-    def __init__(self, name, keyrefs, measures, connection, query=None):
+    def __init__(self, name, keyrefs, measures, connection):
         """
         :param name: Name of table
         :param keyrefs: List of attributes that are foreign keys to other tables
@@ -162,10 +161,9 @@ class FTRepresentation(TableRepresentation):
         self.connection = connection
         self.all = self.keyrefs + self.measures
 
-        if query is None:
-            self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
-        else:
-            self.query = query
+
+        self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
+
 
     def __str__(self):
         row_list = []

@@ -3,8 +3,8 @@ __maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 
 # Bliver vist ikke brugt from .reinterpreter.reinterpreter import *
 # Nok ikke så vigtig from test_predicates import *
-from .reinterpreter.reinterpreter_mock import ReinterpreterMock as Reinterpreter
-#from .reinterpreter.reinterpreter import Reinterpreter
+#from .reinterpreter.reinterpreter_mock import ReinterpreterMock as Reinterpreter
+from .reinterpreter.reinterpreter import Reinterpreter
 
 
 class Case:
@@ -24,8 +24,8 @@ class Case:
         self.program_is_path = program_is_path
 
         # Sets up and runs reinterpreter getting DWRepresentation object
-        tc = Reinterpreter()
-        # Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
+        # tc = Reinterpreter()
+        tc = Reinterpreter(program=self.program, conn_scope=self.mapping, program_is_path = self.program_is_path)
         self.dw_rep = tc.run()
 
         # Runs all predicates and reports their results
