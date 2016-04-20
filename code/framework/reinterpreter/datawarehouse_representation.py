@@ -1,6 +1,5 @@
 __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
-import os
-import sqlite3
+
 
 class DWRepresentation(object):
     """

@@ -1,9 +1,9 @@
-__author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
-
 from .predicate import Predicate
 from .predicate_report import Report
 import inspect
+
+__author__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class RuleRowPredicate(Predicate):

@@ -1,24 +1,37 @@
-__author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
-
 # IMPORTS
-import sqlite3
 from .predicate import Predicate
 from .predicate_report import Report
 
-conn = sqlite3.connect('test.db')
+__author__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Mikael Vind Mikkelsen'
+
 
 class ColumnNotNullPredicate(Predicate):
-    def __init__(self, table_name, column_name):
+    def __init__(self, table_name, column_names):
         """
         :param table_name: name of specified table which needs to be tested
         :type table_name: str
-        :param column_name: name of the specified column, which needs to be
+        :param column_names: name of the specified column, which needs to be
         tested within the table
-        :type column_name: str
+        :type column_names: list or str
         """
         self.table_name = table_name
-        self.column_name = column_name
+        self.column_names = []
+        self.rows_with_null = []
+
+        # If else chain that insures column_names is either a list of strings
+        # or a string
+        if type(column_names) is list:
+            for cn in range(0, len(column_names)):
+                if not type(column_names[cn]) is str:
+                    raise TypeError(
+                        'column_names must be a list of strings or a string')
+                self.column_names.append(column_names[cn])
+        elif type(column_names) is str:
+            self.column_names.append(column_names)
+        else:
+            raise TypeError(
+                'column_names must be a list of strings or a string')
 
     def run(self, dw_rep):
         """
@@ -27,12 +40,15 @@ class ColumnNotNullPredicate(Predicate):
         self.report()
         """
         self.__result__ = True
-        for row in dw_rep.get_data_representation(self.table_name):
-            if row.get(self.column_name) is None:
-                self.__result__ = False
-                break
-        self.report()
 
+        for row in dw_rep.get_data_representation(self.table_name):
+            e = []  # list of elements
+            for column_name in self.column_names:
+                e.append(row.get(column_name.upper()))
+            if None in e:
+                self.rows_with_null.append(row)
+        if self.rows_with_null:
+            self.__result__ = False
 
     def report(self):
         """
@@ -40,6 +56,8 @@ class ColumnNotNullPredicate(Predicate):
         otherwise prints true
         """
         return Report(self.__class__.__name__,
-                      self.__result__
+                      self.__result__,
+                      '',
+                      'at rows {}'.format(self.rows_with_null),
                       )
 

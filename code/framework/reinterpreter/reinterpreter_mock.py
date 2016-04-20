@@ -2,6 +2,8 @@ from .datawarehouse_representation import *
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']
 
+import os
+import sqlite3
 
 class ReinterpreterMock(object):
     """ Class in charge of reinterpreting a pygrametl program, using different
@@ -49,10 +51,10 @@ class ReinterpreterMock(object):
             SALARY         REAL);''')
 
         company_info = [('Anders', 43, 'Denmark', 21000.00),
-                        ('CharLes', 50, 'Texas', 25000.00),
+                        ('CharLes', 50, None, 25000.00),
                         ('Wolf', 28, 'Sweden', 19000.00),
                         ('Hannibal', 45, 'America', 65000.00),
-                        ('Buggy Bug', 67, 'America', 2000)
+                        ('Buggy Bug', 67, 'America', None)
                         ]
 
         # ... and inserting the necessary data.
