@@ -26,7 +26,7 @@ class Reinterpreter(object):
         """
 
         self.program = program
-        self.dw_conn
+        self.dw_conn = dw_conn
         self.conn_scope = source_conns
         self.program_is_path = program_is_path
 
