@@ -1,6 +1,4 @@
 __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
-import os
-import sqlite3
 
 class DWRepresentation(object):
     """
@@ -177,58 +175,3 @@ class FTRepresentation(TableRepresentation):
 
     def __repr__(self):
         return self.__str__()
-
-
-"""
-# Ensures a fresh database to work with.
-TEST_DB = 'test.db'
-if os.path.exists(TEST_DB):
-    os.remove(TEST_DB)
-
-conn = sqlite3.connect(TEST_DB)
-c = conn.cursor()
-
-# Making table to test on...
-c.execute('''CREATE TABLE COMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Sweden', 19000.00),
-                ('Hannibal', 45, 'America', 65000.00),
-                ('Buggy Bug', 67, 'America', 2000)
-                ]
-
-# ... and inserting the necessary data.
-c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
-
-p = conn.cursor()
-
-p.execute('''CREATE TABLE BOMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('CharLes', 50, 'Texas', 25000.00),
-                ('Wolf', 28, 'Sweden', 19000.00),
-                ('Hannibal', 45, 'America', 65000.00),
-                ('Buggy Bug', 67, 'America', 2000)
-                ]
-
-# ... and inserting the necessary data.
-p.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)", company_info)
-
-a = DimRepresentation('COMPANY', 'ID', ['AGE', 'ADDRESS', 'SALARY'], ['NAME'], conn)
-print(a)
-b = FTRepresentation('BOMPANY', ['NAME', 'ADDRESS', 'ID'], ['AGE', 'SALARY'], conn)
-print(b)
-cc = DWRepresentation([a], [b], conn)
-print(cc)
-"""

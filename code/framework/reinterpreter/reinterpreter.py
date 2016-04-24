@@ -15,10 +15,12 @@ class Reinterpreter(object):
         """ 
         :param program: A string containing the program that is to be 
         reinterpreted or a path to it.
-        :conn_scope: A dictionary of string:connection pairs. Used to specify
-        which connections should be used in the program. The dictionary must be
-        ordered in the occurence of use in the program, and there has to be as
-        many connections in the dictionary as there are used in the program
+        :type program: str
+        :param conn_scope: A dictionary of string:connection pairs. Used to
+        specify which connections should be used in the program. The dictionary
+        must be ordered in the occurrence of use in the program, and there has
+        to be as many connections in the dictionary as there are used in the
+        program
         :param program_is_path: Boolean that specifies if the program string is 
         the actual program or a path to a file containing the program.
         """
