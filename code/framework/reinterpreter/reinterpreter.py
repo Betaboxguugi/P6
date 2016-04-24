@@ -1,5 +1,4 @@
 import ast
-import collections
 from .transform_visitor import TransformVisitor
 from .extract_visitor import ExtractVisitor
 from .representation_maker import RepresentationMaker
@@ -27,17 +26,21 @@ class Reinterpreter(object):
         the actual program or a path to a file containing the program.
         """
 
+
         self.program = program
         self.dw_conn = dw_conn
         self.conn_scope = source_conns
         self.program_is_path = program_is_path
-
         self.dw_id = '__0__'
         self.source_ids = []
+        self.scope_dict = {self.dw_id: self.dw_conn}
+        counter = 0
         for entry in source_conns:
-            self.source_ids.append("__" + str(source_conns.index(entry) + 1) +
-                                   "__")
-
+            id = "__" + str(source_conns.index(entry) + 1) + "__"
+            self.source_ids.append(id)
+            source = self.conn_scope.__getitem__(counter)
+            self.scope_dict[id] = source
+            counter += 1
         self.varname = 'extract_src_dict'
 
     def __transform(self, node):
@@ -66,7 +69,7 @@ class Reinterpreter(object):
         """ Reinterpretes the pygrametl program, returns a dict containing 
         :return: A dictionary with all the dimension/facttable datasources.
         """
-        scope = self.conn_scope.copy()
+        scope = self.scope_dict.copy()
         program = ''
         if self.program_is_path:
             with open(self.program, 'r') as f:
@@ -74,16 +77,25 @@ class Reinterpreter(object):
         else:
             program = self.program
 
-        tree = ast.parse(program) # Parsing the pygrametl program to an AST
+        tree = ast.parse(program)  # Parsing the pygrametl program to an AST
 
-        self.__transform(tree)  # Transforming the AST to include the user defined connections
-        self.__compile_exec(node=tree, gscope=None, lscope=scope)  # Executing the transformed AST
+        self.__transform(tree)
+        # Transforming the AST to include the user defined connections
+        self.__compile_exec(node=tree, gscope=None, lscope=scope)
+        # Executing the transformed AST
 
-        RepresentationMaker()
+        rep_maker = RepresentationMaker(dw_conn=self.dw_conn)
+        dw_rep = rep_maker.start(tree)
+        print(dw_rep)
 
-        src_module = self.__extract(tree)  # Creating a new AST for extracting DW tables
-        self.__compile_exec(node=src_module, gscope=None, lscope=scope)  # Executing executing extract AST
+        src_module = self.__extract(tree)
+        # Creating a new AST for extracting DW tables
+        self.__compile_exec(node=src_module, gscope=None, lscope=scope)
+        # Executing executing extract AST
 
-        # The extract AST extends the scope to include source objects for all DW tables.
-        # This is returned here for the user to test upon.
+
+
+        # The extract AST extends the scope to include source objects for all
+        # DW tables. This is returned here for the user to test on.
+        print(scope[self.varname])
         return scope[self.varname]

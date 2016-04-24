@@ -28,8 +28,8 @@ class RepresentationMaker(NodeVisitor):
 
 
         # Contains nodes instantiating dimensions and fact tables
-        self.dim_nodes = []
-        self.fts_nodes = []
+        self.dims = []
+        self.fts = []
 
         # Contains representations of dimension and fact table
         self.dim_reps = []
@@ -141,10 +141,10 @@ class RepresentationMaker(NodeVisitor):
     def start(self, node):
         self.visit(node)
 
-        for node in self.dim_nodes:
+        for node in self.dims:
             self.dim_reps.append(self.node_to_dimrep(node))
 
-        for node in self.fts_nodes:
+        for node in self.fts:
             self.fts_reps.append(self.node_to_fact(node))
 
         res = DWRepresentation(self.dim_reps, self.fts_reps, self.dw_conn)

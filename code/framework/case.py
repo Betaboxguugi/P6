@@ -9,13 +9,13 @@ from .reinterpreter.reinterpreter import Reinterpreter
 
 class Case:
     """
-    FrameworkTestCase for running predicate tests on a pygrametl program given a set of sources
+    FrameworkTestCase for running predicate tests on a pygrametl program given
+    a set of sources
     """
 
     def __init__(self, program, sources, dw, pred_list, program_is_path):
         """
         :param program: A path or string of a pygrametl program
-        :param mapping: A map of sources
         :param pred_list: A list of predicates we wish to run
         """
         self.program = program
@@ -30,6 +30,7 @@ class Case:
                            dw_conn=self.dw,
                            program_is_path=self.program_is_path)
         self.dw_rep = tc.run()
+        print(self.dw_rep)
 
         # Runs all predicates and reports their results
         for p in self.pred_list:

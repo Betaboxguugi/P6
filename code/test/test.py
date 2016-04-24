@@ -7,14 +7,13 @@ sys.path.append('../')
 from framework.case import Case
 from framework.predicates import ColumnNotNullPredicate
 from framework.predicates import CompareTablePredicate
-from framework.reinterpreter.datawarehouse_representation import *
 import  sqlite3
 import os
 
 path = "test_program_1.py"
 
-n = ColumnNotNullPredicate('Company', 'Name')
-m = CompareTablePredicate('Company', 'Bompany')
+notnull = ColumnNotNullPredicate('Company', 'Name')
+compare = CompareTablePredicate('Company', 'Bompany')
 
 input_conn = sqlite3.connect('input1.db')
 input2_conn = sqlite3.connect('input2.db')
@@ -29,16 +28,16 @@ sales_cur = dw_conn.cursor()
 
 # We make a new table
 sales_cur.execute("CREATE TABLE dim1 " +
-                    "(key1 INTEGER PRIMARY KEY, attr1 INTEGER, attr2 INTEGER)")
+                  "(key1 INTEGER PRIMARY KEY, attr1 INTEGER, attr2 INTEGER)")
 
 sales_cur.execute("CREATE TABLE dim2 " +
-                    "(key2 INTEGER PRIMARY KEY, attr3 INTEGER, attr4 INTEGER)")
+                  "(key2 INTEGER PRIMARY KEY, attr3 INTEGER, attr4 INTEGER)")
 
 sales_cur.execute("CREATE TABLE ft1 " +
-                    "(key1 INTEGER PRIMARY KEY)")
+                  "(key1 INTEGER PRIMARY KEY)")
 
 # Declaring a program as a string
-program =  """ __author__ = 'Alexander'
+program = """ __author__ = 'Alexander'
 
 import pygrametl
 from pygrametl.datasources import SQLSource
@@ -77,29 +76,29 @@ output_conn.close()
 print(program)
 
 # Exact amount of sources
-Case(path, [input_conn, input2_conn], dw_conn, [n, m], True)
+Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
 
 # Too few sources
-Case(path, [input_conn], dw_conn, [n, m], True)
+Case(path, [input_conn], dw_conn, [notnull, compare], True)
 
 # No sources
-Case(path, [], dw_conn, [n, m], True)
+Case(path, [], dw_conn, [notnull, compare], True)
 
 # Too many sources
-Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [n, m], True)
+Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull, compare], True)
 
 # Wrong dw
-Case(path, [input_conn, input2_conn], input3_conn, [n, m], True)
+Case(path, [input_conn, input2_conn], input3_conn, [notnull, compare], True)
 
 # No predicates
 Case(path, [input_conn, input2_conn], dw_conn, [], True)
 
 # 1 predicate
-Case(path, [input_conn, input2_conn], input3_conn, [n], True)
+Case(path, [input_conn, input2_conn], input3_conn, [notnull], True)
 
 # Program as string
-Case(program, [input_conn, input2_conn], dw_conn, [n, m], False)
+Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], False)
 
 # Program as string, but declared as path
-Case(program, [input_conn, input2_conn], dw_conn, [n, m], True)
+Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
 
