@@ -1,6 +1,8 @@
 import ast
+import collections
 from .transform_visitor import TransformVisitor
 from .extract_visitor import ExtractVisitor
+from .representation_maker import RepresentationMaker
 
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']
@@ -11,7 +13,7 @@ class Reinterpreter(object):
     connections.
     """
 
-    def __init__(self, program, conn_scope, program_is_path=False):
+    def __init__(self, program, source_conns, dw_conn, program_is_path=False):
         """ 
         :param program: A string containing the program that is to be 
         reinterpreted or a path to it.
@@ -24,15 +26,24 @@ class Reinterpreter(object):
         :param program_is_path: Boolean that specifies if the program string is 
         the actual program or a path to a file containing the program.
         """
-        self.conn_scope = conn_scope
+
         self.program = program
+        self.dw_conn = dw_conn
+        self.conn_scope = source_conns
         self.program_is_path = program_is_path
+
+        self.dw_id = '__0__'
+        self.source_ids = []
+        for entry in source_conns:
+            self.source_ids.append("__" + str(source_conns.index(entry) + 1) +
+                                   "__")
+
         self.varname = 'extract_src_dict'
 
     def __transform(self, node):
         """ Swaps out the connections in the old program, with the ones given.
         """
-        tv = TransformVisitor(self.conn_scope)
+        tv = TransformVisitor(self.source_ids, self.dw_id)
         tv.start(node)
 
     def __extract(self, node):
@@ -67,6 +78,8 @@ class Reinterpreter(object):
 
         self.__transform(tree)  # Transforming the AST to include the user defined connections
         self.__compile_exec(node=tree, gscope=None, lscope=scope)  # Executing the transformed AST
+
+        RepresentationMaker()
 
         src_module = self.__extract(tree)  # Creating a new AST for extracting DW tables
         self.__compile_exec(node=src_module, gscope=None, lscope=scope)  # Executing executing extract AST

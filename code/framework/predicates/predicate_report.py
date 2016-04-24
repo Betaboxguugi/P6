@@ -35,7 +35,8 @@ class Report(object):
             print('{} returned {} {}'.format(self.nop, self.r, self.mit))
         elif self.r is False:
             if self.l is not None:
-                print('{} returned {} at the following elements {} {} '.format(self.nop, self.r, self.l, self.mif))
+                print('{} returned {} at the following elements {} {} '.format(
+                    self.nop, self.r, self.l, self.mif))
             else:
                 print('{} returned {} {} '.format(self.nop, self.r, self.mif))
         else:
