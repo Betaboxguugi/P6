@@ -33,7 +33,7 @@ class RuleColumnPredicate(Predicate):
         self.wrong_elements = ()
         for row in dw_rep.get_data_representation(self.table_name):
             # returns the elements at the specified column from each row
-            element = row.get(self.column_name)
+            element = row.get(self.column_name.upper())
             # the given constraint function are given the elements here
             if not self.constraint_function(element):
                 self.wrong_elements += element,

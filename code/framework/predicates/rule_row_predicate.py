@@ -36,7 +36,7 @@ class RuleRowPredicate(Predicate):
             self.column_names = column_names
         self.constraint_function = constraint_function
         self.return_list = return_list
-        self.wrong_elements = []
+        self.wrong_rows = []
 
     def run(self, dw_rep):
         """
@@ -57,10 +57,8 @@ class RuleRowPredicate(Predicate):
                     element.append(row.get(column_name.upper()))
                 # print(element)
                 if not self.constraint_function(element):  # False
-                    self.wrong_elements.append(element)
-                else:  # True
-                    pass
-            if self.wrong_elements:
+                    self.wrong_rows.append(row)
+            if self.wrong_rows:
                 self.__result__ = False
         elif not self.return_list:  # False
             if len(inspect.getargspec(self.constraint_function).args)\
@@ -75,10 +73,8 @@ class RuleRowPredicate(Predicate):
                     element.append(row.get(column_name.upper()))
                 # print(element)
                 if not self.constraint_function(*element):  # False
-                    self.wrong_elements.append(element)
-                else:  # True
-                    pass
-            if self.wrong_elements:
+                    self.wrong_rows.append(row)
+            if self.wrong_rows:
                 self.__result__ = False
         else:
             raise TypeError('return_list must be type bool')
@@ -91,5 +87,5 @@ class RuleRowPredicate(Predicate):
         return Report(self.__class__.__name__,
                       self.__result__,
                       ': All is well',
-                      ': All is not well',
-                      self.wrong_elements)
+                      'at rows {}'.format(self.wrong_rows)
+                      )

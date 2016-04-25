@@ -1,16 +1,34 @@
-__author__ = 'Mikael Vind Mikkelsen'
+_author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 # Imports
 from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
+from framework.predicates.rule_row_predicate import RuleRowPredicate
+from framework.predicates.rule_predicate import RulePredicate
 from framework.case import Case
+
+table_name1 = 'company'
+table_name2 = 'bompany'
+column_names1 = 'age'
+column_names2 = ['age', 'salary']
+
+
+def constraint_function1(a):
+    if a < 50:
+        return True
+    else:
+        return False
 
 cnnp1 = ColumnNotNullPredicate('company', 'age')
 cnnp2 = ColumnNotNullPredicate('company', ['age', 'salary'])
 cnnp3 = ColumnNotNullPredicate('bompany', 'salary')
 cnnp4 = ColumnNotNullPredicate('bompany', ['address', 'salary'])
+rp1 = RulePredicate(table_name1, constraint_function1, column_names1)
+rp2 = RulePredicate(table_name1, constraint_function1, None, column_names1)
+rrp1 = RuleRowPredicate(table_name1, column_names1, constraint_function1)
 
-pl = [cnnp1, cnnp2, cnnp3, cnnp4]
+
+pl = [rp1]
 Case(None, None, pl, None)
 
 
