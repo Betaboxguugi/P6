@@ -28,7 +28,8 @@ class DWRepresentation(object):
                 entry.name = low
                 name_list.append(low)
 
-            # Makes sure that no two tables have the same name. Else we raise an exception.
+            # Makes sure that no two tables have the same name.
+            # Else we raise an exception.
             if len(name_list) != len(list(set(name_list))):
                 raise ValueError("Table names are not unique")
 
@@ -109,7 +110,7 @@ class DimRepresentation(TableRepresentation):
     """
     An object for representing data in a DW dimension
     """
-    def __init__(self, name, key, attributes, connection, lookupatts=None):
+    def __init__(self, name, key, attributes, connection, lookupatts=()):
         """
         :param name: Name of table
         :param key: Name of primary key attribute
@@ -121,19 +122,20 @@ class DimRepresentation(TableRepresentation):
         self.name = name
         self.key = key
         self.attributes = attributes
-        if lookupatts:
-            self.lookupatts = lookupatts
-        else:
+        if lookupatts == ():
             self.lookupatts = self.attributes
+        else:
+            self.lookupatts = lookupatts
+
         self.connection = connection
-        self.all = [self.key] + self.attributes + self.lookupatts
+        self.all = [self.key] + self.attributes
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
         row_list = []
         for row in self.itercolumns(self.all):
             row_list.append(row)
-        text = "{} {}".format(self.name, row_list)
+        text = "{} {} {} {} {} {}".format(self.name,self.key, self.attributes, self.lookupatts, self.connection, row_list)
         return text
 
     def __repr__(self):
@@ -144,7 +146,7 @@ class FTRepresentation(TableRepresentation):
     """
     An Object for representing data in a DW fact table
     """
-    def __init__(self, name, keyrefs, measures, connection):
+    def __init__(self, name, keyrefs, connection, measures=()):
         """
         :param name: Name of table
         :param keyrefs: List of attributes that are foreign keys to other tables
@@ -156,14 +158,17 @@ class FTRepresentation(TableRepresentation):
         self.keyrefs = keyrefs
         self.measures = measures
         self.connection = connection
-        self.all = self.keyrefs + self.measures
+        if self.measures == ():
+            self.all = self.keyrefs
+        else:
+            self.all = self.keyrefs + self.measures
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
         row_list = []
         for gen in self.itercolumns(self.all):
             row_list.append(gen)
-        text = "{} {}".format(self.name, row_list)
+        text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures, self.connection, row_list)
         return text
 
     def __repr__(self):

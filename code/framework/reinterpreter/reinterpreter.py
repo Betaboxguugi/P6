@@ -82,20 +82,9 @@ class Reinterpreter(object):
         self.__transform(tree)
         # Transforming the AST to include the user defined connections
         self.__compile_exec(node=tree, gscope=None, lscope=scope)
+
         # Executing the transformed AST
-
-        rep_maker = RepresentationMaker(dw_conn=self.dw_conn)
+        rep_maker = RepresentationMaker(dw_conn=self.dw_conn, scope=scope)
         dw_rep = rep_maker.start(tree)
-        print(dw_rep)
 
-        src_module = self.__extract(tree)
-        # Creating a new AST for extracting DW tables
-        self.__compile_exec(node=src_module, gscope=None, lscope=scope)
-        # Executing executing extract AST
-
-
-
-        # The extract AST extends the scope to include source objects for all
-        # DW tables. This is returned here for the user to test on.
-        print(scope[self.varname])
-        return scope[self.varname]
+        return dw_rep

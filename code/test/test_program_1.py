@@ -14,8 +14,9 @@ input_src = SQLSource(input_conn, query='SELECT * FROM table')
 input2_src = SQLSource(input2_conn, query='SELECT * FROM table')
 output_wrapper = pygrametl.ConnectionWrapper(connection=output_conn)
 
+dim1 = 'dim1'
 dim1 = Dimension(
-    'dim1',
+    dim1,
     'key1',
     ['attr1', 'attr2']
 )

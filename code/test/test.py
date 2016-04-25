@@ -72,9 +72,6 @@ input_conn.close()
 output_conn.close()
 
 """
-
-print(program)
-
 # Exact amount of sources
 Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
 
