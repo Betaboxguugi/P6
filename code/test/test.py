@@ -10,7 +10,8 @@ from framework.predicates import CompareTablePredicate
 import  sqlite3
 import os
 
-path = "test_program_1.py"
+path = "test_program_8.py"
+
 
 notnull = ColumnNotNullPredicate('dim1', 'att1')
 compare = CompareTablePredicate('dim1', 'dim2')
@@ -75,56 +76,62 @@ ft1 = FactTable(
 input_conn.close()
 output_conn.close()
 """
-try:
-    # Exact amount of sources
-    Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
-except Exception:
-    print('Exact amount of sources')
+for num in range(8):
+    num += 1
+    path = 'test_program_' + num.__str__() + '.py'
+    print(path)
 
-try:
-    # Too few sources
-    Case(path, [input_conn], dw_conn, [notnull, compare], True)
-except Exception as e:
-    print(e)
+    try:
+        # Exact amount of sources
+        Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # No sources
-    Case(path, [], dw_conn, [notnull, compare], True)
-except Exception as e:
-    print(e)
+    try:
+        # Too few sources
+        Case(path, [input_conn], dw_conn, [notnull, compare], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # Too many sources
-    Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull, compare], True)
-except Exception as e:
-    print(e)
+    try:
+        # No sources
+        Case(path, [], dw_conn, [notnull, compare], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # Wrong dw
-    Case(path, [input_conn, input2_conn], input3_conn, [notnull, compare], True)
-except Exception as e:
-    print(e)
+    try:
+        # Too many sources
+        Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull,
+                                                                    compare], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # No predicates
-    Case(path, [input_conn, input2_conn], dw_conn, [], True)
-except Exception as e:
-    print(e)
+    try:
+        # Wrong dw
+        Case(path, [input_conn, input2_conn], input3_conn, [notnull, compare], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # 1 predicate
-    Case(path, [input_conn, input2_conn], dw_conn, [notnull], True)
-except Exception as e:
-    print(e)
+    try:
+        # No predicates
+        Case(path, [input_conn, input2_conn], dw_conn, [], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # Program as string
-    Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], False)
-except Exception as e:
-    print(e)
+    try:
+        # 1 predicate
+        Case(path, [input_conn, input2_conn], dw_conn, [notnull], True)
+    except Exception as e:
+        print(e)
 
-try:
-    # Program as string, but declared as path
-    Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
-except Exception as e:
-    print(e)
+    try:
+        # Program as string
+        Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], False)
+    except Exception as e:
+        print(e)
+
+    try:
+        # Program as string, but declared as path
+        Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+    except Exception as e:
+        print(e)

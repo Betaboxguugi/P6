@@ -1,5 +1,5 @@
 __author__ = 'Alexander'
-" User decides to interact with source before declaring as a data source"
+"2 connection wrappers"
 
 import pygrametl
 from pygrametl.datasources import SQLSource
@@ -8,14 +8,12 @@ import sqlite3
 
 input_conn = sqlite3.connect('input.db')
 input2_conn = sqlite3.connect('input2.db')
-output_conn = sqlite3.connect('dw.db')
-
-a = output_conn.cursor()
-a.execute("INSERT INTO dim1 VALUES (1,2,3);")
+output_conn = sqlite3.connect('output.db')
 
 input_src = SQLSource(input_conn, query='SELECT * FROM table')
 input2_src = SQLSource(input2_conn, query='SELECT * FROM table')
-output_wrapper = pygrametl.ConnectionWrapper(connection=output_conn)
+output_wrapper1 = pygrametl.ConnectionWrapper(connection=output_conn)
+output_wrapper2 = pygrametl.ConnectionWrapper(connection=output_conn)
 
 dim1 = Dimension(
     'dim1',
@@ -26,7 +24,7 @@ dim1 = Dimension(
 dim2 = Dimension(
     name='dim2',
     key='key2',
-    attributes=['attr3', 'attr4']
+    attributes=['attr3', 'attr4'],
 )
 
 ft1 = FactTable(

@@ -48,8 +48,13 @@ class Reinterpreter(object):
         """
         tv = TransformVisitor(self.source_ids, self.dw_id)
         tv.start(node)
-        if tv._counter < len(self.source_ids):
+
+        if not tv.dw_flag:
+            raise  RuntimeError('No ConnectionWrapper instantiated in' +
+                                ' pygrametl program')
+        elif tv._counter < len(self.source_ids):
             raise RuntimeError('Too many sources have been given')
+
 
     def __extract(self, node):
         """ Makes and extracts DataSource objects for each dimension/facttable
@@ -78,13 +83,15 @@ class Reinterpreter(object):
                 with open(self.program, 'r') as f:
                     program = f.read()
             except:
-                raise RuntimeError('PygramETL prograam not found at location')
+                raise RuntimeError('PygramETL program not found at location')
         else:
             program = self.program
 
         tree = ast.parse(program)  # Parsing the pygrametl program to an AST
 
         self.__transform(tree)
+
+
         # Transforming the AST to include the user defined connections
         self.__compile_exec(node=tree, gscope=None, lscope=scope)
 
