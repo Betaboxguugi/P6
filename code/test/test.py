@@ -10,14 +10,16 @@ from framework.predicates import CompareTablePredicate
 import  sqlite3
 import os
 
-path = "test_program_8.py"
+path = "test_program_9.py"
 
 
 notnull = ColumnNotNullPredicate('dim1', 'att1')
 compare = CompareTablePredicate('dim1', 'dim2')
 
-input_conn = sqlite3.connect('input1.db')
-input2_conn = sqlite3.connect('input2.db')
+
+#input_conn = sqlite3.connect('input.db')
+input_conn = open('./input.csv', "r")
+input2_conn = open('./input2.csv', "r")
 input3_conn = sqlite3.connect('input3.db')
 
 if os.path.exists('dw.db'):
@@ -76,7 +78,8 @@ ft1 = FactTable(
 input_conn.close()
 output_conn.close()
 """
-for num in range(8):
+
+for num in range(9):
     num += 1
     path = 'test_program_' + num.__str__() + '.py'
     print(path)
@@ -101,8 +104,8 @@ for num in range(8):
 
     try:
         # Too many sources
-        Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull,
-                                                                    compare], True)
+        Case(path, [input_conn, input2_conn,input3_conn], dw_conn,
+             [notnull, compare], True)
     except Exception as e:
         print(e)
 

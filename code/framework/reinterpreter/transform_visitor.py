@@ -4,7 +4,7 @@ __author__ = 'Mathias Claus Jensen'
 __maintainer__ = 'Mathias Claus Jensen'
 __all__ = ['TransformVisitor']
 
-ATOMIC_SOURCES = ['SQLSource', 'CSVSource'] # TODO Get TypedCSVSource in there.
+ATOMIC_SOURCES = ['SQLSource', 'CSVSource', 'TypedCSVSource']
 AGGREGATED_SOURCES = ['JoiningSource']
 WRAPPERS = ['ConnectionWrapper']
 DIM_CLASSES = ['Dimension']
@@ -20,17 +20,17 @@ class TransformVisitor(ast.NodeVisitor):
         """
         self.source_ids = sources_ids
         self.dw_id = dw_id
-        self._counter = 0
+        self.counter = 0
         self.dw_flag = False
 
     def __get_id(self):
         """ Goes through a single iteration of the keys of the source_ids.
         """
-        if self._counter == len(self.source_ids):
+        if self.counter == len(self.source_ids):
             raise StopIteration('There are no more mappings to use')
         else:
-            id = self.source_ids[self._counter]
-            self._counter += 1
+            id = self.source_ids[self.counter]
+            self.counter += 1
             return id
 
     def __replace_connection(self, id, node):
@@ -49,7 +49,7 @@ class TransformVisitor(ast.NodeVisitor):
 
     def __find_call_name(self, node):
         """ Function that finds the name of a call node
-        :param node: The call node, whoms name we will find.
+        :param node: The call node, who's name we will find.
         :return: The name of the call node
         """
         name = None
@@ -87,5 +87,5 @@ class TransformVisitor(ast.NodeVisitor):
         """ We start the visitor.
         :param node: the root of an AST.
         """
-        self._counter = 0
+        self.counter = 0
         self.visit(node)

@@ -8,7 +8,7 @@ import sqlite3
 
 input_src = SQLSource(sqlite3.connect('input.db'), query='SELECT * FROM table')
 input2_src = SQLSource(sqlite3.connect('input2.db'), query='SELECT * FROM table')
-output_wrapper = pygrametl.ConnectionWrappersqlite3.connect('output.db')
+output_wrapper = pygrametl.ConnectionWrapper(sqlite3.connect('dw.db'))
 
 dim1 = Dimension(
     'dim1',
