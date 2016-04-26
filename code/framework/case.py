@@ -33,7 +33,10 @@ class Case:
         print(self.dw_rep)
 
         # Runs all predicates and reports their results
-        for p in self.pred_list:
-            p.run(self.dw_rep)
-            report = p.report()
-            report.run()
+        if self.pred_list:
+            for p in self.pred_list:
+                p.run(self.dw_rep)
+                report = p.report()
+                report.run()
+        else:
+            raise RuntimeError('No predicates given')

@@ -12,8 +12,8 @@ import os
 
 path = "test_program_1.py"
 
-notnull = ColumnNotNullPredicate('Company', 'Name')
-compare = CompareTablePredicate('Company', 'Bompany')
+notnull = ColumnNotNullPredicate('dim1', 'att1')
+compare = CompareTablePredicate('dim1', 'dim2')
 
 input_conn = sqlite3.connect('input1.db')
 input2_conn = sqlite3.connect('input2.db')
@@ -37,7 +37,10 @@ sales_cur.execute("CREATE TABLE ft1 " +
                   "(key1 INTEGER PRIMARY KEY)")
 
 # Declaring a program as a string
-program = """ __author__ = 'Alexander'
+program =\
+"""
+__author__ = 'Alexander'
+" This program is nice. I like it"
 
 import pygrametl
 from pygrametl.datasources import SQLSource
@@ -49,6 +52,7 @@ input2_conn = sqlite3.connect('input2.db')
 output_conn = sqlite3.connect('output.db')
 
 input_src = SQLSource(input_conn, query='SELECT * FROM table')
+input2_src = SQLSource(input2_conn, query='SELECT * FROM table')
 output_wrapper = pygrametl.ConnectionWrapper(connection=output_conn)
 
 dim1 = Dimension(
@@ -60,7 +64,7 @@ dim1 = Dimension(
 dim2 = Dimension(
     name='dim2',
     key='key2',
-    attributes=['attr3', 'attr4']
+    attributes=['attr3', 'attr4'],
 )
 
 ft1 = FactTable(
@@ -70,32 +74,57 @@ ft1 = FactTable(
 
 input_conn.close()
 output_conn.close()
-
 """
-# Exact amount of sources
-Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+try:
+    # Exact amount of sources
+    Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+except Exception:
+    print('Exact amount of sources')
 
-# Too few sources
-Case(path, [input_conn], dw_conn, [notnull, compare], True)
+try:
+    # Too few sources
+    Case(path, [input_conn], dw_conn, [notnull, compare], True)
+except Exception as e:
+    print(e)
 
-# No sources
-Case(path, [], dw_conn, [notnull, compare], True)
+try:
+    # No sources
+    Case(path, [], dw_conn, [notnull, compare], True)
+except Exception as e:
+    print(e)
 
-# Too many sources
-Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull, compare], True)
+try:
+    # Too many sources
+    Case(path, [input_conn, input2_conn,input3_conn], dw_conn, [notnull, compare], True)
+except Exception as e:
+    print(e)
 
-# Wrong dw
-Case(path, [input_conn, input2_conn], input3_conn, [notnull, compare], True)
+try:
+    # Wrong dw
+    Case(path, [input_conn, input2_conn], input3_conn, [notnull, compare], True)
+except Exception as e:
+    print(e)
 
-# No predicates
-Case(path, [input_conn, input2_conn], dw_conn, [], True)
+try:
+    # No predicates
+    Case(path, [input_conn, input2_conn], dw_conn, [], True)
+except Exception as e:
+    print(e)
 
-# 1 predicate
-Case(path, [input_conn, input2_conn], input3_conn, [notnull], True)
+try:
+    # 1 predicate
+    Case(path, [input_conn, input2_conn], dw_conn, [notnull], True)
+except Exception as e:
+    print(e)
 
-# Program as string
-Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], False)
+try:
+    # Program as string
+    Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], False)
+except Exception as e:
+    print(e)
 
-# Program as string, but declared as path
-Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
-
+try:
+    # Program as string, but declared as path
+    Case(program, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+except Exception as e:
+    print(e)

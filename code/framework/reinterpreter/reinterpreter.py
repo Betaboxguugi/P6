@@ -48,6 +48,8 @@ class Reinterpreter(object):
         """
         tv = TransformVisitor(self.source_ids, self.dw_id)
         tv.start(node)
+        if tv._counter < len(self.source_ids):
+            raise RuntimeError('Too many sources have been given')
 
     def __extract(self, node):
         """ Makes and extracts DataSource objects for each dimension/facttable
@@ -72,8 +74,11 @@ class Reinterpreter(object):
         scope = self.scope_dict.copy()
         program = ''
         if self.program_is_path:
-            with open(self.program, 'r') as f:
-                program = f.read()
+            try:
+                with open(self.program, 'r') as f:
+                    program = f.read()
+            except:
+                raise RuntimeError('PygramETL prograam not found at location')
         else:
             program = self.program
 
@@ -85,6 +90,6 @@ class Reinterpreter(object):
 
         # Executing the transformed AST
         rep_maker = RepresentationMaker(dw_conn=self.dw_conn, scope=scope)
-        dw_rep = rep_maker.start(tree)
+        dw_rep = rep_maker.run()
 
         return dw_rep
