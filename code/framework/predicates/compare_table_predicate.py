@@ -1,8 +1,8 @@
 __author__ = 'Alexander Brandborg'
-__maintainer__ = 'Alexander Brandborg'
+__maintainer__ = 'Mathias Claus Jensen'
 from itertools import filterfalse
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 
 
 def difference(a, b):
@@ -12,6 +12,11 @@ def difference(a, b):
 
 
 class CompareTablePredicate(Predicate):
+    """ Predicate that compares two tables, actual and expected, to each other. 
+    Asserting they are equivalent or that the expected is a subset of actual.
+    The user can ignore specific attributes when comparing.
+    """
+    
     def __init__(self, actual_name, expected_table,
                  ignore_atts=None, subset=False):
         """
@@ -30,8 +35,9 @@ class CompareTablePredicate(Predicate):
         self.incorrect_entries = []
         
     def run(self, dw_rep):
-        """
-        Compares the two tables and sets their surpluses for reporting.
+        """ Compares the two tables and sets their surpluses for reporting.
+        :param dw_rep: A DWRepresentation object
+        :return: A Report object descriping how the predicate did
         """
         actual = []
         expected = []     
@@ -47,31 +53,21 @@ class CompareTablePredicate(Predicate):
                                                 if key not in self.ignore_atts}
             expected.append(new_entry)    
 
-
-        result = []
-        if self.subset:
-            result = difference(expected, actual)
+        # We find all errorneous rows
+        errors = []
+        if self.subset: 
+            errors = difference(expected, actual)
         else:
-            result = difference(actual, expected)
-            result += difference(expected, actual)
+            errors = difference(actual, expected)
+            errors += difference(expected, actual)
 
-
-
-        self.incorrect_entries = result
-        if len(result) == 0:
-            self.result = True
-        else:
-            self.result = False
-
-    def report(self):
-        """
-        Reports results of tests.
-        If it fails it will print tuples with no match.
-        """
-
-        return Report(name_of_predicate=self.__class__.__name__,
-                      result=self.__result__,
-                      message_if_true='Correct',
-                      message_if_false='Error',
-                      list_of_wrong_elements=self.incorrect_entries
-                      )
+        # If errors is empty, then the predicate holds and result is equal True
+        result = True
+        if errors:
+            result = False
+            
+        return Report(result=result,
+                      predname=self.__class__.__name__,
+                      elements=errors,
+                      msg=None)
+        

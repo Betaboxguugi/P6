@@ -1,8 +1,7 @@
 __author__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
-__maintainer__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
+__maintainer__ = 'Mathias Claus Jensen'
 
 from .reinterpreter.reinterpreter import Reinterpreter
-
 
 class Case:
     """
@@ -28,19 +27,27 @@ class Case:
         self.pred_list = pred_list
         self.program_is_path = program_is_path
 
+
+    def run(self):
+        """ Reinterprets the given program with the given sources, then runs all
+        the given predicates on that resulting DW. 
+        """
         # Sets up and runs reinterpreter getting DWRepresentation object
         reinterpreter = Reinterpreter(program=self.program,
                                       source_conns=self.sources,
                                       dw_conn=self.dw_conn,
                                       program_is_path=self.program_is_path)
         self.dw_rep = reinterpreter.run()
-        print(self.dw_rep)
 
-        # Runs all predicates and reports their results
-        if self.pred_list:
-            for p in self.pred_list:
-                p.run(self.dw_rep)
-                report = p.report()
-                report.run()
-        else:
-            raise RuntimeError('No predicates given')
+        # Runs all the predicates and saves the reports
+        reports = []
+        for p in self.pred_list:
+            r = p.run(self.dw_rep)
+            reports.append(r)
+
+        # For debugging purposes, replace with some CL GUI stuff, maybe :D
+        for r in reports:
+            print(r)
+                
+
+        
