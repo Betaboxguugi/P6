@@ -7,7 +7,7 @@ class DWRepresentation(object):
     Allows for access to specific tables simply through their name.
     """
 
-    def __init__(self, dims, fts, connection):
+    def __init__(self, dims, fts, connection, snowflakeddims=()):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
@@ -18,6 +18,7 @@ class DWRepresentation(object):
             self.dims = dims
             self.fts = fts
             self.connection = connection
+            self.snowflakeddims = snowflakeddims
 
             # Turns all our names to lower case as SQL is case insensitive
             # Also collects a list of names for a later check
@@ -33,16 +34,43 @@ class DWRepresentation(object):
             if len(name_list) != len(list(set(name_list))):
                 raise ValueError("Table names are not unique")
 
-            # Fills the up our dictionary with tables keyed by their names.
+            # Fills the dictionary with tables keyed by their names.
             self.tabledict = {}
             for entry in self.rep:
                 self.tabledict[entry.name] = entry
+
+            self.refs = self._find_structure()
+
+
 
         finally:
             try:
                 pass
             except Exception:
                 pass
+
+    def _find_structure(self):
+        # Only the root of a snowflake may be pointed at by a fact table
+        # If more snowflakes exists they should not overlap
+
+        references = {}
+
+        all_dims = set(self.dims)
+
+        for flakes in self.snowflakeddims:
+            references.update(flakes.refs)
+            for key, value in flakes.refs.items():
+                all_dims.difference_update(value)
+
+        for ft in self.fts:
+            ft_refs = set()
+            for keyref in ft.keyrefs:
+                for dim in all_dims:
+                    if keyref == dim.key:
+                        ft_refs.add(dim)
+                        break
+            references[ft] = ft_refs
+        return references
 
     def __str__(self):
         return self.tabledict.__str__()
@@ -135,12 +163,40 @@ class DimRepresentation(TableRepresentation):
         row_list = []
         for row in self.itercolumns(self.all):
             row_list.append(row)
-        text = "{} {} {} {} {} {}".format(self.name,self.key, self.attributes, self.lookupatts, self.connection, row_list)
+        text = "{} {} {} {} {} {}".format(self.name,self.key, self.attributes,
+                                          self.lookupatts, self.connection,
+                                          row_list)
         return text
 
     def __repr__(self):
         return self.__str__()
 
+
+class Type1DimRepresentation(DimRepresentation):
+    def __init__(self, name, key, attributes, connection, lookupatts,
+                 type1atts=()):
+        DimRepresentation.__init__(self,
+                                   name,
+                                   key,
+                                   attributes,
+                                   connection,
+                                   lookupatts)
+        if type1atts == ():
+            self.type1atts = list(set(self.attributes) - set(self.lookupatts))
+        else:
+            self.type1atts = type1atts
+
+class Type2DimRepresentation(DimRepresentation):
+    def __init__(self, name, key, attributes, connection, lookupatts,
+                 versionatt, fromatt=None):
+        DimRepresentation.__init__(self,
+                                   name,
+                                   key,
+                                   attributes,
+                                   connection,
+                                   lookupatts)
+        self.versionatt = versionatt
+        self.fromatt = fromatt
 
 class FTRepresentation(TableRepresentation):
     """
@@ -168,7 +224,8 @@ class FTRepresentation(TableRepresentation):
         row_list = []
         for gen in self.itercolumns(self.all):
             row_list.append(gen)
-        text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures, self.connection, row_list)
+        text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures,
+                                       self.connection, row_list)
         return text
 
     def __repr__(self):
