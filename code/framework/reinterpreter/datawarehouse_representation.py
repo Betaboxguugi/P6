@@ -39,8 +39,8 @@ class DWRepresentation(object):
             for entry in self.rep:
                 self.tabledict[entry.name] = entry
 
+            # Re-creates the referencing structure of the DW
             self.refs = self._find_structure()
-
 
 
         finally:
@@ -50,18 +50,34 @@ class DWRepresentation(object):
                 pass
 
     def _find_structure(self):
-        # Only the root of a snowflake may be pointed at by a fact table
-        # If more snowflakes exists they should not overlap
+        """
+        Re-creates the referencing structure of the DW.
+        Reuses the referencing dicts from SnowflakedDimension objects,
+        then builds upon them by finding the references between fact tables
+        and dimensions.
+        For this to work there are some restrictions to keep in mind:
+        - Fact table may only refer to the root of a Snowflaked Dimension.
+        - There may be no overlap between the dimensions of on Snowflaked
+          dimension and another.
+        - Primary/Foreign key pairs have to share attribute name.
+
+        :return: A dictionary where each key is a fact table or dimension,
+        pointing to a set of dimensions, which it references.
+        """
 
         references = {}
-
         all_dims = set(self.dims)
 
         for flakes in self.snowflakeddims:
+            # Extends our references with internal snowflake refs
             references.update(flakes.refs)
             for key, value in flakes.refs.items():
+                # Removes all non-root dimensions from the overall list of
+                # dimensions, so that they cannot be referenced by fact tables.
                 all_dims.difference_update(value)
 
+        # For each fact table we find the set of all dimensions,
+        # which it references.
         for ft in self.fts:
             ft_refs = set()
             for keyref in ft.keyrefs:
@@ -70,6 +86,7 @@ class DWRepresentation(object):
                         ft_refs.add(dim)
                         break
             references[ft] = ft_refs
+
         return references
 
     def __str__(self):

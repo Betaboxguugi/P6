@@ -5,10 +5,7 @@ __maintainer__ = 'Mathias Claus Jensen'
 __all__ = ['TransformVisitor']
 
 ATOMIC_SOURCES = ['SQLSource', 'CSVSource', 'TypedCSVSource']
-AGGREGATED_SOURCES = ['JoiningSource']
 WRAPPERS = ['ConnectionWrapper']
-DIM_CLASSES = ['Dimension']
-FT_CLASSES = ['FactTable']
 
 
 class TransformVisitor(ast.NodeVisitor):
@@ -17,6 +14,8 @@ class TransformVisitor(ast.NodeVisitor):
     """
     def __init__(self, sources_ids, dw_id):
         """
+        :param: source_ids: names of the replacement sources
+        :param: dw_id: name of the replacement dw connection
         """
         self.source_ids = sources_ids
         self.dw_id = dw_id

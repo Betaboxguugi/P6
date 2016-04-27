@@ -31,11 +31,14 @@ class Reinterpreter(object):
         self.conn_scope = source_conns
         self.program_is_path = program_is_path
         self.source_ids = []
-        # Initiates the new scope for use during reinterpreting
+
+        # Generates id names for sources and DW,
+        # zipping names an replacement objects into a dictionary,
+        # which is later used as a scope.
         self.dw_id = '__0__'
         self.scope = {self.dw_id: self.dw_conn}
         counter = 0
-        # generates id names for sources
+
         for entry in source_conns:
             source_id = "__" + str(source_conns.index(entry) + 1) + "__"
             self.source_ids.append(source_id)
@@ -81,7 +84,7 @@ class Reinterpreter(object):
         p = compile(source=tree, filename='<string>', mode='exec')
         exec(p, None, self.scope)
 
-        #  Creates the DWRepresentation with the transformed scope
+        # Creates the DWRepresentation with the transformed scope
         rep_maker = RepresentationMaker(dw_conn=self.dw_conn, scope=self.scope)
         dw_rep = rep_maker.run()
 
