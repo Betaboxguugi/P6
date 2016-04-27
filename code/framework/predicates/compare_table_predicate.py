@@ -5,47 +5,63 @@ from .predicate import Predicate
 from .predicate_report import Report
 
 
+def difference(a, b):
+    """ Equivalent to A-B or A\B in set theory. Difference/Relative Complement
+    """
+    return list(filterfalse(lambda x: x in b, a))
+
+
 class CompareTablePredicate(Predicate):
-    def __init__(self, dw_table_name, test_table_name
-                 , ignore_att = None, sort_att = None, subset = False):
-        # TODO: The three last parameters still need to be implemented
+    def __init__(self, actual_name, expected_table,
+                 ignore_atts=None, subset=False):
         """
-        :param dw_table: name of the table from dw to compare with
-        :param test_table: list of dicts for table to compare against
-        :param ignore_att: list of attributes that we wish to ignore
-        :param sort_att: list of attributes for sorting tables before compare
-        :param subset: indicates whether to compare with subset or not
+        :param actual_name: Name of the table from dw to compare with
+        :param expected_table: List of dicts for table to compare against
+        :param ignore_atts: List of attributes that we wish to ignore
+        :param subset: Boolean, if True, it checks if the expected table is a 
+        subset of the actual table.
         """
 
         # Fetching the DW table through its name
-        self.dw_table_name = dw_table_name
-        self.dw_table = []
-        self.test_table_name = test_table_name
-        self.test_table = []
-        self.dw_surplus = None
-        self.test_surplus = None
-
+        self.ignore_atts = ignore_atts
+        self.actual_name = actual_name
+        self.expected_table = expected
+        self.subset = subset
+        self.incorrect_entries = []
+        
     def run(self, dw_rep):
         """
         Compares the two tables and sets their surpluses for reporting.
         """
+        actual = []
+        expected = []     
 
-        for entry in (dw_rep.get_data_representation(self.dw_table_name)):
-            self.dw_table.append(entry)
+        # Ignoring the attributes denoted in self.ignore_atts
+        for entry in dw_rep.get_data_representation(self.actual_name):
+            new_entry = {key: value for key, value in entry.items()
+                                                if key not in self.ignore_atts}
+            actual.append(new_entry)
+        
+        for entry in self.expected_table:
+            new_entry = {key: value for key, value in entry.items()
+                                                if key not in self.ignore_atts}
+            expected.append(new_entry)    
 
-        for entry in (dw_rep.get_data_representation(self.test_table_name)):
-            self.test_table.append(entry)
 
-        self.dw_surplus = \
-            list(filterfalse(lambda x: x in self.dw_table, self.test_table))
-        self.test_surplus = \
-            list(filterfalse(lambda x: x in self.test_table, self.dw_table))
-
-        # If both surplus lists are empty, each tuple has a match
-        if len(self.dw_surplus) == 0 and len(self.test_surplus) == 0:
-            self.__result__ = True
+        result = []
+        if self.subset:
+            result = difference(expected, actual)
         else:
-            self.__result__ = False
+            result = difference(actual, expected)
+            result += difference(expected, actual)
+
+
+
+        self.incorrect_entries = result
+        if len(result) == 0:
+            self.result = True
+        else:
+            self.result = False
 
     def report(self):
         """
@@ -53,6 +69,9 @@ class CompareTablePredicate(Predicate):
         If it fails it will print tuples with no match.
         """
 
-        return Report(self.__class__.__name__,
-                      self.__result__
+        return Report(name_of_predicate=self.__class__.__name__,
+                      result=self.__result__,
+                      message_if_true='Correct',
+                      message_if_false='Error',
+                      list_of_wrong_elements=self.incorrect_entries
                       )
