@@ -1,8 +1,39 @@
 \usepackage{listings} % Required for inserting code snippets
-\usepackage[usenames,dvipsnames]{color} % Required for specifying custom colors and referring to colors by name
+
+
+\definecolor{color3}{RGB}{230, 231, 231} 
 
 \definecolor{DarkGreen}{rgb}{0.0,0.4,0.0} % Comment color
 \definecolor{highlight}{RGB}{255,251,204} % Code highlight color
+\definecolor{Blue}{RGB}{0, 51, 204}
+\definecolor{Gray}{RGB}{153, 153, 153}
+
+\lstdefinestyle{Python1}{ 
+language=Python,
+frame=single,
+basicstyle=\scriptsize\ttfamily,
+backgroundcolor=\color{color3},
+keywordstyle=\color{color1}\bf,
+captionpos=b,
+breakatwhitespace=false,
+breaklines=true,
+numbers=left, % Location of line numbers, can take the values of: none, left, right
+numbersep=10pt, % Distance of line numbers from the code box
+numberstyle=\tiny\color{Gray}, % Style used for line numbers
+} 
+
+\newcommand{\insertcode}[2]{
+\begin{lstlisting}[caption=#2,style=Python1]
+	#1
+\end{lstlisting}
+} 
+
+\newcommand{\insertcodefile}[2]{\lstinputlisting[caption=#2,label=#1,style=Python1]{#1}} % The first argument is the script location/filename and the second is a caption for the code
+
+\newcommand{\insertcodefileline}[4]{\begin{itemize}\item[]\lstinputlisting[firstnumber=#3,firstline=#3,lastline=#4,caption=#2,label=#1,style=Python1]{#1}\end{itemize}}
+
+
+%ALDRIG KALD DENNE STYLE!!!!!!!!!!!!!!!!!!!!!, kun her som reference til hvordan vi laver vores egen.
 
 \lstdefinestyle{Style1}{ % Define a style for your code snippet, multiple definitions can be made if, for example, you wish to insert multiple code snippets using different programming languages into one document
 language=Python, % Detects keywords, comments, strings, functions, etc for the language specified
@@ -29,7 +60,3 @@ stepnumber=1, % The step distance between line numbers, i.e. how often will line
 stringstyle=\color{Purple}, % Strings are purple
 tabsize=2, % Number of spaces per tab in the code
 }
-
-% Create a command to cleanly insert a snippet with the style above anywhere in the document
-\newcommand{\insertcode}[2]{\begin{itemize}\item[]\lstinputlisting[caption=#2,label=#1,style=Style1]{#1}\end{itemize}} % The first argument is the script location/filename and the second is a caption for the listing
-\newcommand{\insertcodeline}[4]{\begin{itemize}\item[]\lstinputlisting[firstnumber=#3,firstline=#3,lastline=#4,caption=#2,label=#1,style=Style1]{#1}\end{itemize}}

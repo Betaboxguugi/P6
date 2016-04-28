@@ -3,6 +3,7 @@ __maintainer__ = 'Mathias Claus Jensen'
 
 from .reinterpreter.reinterpreter import Reinterpreter
 
+
 class Case:
     """
     FrameworkTestCase for running predicate tests on a pygrametl program given
@@ -48,6 +49,3 @@ class Case:
         # For debugging purposes, replace with some CL GUI stuff, maybe :D
         for r in reports:
             print(r)
-                
-
-        
