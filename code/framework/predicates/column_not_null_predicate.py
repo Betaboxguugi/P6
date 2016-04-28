@@ -58,6 +58,6 @@ class ColumnNotNullPredicate(Predicate):
         return Report(self.__class__.__name__,
                       self.__result__,
                       '',
-                      'at rows {}'.format(self.rows_with_null),
+                      'at rows {}'.format(self.rows_with_null)
                       )
 
