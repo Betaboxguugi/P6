@@ -1,6 +1,5 @@
 __author__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
 __maintainer__ = 'Mathias Claus Jensen'
-
 from .reinterpreter.reinterpreter import Reinterpreter
 
 
