@@ -2,13 +2,16 @@ _author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 # Imports
+import sqlite3
 from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
 from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.rule_predicate import RulePredicate
-from framework.predicates.unique_key_predicate import UniqueKeyPredicate
 from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
 from framework.case import Case
+from framework.reinterpreter.datawarehouse_representation \
+    import DWRepresentation, DimRepresentation, FTRepresentation
 
+"""
 table_name1 = 'company'
 table_name2 = 'bompany'
 column_names1 = 'age'
@@ -35,12 +38,44 @@ ndrp2 = NoDuplicateRowPredicate(table_name1, column_names2, True)
 pAll = [cnnp1, cnnp2, cnnp3, cnnp4, rp1, rp2, rrp1, ukp1, ndrp1, ndrp2]
 
 pl = [ukp1, ndrp1, ndrp2]
+"""
+# Case(None, None, pl, None)
+
+csv_name = './region.csv'
+dw_name = './dw.db'  # The one found in pygrametl_examples
+dw_conn = sqlite3.connect(dw_name)
+
+query1 = "SELECT * FROM bookDim WHERE bookid < 3"
+query2 = "SELECT * FROM timeDim"
+query3 = "SELECT * FROM locationDim"
+query4 = "SELECT * FROM factTable WHERE bookid > 1"
+book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
+
+time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
+                             dw_conn)
+
+location_dim = DimRepresentation('locationDim', 'locationid',
+                                 ['city', 'region'], dw_conn, ['city'])
+
+facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
+                             dw_conn, ['sale'])
+"""
+book_dim.query = query1
+time_dim.query = query2
+location_dim.query = query3
+facttable.query = query4
+"""
+
+dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
+
+ref_tester1 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'], False)
+ref_tester2 = NoDuplicateRowPredicate('bookdim', None, True)
+ref_tester3 = NoDuplicateRowPredicate('bookdim')
 
 
-
-Case(None, None, pl, None)
-
-
+print(ref_tester1.run(dw))
+print(ref_tester2.run(dw))
+print(ref_tester3.run(dw))
 
 
 

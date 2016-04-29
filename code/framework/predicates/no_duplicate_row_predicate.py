@@ -1,5 +1,5 @@
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 from .predicate import Predicate
 from .predicate_report import Report
@@ -7,7 +7,7 @@ from .predicate_report import Report
 
 class NoDuplicateRowPredicate(Predicate):
 
-    def __init__(self, table_name, column_names, column_names_exclude=False,
+    def __init__(self, table_name, column_names=None, column_names_exclude=False,
                  verbose=False):
         """
         :param table_name: name of table to be checked
@@ -16,8 +16,11 @@ class NoDuplicateRowPredicate(Predicate):
         Recommended for when you want to check for duplicates without looking
         at primary keys for example.
         :type column_names: List[str]
+        :param column_names_exclude: a bool, if set to true, then the predicate
+        will look at all columns excluding the one(s) specified in column_names
+        :type column_names_exclude: boo
         :param verbose: if this is set to true information from each step in
-        remove_unique is printed, this is for debugging purposes.
+        NoDuplicateRowPredicate is printed, this is for debugging purposes.
         :type verbose: bool
         """
         self.table_name = table_name
@@ -35,15 +38,25 @@ class NoDuplicateRowPredicate(Predicate):
         table = []
 
         self.table = self.dw_rep.get_data_representation(self.table_name)
+
         for e in self.table:
             table.append(e)
 
-        # setup of columns
+        # setup of columns, if column_names_exclude is true, then columns is
+        # all other columns than the one(s) specified.
+        if not self.column_names and not self.column_names_exclude:
+            self.column_names_exclude = True
+        if isinstance(self.column_names, str):
+            self.column_names = [self.column_names]
         if self.column_names_exclude:
             temp_columns_list = []
-            print(dw_rep.all)
-            temp_columns_list.append(dw_rep.all)
-            temp_columns_list.remove(self.column_names)
+            for e in self.dw_rep.get_data_representation(self.table_name).all:
+                temp_columns_list.append(e)
+            # We can't iterate over a string so it converts self.column_names
+            # into a list.
+            if self.column_names:
+                for e in self.column_names:
+                    temp_columns_list.remove(e)
             self.columns = temp_columns_list
         else:
             self.columns = self.column_names
@@ -60,8 +73,8 @@ class NoDuplicateRowPredicate(Predicate):
                     print("Checking table row: {}".format(row))
                 flag = False
                 for column in self.columns:
-                    x = dic.get(column.upper())
-                    y = row.get(column.upper())
+                    x = dic.get(column)
+                    y = row.get(column)
                     if self.verbose:
                         print("Looking at column '{}'".format(column))
                         print("Looking for value {} with key '{}'".format
@@ -88,10 +101,10 @@ class NoDuplicateRowPredicate(Predicate):
                     self.duplicates.append(row)
         if len(self.duplicates) < 1:
             self.__result__ = True
-        self.report()
+        return self.report()
 
     def report(self):
         return Report(self.__result__,
                       self.__class__.__name__,
                       self.duplicates,
-                      'Failure on null row')
+                      'Unknown Failure')
