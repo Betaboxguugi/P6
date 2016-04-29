@@ -1,17 +1,25 @@
 \section{Predicates}
 \todo[inline]{Skriv introduktion.}
+In the following section...
 
+\subsection{ColumnNotNullPredicate}
+ColumnNotNullPredicate asserts that a all entries of each row in a specified list of columns within a table, does not contain null. Allowing a user to insure that the data within a table has all entries filled after a use of a function or insertion of data.
+The ColumnNotNullPredicate is instantiated as follows, with description of the parameters below.
+
+\insertcodefile{codeRelated/scripts/ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of the specific table from a data warehouse, that the test must run on. 
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within the table
+\end{description}
+
+ColumnNotNullPredicate iterates over every row in the specified table. In each row it then iterates over each element in the column(s) specified. Through this later iteration it insures that each element is not null. If null is found, the row it was found in is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false.
 
 \subsection{CompareTablePredicate}
-CompareTablePredicate asserts that two tables are either equal or that one is a subset of the other. It is made to allow users to give an expected table to compare with the actual one populated by their pygrametl program. It checks if an identical row exists in the actual table, for each row in the expected table. 
+CompareTablePredicate asserts that two tables are either equal or that one is a subset of the other. It is made to allow users to give an expected table to compare with the actual one populated by their pygrametl program. It checks if an identical row exists in the actual table, for each row in the expected table. The CompareTablePredicate is instantiated as follows, with description of the parameters below.
 
-The CompareTablePredicate is instantiated as follows, with description of the parameters below.
-\begin{lstlisting}[basicstyle=\scriptsize, language=Python]
-CompareTablePredicate(actual_name='table1',
-                      expected_table=[{'attr1':1}],
-                      ignore_atts=['attr0', 'attr2'],
-                      subset=True)
-\end{lstlisting}
+\insertcodefile{codeRelated/scripts/CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
+
 \begin{description}
 \item [actual\_name] is a string containing the name of the table from your datawarehouse, you would like to compare with the given \textit{expected\_table}. It is used to index our datawarehouse representation and then retrieve the actual table.
 \item [expected\_table] is a list of dictionaries, representing a database table, and is used to check whether it is equal to, or a subset of the actual table.
@@ -30,3 +38,20 @@ And for \textit{subset} equal \textit{false} if,
 \[ A \backslash E \cup E \backslash A \equiv \emptyset \]
 
 \noindent which implies that $A \equiv E$, where A is the actual table and E is the expected table.
+
+\subsection{RuleColumnPredicate}
+
+RuleColumnPredicate asserts that a all entries of each row in a specified list of columns within a table, complies with a constraint, given trough a predicate made by the user. This allows the user a lot of freedom in their tests, as they can test each row of elements in a given table, in any way they wish. Insuring the data complies with the requirements they have set for it. The RuleColumnPredicate is instantiated as follows, with description of the parameters below.
+
+\insertcodefile{codeRelated/scripts/RuleColumnPredicate.py}{Instantiation of RuleColumnPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of specific table from as data warehouse. 
+\item [constraint\_function] a predicate that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table
+\item [return\_list] a bool, if false then all elements from the column(s) is send as arguments to the constraint function, if true they are send as a list instead.
+\end{description}
+
+RuleColumnPredicate iterates over every row in the specified table. For each row, it iterates over the column(s) specified, where it takes each element from each column(s) and calls the constraint function on those elements as either arguments or a list, depending on what the user has specified. If the constraint function returns false on a row, then the row is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false. RuleColumnPredicate does not support constraints with a variable number of arguments.
+
+

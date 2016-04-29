@@ -3,8 +3,8 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 
 import sqlite3
 import os
-from framework.predicates import DuplicatePredicate
-from framework.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
+from framework.predicates import NoDuplicateRowPredicate as DuplicatePredicate
+from framework.reinterpreter.datawarehouse_representation import DWRepresentation, DimRepresentation, FTRepresentation
 
 # This just insures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')

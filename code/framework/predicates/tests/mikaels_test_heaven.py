@@ -5,13 +5,14 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
 from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.rule_predicate import RulePredicate
+from framework.predicates.unique_key_predicate import UniqueKeyPredicate
+from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
 from framework.case import Case
 
 table_name1 = 'company'
 table_name2 = 'bompany'
 column_names1 = 'age'
 column_names2 = ['age', 'salary']
-
 
 def constraint_function1(a):
     if a < 50:
@@ -27,9 +28,32 @@ rp1 = RulePredicate(table_name1, constraint_function1, column_names1)
 rp2 = RulePredicate(table_name1, constraint_function1, None, column_names1)
 rrp1 = RuleRowPredicate(table_name1, column_names1, constraint_function1)
 
+ukp1 = UniqueKeyPredicate(table_name1, column_names2)
+ndrp1 = NoDuplicateRowPredicate(table_name1, column_names2)
+ndrp2 = NoDuplicateRowPredicate(table_name1, column_names2, True)
 
-pl = [rp1]
+pAll = [cnnp1, cnnp2, cnnp3, cnnp4, rp1, rp2, rrp1, ukp1, ndrp1, ndrp2]
+
+pl = [ukp1, ndrp1, ndrp2]
+
+
+
 Case(None, None, pl, None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
