@@ -1,13 +1,11 @@
 \usepackage{listings} % Required for inserting code snippets
 
+%Defining colors used in our style
+\definecolor{color3}{RGB}{230, 231, 231} % background
+\definecolor{Blue}{RGB}{0, 51, 204} % keywords
+\definecolor{Gray}{RGB}{153, 153, 153} % line numbers
 
-\definecolor{color3}{RGB}{230, 231, 231} 
-
-\definecolor{DarkGreen}{rgb}{0.0,0.4,0.0} % Comment color
-\definecolor{highlight}{RGB}{255,251,204} % Code highlight color
-\definecolor{Blue}{RGB}{0, 51, 204}
-\definecolor{Gray}{RGB}{153, 153, 153}
-
+%Our style
 \lstdefinestyle{Python1}{ 
 language=Python,
 frame=single,
@@ -22,18 +20,14 @@ numbersep=10pt, % Distance of line numbers from the code box
 numberstyle=\tiny\color{Gray}, % Style used for line numbers
 } 
 
-\newcommand{\insertcode}[2]{
-\begin{lstlisting}[caption=#2,style=Python1]
-	#1
-\end{lstlisting}
-} 
-
 \newcommand{\insertcodefile}[2]{\lstinputlisting[caption=#2,label=#1,style=Python1]{#1}} % The first argument is the script location/filename and the second is a caption for the code
 
 \newcommand{\insertcodefileline}[4]{\begin{itemize}\item[]\lstinputlisting[firstnumber=#3,firstline=#3,lastline=#4,caption=#2,label=#1,style=Python1]{#1}\end{itemize}}
 
 
+%----------------------------------------------------------------------------------------
 %ALDRIG KALD DENNE STYLE!!!!!!!!!!!!!!!!!!!!!, kun her som reference til hvordan vi laver vores egen.
+%----------------------------------------------------------------------------------------
 
 \lstdefinestyle{Style1}{ % Define a style for your code snippet, multiple definitions can be made if, for example, you wish to insert multiple code snippets using different programming languages into one document
 language=Python, % Detects keywords, comments, strings, functions, etc for the language specified
