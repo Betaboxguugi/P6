@@ -74,7 +74,7 @@ class NoDuplicateRowPredicate(Predicate):
                             print('Unique')
                         flag = False
                         break  # exit the for loop, this should bring us to the
-#  next row in the outer for loop
+                               # next row in the outer for loop
                     else:
                         if self.verbose:
                             print('Duplicate value')
@@ -91,8 +91,7 @@ class NoDuplicateRowPredicate(Predicate):
         self.report()
 
     def report(self):
-        return Report(self.__class__.__name__,
-                      self.__result__,
-                      ': All is well',
-                      ': All is not well',
-                      self.duplicates)
+        return Report(self.__result__,
+                      self.__class__.__name__,
+                      self.duplicates,
+                      'Failure on null row')

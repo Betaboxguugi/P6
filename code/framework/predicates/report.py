@@ -2,6 +2,7 @@ __author__ = 'Mathias Claus Jensen'
 
 MAX_ELEMENTS = 5
 
+
 class Report(object):
     def __init__(self, result, predname, elements=[], msg=None):
         """
@@ -28,7 +29,7 @@ class Report(object):
         s = self.predname + ': ' 
         if self.result:
             return s + 'SUCCESS\n'
-        elif elements:
+        elif self.elements:
             s += 'FAILED\nThe predicate did not hold on the following entries\n'
             i = 0
             for e in self.elements:
@@ -40,5 +41,4 @@ class Report(object):
             return s
         else:
             return self.msg
-            
-            
+

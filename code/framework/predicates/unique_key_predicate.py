@@ -56,6 +56,7 @@ class UniqueKeyPredicate(Predicate):
         Reports if the primary key was unique
         If not we report the key instances, of which there are duplicates
         """
+
         return Report(self.__class__.__name__,
                       self.__result__,
                       """: All elements in column(s) {} in table \'{}\'

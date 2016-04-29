@@ -14,7 +14,6 @@ table_name2 = 'bompany'
 column_names1 = 'age'
 column_names2 = ['age', 'salary']
 
-
 def constraint_function1(a):
     if a < 50:
         return True
@@ -33,7 +32,11 @@ ukp1 = UniqueKeyPredicate(table_name1, column_names2)
 ndrp1 = NoDuplicateRowPredicate(table_name1, column_names2)
 ndrp2 = NoDuplicateRowPredicate(table_name1, column_names2, True)
 
+pAll = [cnnp1, cnnp2, cnnp3, cnnp4, rp1, rp2, rrp1, ukp1, ndrp1, ndrp2]
+
 pl = [ukp1, ndrp1, ndrp2]
+
+
 
 Case(None, None, pl, None)
 
