@@ -39,7 +39,9 @@ class TransformVisitor(ast.NodeVisitor):
             node.args[0] = newnode
         else:                     # Conn given by keyword i.e. "connection = x"
             for keyword in node.keywords:
-                if keyword.arg == 'connection':
+                if keyword.arg == 'connection'\
+                        or keyword.arg == 'f'\
+                        or keyword.arg == 'csvfile':
                     keyword.value = newnode
 
         # Call to fill in line number and indentation information for the new

@@ -13,7 +13,7 @@ path = "test_program_1.py"
 
 
 notnull = ColumnNotNullPredicate('dim1', 'att1')
-compare = CompareTablePredicate('dim1', 'dim2')
+
 
 
 input_conn = sqlite3.connect('input.db')
@@ -26,12 +26,14 @@ dw_conn2 = sqlite3.connect('dw2.db')
 
 try:
     # Exact amount of sources
-    Case(path, [input_conn, input2_conn], dw_conn, [notnull, compare], True)
+    c = Case(path, [input_conn, input2_conn], dw_conn, [notnull], True)
+    c.run()
 except Exception as e:
     print(e)
 
 try:
     # Exact amount of sources
-    Case(path, [input_conn, input2_conn], dw_conn2, [notnull, compare], True)
+    c = Case(path, [input_conn, input2_conn], dw_conn2, [notnull], True)
+    c.run()
 except Exception as e:
     print(e)
