@@ -1,8 +1,8 @@
-__author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
-
 from .predicate import Predicate
 from .predicate_report import Report
+
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
 
 
 class ReferentialIntegrityPredicate(Predicate):
@@ -10,15 +10,11 @@ class ReferentialIntegrityPredicate(Predicate):
     def __init__(self):
         self.missing_ft_keys = []
         self.missing_dim_keys = []
-        self.referring_table_name = None
-        self.referred_table_name = None
         self.dw_rep = None
-        self.referring_table = None
-        self.referred_table = None
         self.dw_dims = []
         self.dw_fts = []
-        self.ft_dic = {}
-        self.dim_dic = {}
+        self.ft_refs = {}
+        self.dim_refs = {}
 
     def run(self, dw_rep):
         self.dw_rep = dw_rep
@@ -30,103 +26,86 @@ class ReferentialIntegrityPredicate(Predicate):
         self.__result__ = True
         self.missing_ft_keys = []
         self.missing_dim_keys = []
-        self.find_ft_refs()
-        self.find_dim_refs()
-        self.dim_check()
-        self.ft_check()
+        self.ft_refs, self.dim_refs = self.find_ft_dim_refs()
 
-    def find_ft_refs(self):
-        """
-        initiates the self.ft_dic to a dictionary of dictionaries like this:
-        {'facttable1':{'bookid':'bookdim', 'timeid':'timedim',
-        'locationid':'locationdim'},
-        'facttable2':{' ':' ', ' ':' ', ' ':' '}}
-        With this we can lookup what facttables use what keys to reference
-        which tables
-        """
-        for ft in self.dw_fts:
+        for dim, key_dic in self.dim_refs.items():
+            for key in key_dic.keys():
+                self.check_dim_to_table(dim, key)
+
+        for ft, keyref_dic in self.ft_refs.items():
+            for key in keyref_dic.keys():
+                self.check_ft_to_table(ft, key)
+
+        self.report()
+
+    def find_ft_dim_refs(self):
+        ft_refs = {}
+        dim_refs = {}
+        fts = self.dw_fts.copy()
+        for ft in fts:
+            dims = self.dw_rep.refs[ft].copy()
             keyref_dic = {}
             for keyref in ft.keyrefs:
-                dims = self.dw_dims
                 for dim in dims:
-                    if keyref == dim.key:
-                        keyref_dic[keyref] = dim.name
+                    if dim.key == keyref:
+                        key_dic = {dim.key: ft}
+                        keyref_dic[keyref] = dim
+                        dim_refs[dim] = key_dic
+                        dims.remove(dim)
                         break
-                self.ft_dic[ft.name] = keyref_dic
+            ft_refs[ft] = keyref_dic
+        return ft_refs, dim_refs,
 
-    def find_dim_refs(self):
-        """
-        See find_ft_refs above. initializes self.dim_dic to a dictionary of
-        dictionaries like so:
-        {'timedim': {'timeid': 'facttable'},
-         'bookdim': {'bookid': 'facttable'},
-         'locationdim': {'locationid': 'facttable'}}
-        """
-        for dim in self.dw_dims:
-            keyref_dic = {}
-            fts = self.dw_fts
-            for ft in fts:
-                for keyref in ft.keyrefs:
-                    if keyref == dim.key:
-                        keyref_dic[keyref] = ft.name
-                        break
-                self.dim_dic[dim.name] = keyref_dic
+    def check_ft_to_table(self, ft, key):
+        keyref_dic = self.ft_refs[ft]
+        table = keyref_dic[key]
+        for row in ft.itercolumns([key]):
+            flag = False
+            for table_row in table.itercolumns([key]):
+                if row.get(key) == table_row.get(key):
+                    flag = True
+                    break
+            if not flag:
+                error_entry = "{} in {} not found in {}".format(row, ft.name,
+                                                                table.name)
+                if error_entry not in self.missing_ft_keys:
+                    self.missing_ft_keys.append(error_entry)
+                    self.__result__ = False
 
-    def get_table(self, table_name):
-        table = []
-        for row in self.dw_rep.get_data_representation(table_name):
-            table.append(row)
-        return table
-
-    def ft_check(self):
-        for ft in self.dw_fts:
-            fact_table = self.get_table(ft.name)
-            key_dic = self.ft_dic.get(ft.name)
-            for ft_row in fact_table:
-                for key, table_name in key_dic.items():
-                    flag = False
-                    dim = self.dw_rep.tabledict.get(table_name)
-                    for dim_row in dim:
-                        if ft_row.get(key) == dim_row.get(key):
-                            flag = True
-                            break
-                    if not flag:
-                        what = ft.name, ft_row,
-                        self.missing_ft_keys.append(what)
-                        self.__result__ = False
-
-    def dim_check(self):
-        for dim in self.dw_dims:
-            dim_table = self.get_table(dim.name)
-            key_dic = self.dim_dic.get(dim.name)
-            for dim_row in dim_table:
-                for key, table_name in key_dic.items():
-                    flag = False
-                    ft = self.dw_rep.tabledict.get(table_name)
-                    for ft_row in ft:
-                        if ft_row.get(key) == dim_row.get(key):
-                            flag = True
-                            break
-                    if not flag:
-                        what = dim.name, dim_row,
-                        self.missing_dim_keys.append(what)
-                        self.__result__ = False
+    def check_dim_to_table(self, dim, key):
+        key_dic = self.dim_refs[dim]
+        table = key_dic[key]
+        for row in dim.itercolumns([key]):
+            flag = False
+            for table_row in table.itercolumns([key]):
+                if row.get(key) == table_row.get(key):
+                    flag = True
+                    break
+            if not flag:
+                error_entry = "{} in {} not found in {}".format(row, dim.name,
+                                                                table.name)
+                if error_entry not in self.missing_dim_keys:
+                    self.missing_dim_keys.append(error_entry)
+                    self.__result__ = False
 
     def report(self):
-        missing_keys = None
+        missing_keys = []
         if self.missing_ft_keys:
-            # TODO Can we actually have errors in both
-            # TODO table and one dim table???
             if self.missing_dim_keys:
-                missing_keys = self.missing_ft_keys, self.missing_dim_keys,
+                for e in self.missing_ft_keys:
+                    missing_keys.append(e)
+                for e in self.missing_dim_keys:
+                    missing_keys.append(e)
             else:
-                missing_keys = self.missing_ft_keys
+                for e in self.missing_ft_keys:
+                    missing_keys.append(e)
         elif self.missing_dim_keys:
-            missing_keys = self.missing_dim_keys
+            for e in self.missing_dim_keys:
+                    missing_keys.append(e)
 
-        return Report(self.__class__.__name__,
-                      self.__result__,
-                      ': All is well',
-                      ': All is not well',
-                      missing_keys
-                      )
+        report = Report(self.__result__, self.__class__.__name__, missing_keys,
+                        'Something went wrong. {} returned false without '
+                        'failed entries. This should never happen.'.format(
+                          self.__class__.__name__)
+                        )
+        print(report)

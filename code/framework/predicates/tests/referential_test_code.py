@@ -11,26 +11,27 @@ csv_name = './region.csv'
 dw_name = './dw.db'  # The one found in pygrametl_examples
 dw_conn = sqlite3.connect(dw_name)
 
-query1 = "SELECT * FROM bookDim"
+query1 = "SELECT * FROM bookDim WHERE bookid < 3"
 query2 = "SELECT * FROM timeDim"
 query3 = "SELECT * FROM locationDim"
-query4 = "SELECT * FROM factTable"
-book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn,
-                             query=query1)
+query4 = "SELECT * FROM factTable WHERE bookid > 1"
+book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
 
 time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
-                             dw_conn, query=query2)
+                             dw_conn)
 
 location_dim = DimRepresentation('locationDim', 'locationid',
-                                 ['city', 'region'], dw_conn, ['city'],
-                                 query=query3)
+                                 ['city', 'region'], dw_conn, ['city'])
 
 facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
-                             ['sale'], dw_conn, query=query4)
+                             dw_conn, ['sale'])
+
+book_dim.query = query1
+time_dim.query = query2
+location_dim.query = query3
+facttable.query = query4
 
 dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
 
 ref_tester = ReferentialIntegrityPredicate()
 ref_tester.run(dw)
-report = ref_tester.report()  # Not testing using the framework,
-report.run()                  # so it looks ugly this way

@@ -48,6 +48,4 @@ class Case:
         # For debugging purposes, replace with some CL GUI stuff, maybe :D
         for r in reports:
             print(r)
-                
 
-        
