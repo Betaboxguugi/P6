@@ -2,7 +2,7 @@ __author__ = 'Mathias Claus Jensen'
 
 
  # The amount of errornous elements that will be printed
-MAX_ELEMENTS = 5
+MAX_ELEMENTS = 100
 
 
 class Report(object):
@@ -37,7 +37,7 @@ class Report(object):
         s = self.predname + ': ' 
         if self.result:
             return s + 'SUCCESS\n'
-        elif elements:
+        elif self.elements:
             s += 'FAILED\nThe predicate did not hold on the following entries\n'
             i = 0
             for e in self.elements:
@@ -49,5 +49,3 @@ class Report(object):
             return s
         else:
             return self.msg
-            
-            

@@ -56,7 +56,7 @@ class DWRepresentation(object):
         then builds upon them by finding the references between fact tables
         and dimensions.
         For this to work there are some restrictions to keep in mind:
-        - Fact table may only refer to the root of a Snowflaked Dimension.
+        - Facttable may only refer to the root of a Snowflaked Dimension.
         - There may be no overlap between the dimensions of on Snowflaked
           dimension and another.
         - Primary/Foreign key pairs have to share attribute name.
@@ -162,7 +162,6 @@ class DimRepresentation(TableRepresentation):
         :param attributes: List of non-lookup attributes of the table
         :param lookupatts: List of lookup attributes of the table
         :param connection: PEP249 connection to a database
-        :param query: SQL query used for fetching contents of the table
         """
         self.name = name
         self.key = key
@@ -180,7 +179,7 @@ class DimRepresentation(TableRepresentation):
         row_list = []
         for row in self.itercolumns(self.all):
             row_list.append(row)
-        text = "{} {} {} {} {} {}".format(self.name,self.key, self.attributes,
+        text = "{} {} {} {} {} {}".format(self.name, self.key, self.attributes,
                                           self.lookupatts, self.connection,
                                           row_list)
         return text
@@ -203,6 +202,7 @@ class Type1DimRepresentation(DimRepresentation):
         else:
             self.type1atts = type1atts
 
+
 class Type2DimRepresentation(DimRepresentation):
     def __init__(self, name, key, attributes, connection, lookupatts,
                  versionatt, fromatt=None):
@@ -215,6 +215,7 @@ class Type2DimRepresentation(DimRepresentation):
         self.versionatt = versionatt
         self.fromatt = fromatt
 
+
 class FTRepresentation(TableRepresentation):
     """
     An Object for representing data in a DW fact table
@@ -225,7 +226,6 @@ class FTRepresentation(TableRepresentation):
         :param keyrefs: List of attributes that are foreign keys to other tables
         :param measures: List of attributes containing non-key values
         :param connection: PEP249 connection to a database
-        :param query: SQL query used for fetching contents of the table
         """
         self.name = name
         self.keyrefs = keyrefs
@@ -239,8 +239,8 @@ class FTRepresentation(TableRepresentation):
 
     def __str__(self):
         row_list = []
-        for gen in self.itercolumns(self.all):
-            row_list.append(gen)
+        for row in self.itercolumns(self.all):
+            row_list.append(row)
         text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures,
                                        self.connection, row_list)
         return text
