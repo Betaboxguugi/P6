@@ -7,8 +7,7 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class RulePredicate(Predicate):
-    def __init__(self, table_name, constraint_function, column_name=None,
-                 column_names=None, return_list=None):
+    def __init__(self, table_name, constraint_function, column_names=None, return_list=None):
         """
         :param table_name: name of specified table which needs to be tested
         :type table_name: str
@@ -19,15 +18,7 @@ class RulePredicate(Predicate):
         which need to be tested.
         :type constraint_function: def
         """
-        #Fra rule_columns_predicate
         self.table_name = table_name
-        self.column_name = column_name
-        self.constraint_function = constraint_function
-        self.wrong_elements = ()
-
-        #Fra rule_row_predicate
-
-        # If column_names is just one string, insert it as list with one element
         if isinstance(column_names, str):
             self.column_names = [column_names]
         else:  # Otherwise just make the list as provided.
@@ -43,24 +34,9 @@ class RulePredicate(Predicate):
         Then logs which elements the constraint function returned
         false on if any.
         """
-        if self.column_name and self.column_names:
-            raise ValueError("""column_name and column_names must not be
-                                assigned at the same time""")
-        elif self.column_name:
-            self.column(dw_rep)
-        elif self.column_names:
-            self.row(dw_rep)
-        self.report()
 
-    def column(self, dw_rep):
-        self.__result__ = True
-        for row in dw_rep.get_data_representation(self.table_name):
-            # returns the elements at the specified column from each row
-            element = row.get(self.column_name.upper())
-            # the given constraint function are given the elements here
-            if not self.constraint_function(element):
-                self.wrong_elements += element,
-                self.__result__ = False
+        self.row(dw_rep)
+        self.report()
 
     def row(self, dw_rep):
         if inspect.getargspec(self.constraint_function).varargs:  # True

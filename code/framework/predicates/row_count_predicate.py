@@ -24,12 +24,14 @@ class RowCountPredicate(Predicate):
         :return:
         """
 
+        rownumber = 0
+
         # Extracts contents of table into a list[Dict]
         for row in dw_rep.get_data_representation(self.table_name):
             self.table.append(row)
+            rownumber += 1
 
-        rows = len(self.table)
-        if rows == self.number_of_rows:
+        if len(self.table) == self.number_of_rows:
             self.__result__ = True
         else:
             self.__result__ = False

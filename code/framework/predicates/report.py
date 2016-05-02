@@ -3,6 +3,8 @@ __author__ = 'Mathias Claus Jensen'
 MAX_ELEMENTS = 5
 
 class Report(object):
+    """ Container object, that holds information regarding predicate errors
+    """
     def __init__(self, result, predname, elements=[], msg=None):
         """
         :param result: Boolean denoting wether the predicate was succesful or 

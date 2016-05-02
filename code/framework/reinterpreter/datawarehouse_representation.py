@@ -61,6 +61,7 @@ class DWRepresentation(object):
             for entry in self.rep:
                 self.tabledict[entry.name] = entry
 
+            # Re-creates the referencing structure of the DW
             self.refs = self._find_structure()
         finally:
             try:
@@ -69,18 +70,34 @@ class DWRepresentation(object):
                 pass
 
     def _find_structure(self):
-        # Only the root of a snowflake may be pointed at by a fact table
-        # If more snowflakes exists they should not overlap
+        """
+        Re-creates the referencing structure of the DW.
+        Reuses the referencing dicts from SnowflakedDimension objects,
+        then builds upon them by finding the references between fact tables
+        and dimensions.
+        For this to work there are some restrictions to keep in mind:
+        - Facttable may only refer to the root of a Snowflaked Dimension.
+        - There may be no overlap between the dimensions of on Snowflaked
+          dimension and another.
+        - Primary/Foreign key pairs have to share attribute name.
+
+        :return: A dictionary where each key is a fact table or dimension,
+        pointing to a set of dimensions, which it references.
+        """
 
         references = {}
-
         all_dims = set(self.dims)
 
         for flakes in self.snowflakeddims:
+            # Extends our references with internal snowflake refs
             references.update(flakes.refs)
             for key, value in flakes.refs.items():
+                # Removes all non-root dimensions from the overall list of
+                # dimensions, so that they cannot be referenced by fact tables.
                 all_dims.difference_update(value)
 
+        # For each fact table we find the set of all dimensions,
+        # which it references.
         for ft in self.fts:
             ft_refs = set()
             for keyref in ft.keyrefs:
@@ -89,6 +106,7 @@ class DWRepresentation(object):
                         ft_refs.add(dim)
                         break
             references[ft] = ft_refs
+
         return references
 
     def __str__(self):
@@ -197,7 +215,6 @@ class DimRepresentation(TableRepresentation):
         :param attributes: List of non-lookup attributes of the table
         :param lookupatts: List of lookup attributes of the table
         :param connection: PEP249 connection to a database
-        :param query: SQL query used for fetching contents of the table
         """
         self.name = name
         self.key = key
@@ -215,7 +232,7 @@ class DimRepresentation(TableRepresentation):
         row_list = []
         for row in self.itercolumns(self.all):
             row_list.append(row)
-        text = "{} {} {} {} {} {}".format(self.name,self.key, self.attributes,
+        text = "{} {} {} {} {} {}".format(self.name, self.key, self.attributes,
                                           self.lookupatts, self.connection,
                                           row_list)
         return text
@@ -238,6 +255,7 @@ class Type1DimRepresentation(DimRepresentation):
         else:
             self.type1atts = type1atts
 
+
 class Type2DimRepresentation(DimRepresentation):
     def __init__(self, name, key, attributes, connection, lookupatts,
                  versionatt, fromatt=None):
@@ -250,6 +268,7 @@ class Type2DimRepresentation(DimRepresentation):
         self.versionatt = versionatt
         self.fromatt = fromatt
 
+
 class FTRepresentation(TableRepresentation):
     """
     An Object for representing data in a DW fact table
@@ -260,7 +279,6 @@ class FTRepresentation(TableRepresentation):
         :param keyrefs: List of attributes that are foreign keys to other tables
         :param measures: List of attributes containing non-key values
         :param connection: PEP249 connection to a database
-        :param query: SQL query used for fetching contents of the table
         """
         self.name = name
         self.keyrefs = keyrefs
@@ -274,8 +292,8 @@ class FTRepresentation(TableRepresentation):
 
     def __str__(self):
         row_list = []
-        for gen in self.itercolumns(self.all):
-            row_list.append(gen)
+        for row in self.itercolumns(self.all):
+            row_list.append(row)
         text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures,
                                        self.connection, row_list)
         return text

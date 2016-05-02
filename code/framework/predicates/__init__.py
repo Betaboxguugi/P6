@@ -6,5 +6,5 @@ from .referential_integrity_predicate import ReferentialIntegrityPredicate
 from .row_count_predicate import RowCountPredicate
 from .rule_column_predicate import RuleColumnPredicate
 from .rule_row_predicate import RuleRowPredicate
-from .unique_key_predicate import UniqueKeyPredicate
+
 

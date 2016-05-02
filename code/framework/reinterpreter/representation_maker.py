@@ -13,7 +13,6 @@ DIM_CLASSES = [Dimension, CachedDimension,
                TypeOneSlowlyChangingDimension, SlowlyChangingDimension,
                SCDimension, BulkDimension, CachedBulkDimension]
 FT_CLASSES = [FactTable, BatchFactTable, BulkFactTable]
-# TODO more table types
 
 
 class RepresentationMaker(object):
@@ -27,11 +26,18 @@ class RepresentationMaker(object):
         """
         self.dw_conn = dw_conn
         self.scope = scope
+
         # Contains representations of dimension and fact table
         self.dim_reps = []
         self.fts_reps = []
 
     def check_table_type(self, table, typelist):
+        """"
+        Checks whether a table is part of a specific subset of table types.
+        :param table: an instance of a table from pygrametl.tables
+        :param typelist: list of types to compare against
+        :return: a boolean indicating if the table had a type from typelist.
+        """
         for table_type in typelist:
             if isinstance(table, table_type):
                 return True
@@ -48,19 +54,11 @@ class RepresentationMaker(object):
         pygrametl = self.scope['pygrametl']
         tables = pygrametl._alltables
 
-
-
-
-
-        #for variables in self.scope:
-
-
         # Creates representation objects
-
         for table in tables:
-            if self.check_table_type(table, DIM_CLASSES):
-                dim = None
 
+            # If the table is a dimension.
+            if self.check_table_type(table, DIM_CLASSES):
                 if isinstance(table, TypeOneSlowlyChangingDimension):
                     dim = Type1DimRepresentation(table.name, table.key,
                                                  table.attributes,
@@ -79,11 +77,16 @@ class RepresentationMaker(object):
                                             table.attributes, self.dw_conn,
                                             table.lookupatts)
                 self.dim_reps.append(dim)
+
+            # If the table is a fact table
             elif self.check_table_type(table, FT_CLASSES):
                     ft = FTRepresentation(table.name, table.keyrefs,
                                           self.dw_conn, table.measures)
                     self.fts_reps.append(ft)
 
+        # From the scope, gets all SnowflakedDimensions.
+        # These are used to re-create the referencing structure of the DW,
+        # when instantiating DWRepresentation.
         snowflakes = []
         for x, value in self.scope.items():
             if isinstance(value,SnowflakedDimension):
@@ -92,12 +95,8 @@ class RepresentationMaker(object):
         dw_rep = DWRepresentation(self.dim_reps, self.fts_reps,
                                   self.dw_conn, snowflakes)
 
-        # Clears the list of table as it's contents may otherwise be retained
-        # when a new case is executed
-        # TODO Find out how this works. Does it also retain default wrapper
+        # Clears the list of tables as its contents may otherwise be retained,
+        # when a new Case is executed.
         pygrametl._alltables.clear()
-
-
-
 
         return dw_rep

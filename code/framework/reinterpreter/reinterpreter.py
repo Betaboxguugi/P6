@@ -1,4 +1,5 @@
 import ast
+
 from .transform_visitor import TransformVisitor
 from .representation_maker import RepresentationMaker
 
@@ -11,7 +12,8 @@ class Reinterpreter(object):
     connections.
     """
 
-    def __init__(self, program, source_conns, dw_conn, program_is_path=False):
+    def __init__(self, program, source_conns, pep249_module,
+                 dw_conn_params, program_is_path=False):
         """ 
         :param program: A string containing the program that is to be 
         reinterpreted or a path to it.
@@ -21,21 +23,30 @@ class Reinterpreter(object):
         must be ordered in the occurrence of use in the program, and there has
         to be as many connections in the dictionary as there are used in the
         program
-        :param dw_conn: A connection to a DataWarehouse
-        :param program_is_path: Boolean that specifies if the program string is 
-        the actual program or a path to a file containing the program.
+        :param pep249_module: Module used for connecting to the DW.
+        :param dw_conn_params: Dict of parameters used for connecting to DW.
+        :param program_is_path: Bool telling whether the program input is a
+        path or not. If it's not, it's a string.
+        :type program_is_path: bool
         """
 
         self.program = program
-        self.dw_conn = dw_conn
+        self.pep249_module = pep249_module
+        self.dw_conn_params = dw_conn_params
         self.conn_scope = source_conns
         self.program_is_path = program_is_path
         self.source_ids = []
-        # Initiates the new scope for use during reinterpreting
+
+        # Connects to the DW
+        self.dw_conn = self.pep249_module.connect(**self.dw_conn_params)
+
+        # Generates id names for sources and DW,
+        # zipping names an replacement objects into a dictionary,
+        # which is later used as a scope.
         self.dw_id = '__0__'
         self.scope = {self.dw_id: self.dw_conn}
         counter = 0
-        # generates id names for sources
+
         for entry in source_conns:
             source_id = "__" + str(source_conns.index(entry) + 1) + "__"
             self.source_ids.append(source_id)
@@ -79,10 +90,17 @@ class Reinterpreter(object):
 
         # Executing the transformed AST
         p = compile(source=tree, filename='<string>', mode='exec')
-        exec(p, None, self.scope)
 
-        #  Creates the DWRepresentation with the transformed scope
+        exec(p, self.scope)
+
+        # Reestablishes connection to the DW, if it was closed through
+        # the execution of the pygrametl program
+        self.dw_conn.close()
+        self.dw_conn = self.pep249_module.connect(**self.dw_conn_params)
+
+        # Creates the DWRepresentation with the transformed scope
         rep_maker = RepresentationMaker(dw_conn=self.dw_conn, scope=self.scope)
         dw_rep = rep_maker.run()
+        print(dw_rep)
 
-        return dw_rep
+        return dw_rep, self.dw_conn

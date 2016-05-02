@@ -19,6 +19,25 @@ class ColumnNotNullPredicate(Predicate):
         self.column_names = []
         self.rows_with_null = []
 
+        # setup of columns, if column_names_exclude is true, then columns is
+        # all other columns than the one(s) specified.
+        if not self.column_names and not self.column_names_exclude:
+            self.column_names_exclude = True
+        # We can't iterate over a string so we convert self.column_names
+        # into a list if necessary.
+        if isinstance(self.column_names, str):
+            self.column_names = [self.column_names]
+        if self.column_names_exclude:
+            temp_columns_list = []
+            for e in self.dw_rep.get_data_representation(self.table_name).all:
+                temp_columns_list.append(e)
+            if self.column_names:
+                for e in self.column_names:
+                    temp_columns_list.remove(e)
+            self.columns = temp_columns_list
+        else:
+            self.columns = self.column_names
+
         # If else chain that insures column_names is either a list of strings
         # or a string
         if type(column_names) is list:
@@ -58,6 +77,6 @@ class ColumnNotNullPredicate(Predicate):
         return Report(self.__class__.__name__,
                       self.__result__,
                       '',
-                      'at rows {}'.format(self.rows_with_null),
+                      'at rows {}'.format(self.rows_with_null)
                       )
 

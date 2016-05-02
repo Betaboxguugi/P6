@@ -27,7 +27,7 @@ class FunctionalDependencyPredicate(Predicate): # TODO: Make this shit handle nu
         """
         vd = [{} for fd in self.func_dependencies]
         elements = []
-        
+
         for row in dw_rep.iter_join(self.tables): # Natural join of tables
             for idx, fd in enumerate(self.func_dependencies):
                 x = row[fd[0]] 
