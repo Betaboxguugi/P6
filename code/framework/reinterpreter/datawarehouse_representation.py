@@ -88,10 +88,18 @@ class DWRepresentation(object):
         references = {}
         all_dims = set(self.dims)
 
-        for flakes in self.snowflakeddims:
+        for flake in self.snowflakeddims:
             # Extends our references with internal snowflake refs
-            references.update(flakes.refs)
-            for key, value in flakes.refs.items():
+            rep_refs = {}
+            for key, value in flake.refs.items():
+                key = self._find_dim_rep(key, all_dims)
+                l = set()
+                for dim in value:
+                    l.add(self._find_dim_rep(dim, all_dims))
+                rep_refs[key] = l
+
+            references.update(rep_refs)
+            for key, value in rep_refs.items():
                 # Removes all non-root dimensions from the overall list of
                 # dimensions, so that they cannot be referenced by fact tables.
                 all_dims.difference_update(value)
@@ -108,6 +116,12 @@ class DWRepresentation(object):
             references[ft] = ft_refs
 
         return references
+
+    def _find_dim_rep(self, dim, all_dims):
+        for rep in all_dims:
+            if rep.name == dim.name:
+                return rep
+        raise Exception('Snowflaked dimension rep not found.')
 
     def __str__(self):
         return self.tabledict.__str__()

@@ -1,13 +1,16 @@
-__author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
-
 import sqlite3
 from framework.predicates.referential_integrity_predicate \
     import ReferentialIntegrityPredicate
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
+from pygrametl.tables import Dimension, SnowflakedDimension
+import pygrametl
+import os
+import random
 
-csv_name = './region.csv'
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
+
 dw_name = './dw.db'  # The one found in pygrametl_examples
 dw_conn = sqlite3.connect(dw_name)
 
@@ -34,4 +37,115 @@ facttable.query = query4
 dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
 
 ref_tester = ReferentialIntegrityPredicate()
-ref_tester.run(dw)
+print(ref_tester.run(dw))
+
+#  Wow
+
+open(os.path.expanduser('ref.db'), 'w')
+
+conn = sqlite3.connect('ref.db')
+ref_cur = conn.cursor()
+
+ref_cur.execute("CREATE TABLE dim1 " +
+                "(key1 INTEGER PRIMARY KEY, attr1 INTEGER, key2 INTEGER, "
+                "key3 INTEGER)")
+
+ref_cur.execute("CREATE TABLE dim2 " +
+                "(key2 INTEGER PRIMARY KEY, attr2 INTEGER, key4 INTEGER)")
+
+ref_cur.execute("CREATE TABLE dim3 " +
+                "(key3 INTEGER PRIMARY KEY, attr3 INTEGER)")
+
+ref_cur.execute("CREATE TABLE dim4 " +
+                "(key4 INTEGER PRIMARY KEY, attr4 INTEGER)")
+
+data = [
+    {'attr1': 24,
+     'attr2': 24,
+     'attr3': 24,
+     'attr4': 24},
+    {'attr1': 25,
+     'attr2': 25,
+     'attr3': 25,
+     'attr4': 25},
+    {'attr1': 26,
+     'attr2': 26,
+     'attr3': 26,
+     'attr4': 26},
+    {'attr1': 74,
+     'attr2': 74,
+     'attr3': 74,
+     'attr4': 74},
+    {'attr1': 75,
+     'attr2': 75,
+     'attr3': 75,
+     'attr4': 75},
+    {'attr1': 76,
+     'attr2': 76,
+     'attr3': 76,
+     'attr4': 76}
+]
+
+wrapper = pygrametl.ConnectionWrapper(connection=conn)
+
+dim1 = Dimension(
+    name='dim1',
+    key='key1',
+    attributes=['attr1', 'key2', 'key3'],
+    lookupatts=['attr1']
+)
+
+dim2 = Dimension(
+    name='dim2',
+    key='key2',
+    attributes=['attr2', 'key4'],
+    lookupatts=['attr2']
+)
+
+dim3 = Dimension(
+    name='dim3',
+    key='key3',
+    attributes=['attr3']
+)
+
+dim4 = Dimension(
+    name='dim4',
+    key='key4',
+    attributes=['attr4']
+)
+
+special_snowflake = SnowflakedDimension(references=[(dim1, [dim2, dim3]),
+                                                    (dim2, dim4)])
+
+for row in data:
+    special_snowflake.insert(row)
+
+dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes,
+                             conn, dim1.lookupatts)
+dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes,
+                             conn, dim2.lookupatts)
+dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes,
+                             conn, dim3.lookupatts)
+dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes,
+                             conn, dim4.lookupatts)
+
+dim1_rep.query = "SELECT * FROM dim1 WHERE attr1 <= 25"
+dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 <= 75 and attr2 > 25"
+dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 <= 25"
+
+snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
+                               [facttable], conn, (special_snowflake,))
+
+for dim in snow_dw_rep.dims:
+    allatts = dim.all.copy()
+    lookupatts = dim.lookupatts.copy()
+    for attr in lookupatts:
+        allatts.remove(attr)
+
+    for row in dim.itercolumns(allatts):
+        print(dim.name, row)
+
+print(ref_tester.run(snow_dw_rep))
+
+conn.commit()
+conn.close()

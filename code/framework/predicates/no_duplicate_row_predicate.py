@@ -1,13 +1,14 @@
-__author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Mikael Vind Mikkelsen'
-
 from .predicate import Predicate
 from .predicate_report import Report
+
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class NoDuplicateRowPredicate(Predicate):
 
-    def __init__(self, table_name, column_names=None, column_names_exclude=False,
+    def __init__(self, table_name, column_names=None,
+                 column_names_exclude=False,
                  verbose=False):
         """
         :param table_name: name of table to be checked
@@ -23,6 +24,7 @@ class NoDuplicateRowPredicate(Predicate):
         NoDuplicateRowPredicate is printed, this is for debugging purposes.
         :type verbose: bool
         """
+
         self.table_name = table_name
         self.column_names = column_names
         self.duplicates = []
@@ -63,13 +65,16 @@ class NoDuplicateRowPredicate(Predicate):
 
         # We check for duplicates with the columns specified
         while len(table) > 1:
-            getting_checked_row = table.pop(0)  # this dict(row) is the one we will check
-            if self.verbose:    # against all other rows in the table
+            getting_checked_row = table.pop(0)
+            # this getting_checked_row is the row we will check
+            # against all other rows in the table
+            if self.verbose:
                 print('Start predicate duplicates')
                 print("Rows remaining {}".format(len(table)))
             for row in table:
                 if self.verbose:
-                    print("Checking table against row: {}".format(getting_checked_row))
+                    print("Checking table against row: {}".format(
+                        getting_checked_row))
                     print("Checking table row: {}".format(row))
                 flag = False
                 for column in self.columns:
@@ -80,19 +85,24 @@ class NoDuplicateRowPredicate(Predicate):
                         print("Looking for value {} with key '{}'".format
                               (x, column))
                         print("Found value {}".format(y))
-                    if x != y:  # if two values between the rows are not
-                                # duplicates, the rows are not duplicates,
-                        if self.verbose:  # and we don't care about the rest of
-                            #  the values in those rows
+
+                    # if two values between the rows are not duplicates,
+                    # the rows are not duplicates, and we don't care about the
+                    # rest of the values in those rows
+                    if x != y:
+                        if self.verbose:
                             print('Unique')
                         flag = False
-                        break  # exit the for loop, this brings us to the next
-                               # row in the outer for loop
+                        # exit the for loop, this brings us to the next
+                        # row in the outer for loop, since have we confirmed
+                        # that the rows are unique
+                        break
                     else:
                         if self.verbose:
                             print('Duplicate value')
                         flag = True
-                if flag and getting_checked_row not in self.duplicates:  # duplicates is a set
+                if flag and getting_checked_row not in self.duplicates:
+                    # duplicates is a set
                     # and we check if we have already noted this duplicate row
                     if self.verbose:
                         print('Duplicate row found')

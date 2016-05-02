@@ -1,5 +1,7 @@
 from .predicate import Predicate
 from .predicate_report import Report
+from framework.reinterpreter.datawarehouse_representation \
+    import DimRepresentation, FTRepresentation
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -26,7 +28,7 @@ class ReferentialIntegrityPredicate(Predicate):
         self.__result__ = True
         self.missing_ft_keys = []
         self.missing_dim_keys = []
-        self.ft_refs, self.dim_refs = self.find_ft_dim_refs()
+        self.ft_refs, self.dim_refs = self.find_refs()
 
         for dim, key_dic in self.dim_refs.items():
             for key in key_dic.keys():
@@ -36,24 +38,40 @@ class ReferentialIntegrityPredicate(Predicate):
             for key in keyref_dic.keys():
                 self.check_ft_to_table(ft, key)
 
-        self.report()
+        return self.report()
 
-    def find_ft_dim_refs(self):
+    def find_refs(self):
         ft_refs = {}
         dim_refs = {}
-        fts = self.dw_fts.copy()
-        for ft in fts:
-            dims = self.dw_rep.refs[ft].copy()
-            keyref_dic = {}
-            for keyref in ft.keyrefs:
-                for dim in dims:
-                    if dim.key == keyref:
-                        key_dic = {dim.key: ft}
-                        keyref_dic[keyref] = dim
-                        dim_refs[dim] = key_dic
-                        dims.remove(dim)
-                        break
-            ft_refs[ft] = keyref_dic
+        refs = self.dw_rep.refs.copy()
+
+        for table, tables in refs.items():
+            if isinstance(table, DimRepresentation):
+                dims = refs[table].copy()
+                ref_dim = {}
+                for attr in table.attributes:
+                    for dim in dims:
+                        if dim.key == attr:
+                            dim_ref = {dim.key: table}
+                            ref_dim[dim.key] = dim
+                            dim_refs[dim] = dim_ref
+                            dims.remove(dim)
+                            break
+                dim_refs[table] = ref_dim
+
+            elif isinstance(table, FTRepresentation):
+                dims = refs[table].copy()
+                keyref_dic = {}
+                for keyref in table.keyrefs:
+                    for dim in dims:
+                        if dim.key == keyref:
+                            key_dic = {dim.key: table}
+                            keyref_dic[keyref] = dim
+                            dim_refs[dim] = key_dic
+                            dims.remove(dim)
+                            break
+                ft_refs[table] = keyref_dic
+
         return ft_refs, dim_refs,
 
     def check_ft_to_table(self, ft, key):
@@ -108,4 +126,4 @@ class ReferentialIntegrityPredicate(Predicate):
                         'failed entries. This should never happen.'.format(
                           self.__class__.__name__)
                         )
-        print(report)
+        return report
