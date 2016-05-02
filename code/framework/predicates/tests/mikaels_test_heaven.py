@@ -7,6 +7,7 @@ from framework.predicates.column_not_null_predicate import ColumnNotNullPredicat
 from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.rule_predicate import RulePredicate
 from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
+from framework.predicates.row_count_predicate import RowCountPredicate
 from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
