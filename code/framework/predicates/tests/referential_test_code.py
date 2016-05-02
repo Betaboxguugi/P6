@@ -34,7 +34,7 @@ time_dim.query = query2
 location_dim.query = query3
 facttable.query = query4
 
-dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
+dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
 
 ref_tester = ReferentialIntegrityPredicate()
 print(ref_tester.run(dw))
@@ -64,22 +64,27 @@ data = [
      'attr2': 24,
      'attr3': 24,
      'attr4': 24},
+
     {'attr1': 25,
      'attr2': 25,
      'attr3': 25,
      'attr4': 25},
+
     {'attr1': 26,
      'attr2': 26,
      'attr3': 26,
      'attr4': 26},
+
     {'attr1': 74,
      'attr2': 74,
      'attr3': 74,
      'attr4': 74},
+
     {'attr1': 75,
      'attr2': 75,
      'attr3': 75,
      'attr4': 75},
+
     {'attr1': 76,
      'attr2': 76,
      'attr3': 76,
@@ -130,11 +135,11 @@ dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes,
                              conn, dim4.lookupatts)
 
 dim1_rep.query = "SELECT * FROM dim1 WHERE attr1 <= 25"
-dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 <= 75 and attr2 > 25"
+dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 > 25 and attr2 <= 75"
 dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 <= 25"
 
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
-                               [facttable], conn, (special_snowflake,))
+                               conn, snowflakeddims=(special_snowflake, ))
 
 for dim in snow_dw_rep.dims:
     allatts = dim.all.copy()

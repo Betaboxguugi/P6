@@ -28,7 +28,7 @@ class DWRepresentation(object):
     Allows for access to specific tables simply through their name.
     """
 
-    def __init__(self, dims, fts, connection, snowflakeddims=()):
+    def __init__(self, dims, connection, fts=[], snowflakeddims=()):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
@@ -46,6 +46,7 @@ class DWRepresentation(object):
             # Also collects a list of names for a later check
             name_list = []
             self.rep = self.dims + self.fts
+
             for entry in self.rep:
                 low = entry.name.lower()
                 entry.name = low
