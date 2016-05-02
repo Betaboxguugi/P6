@@ -1,5 +1,26 @@
 __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
+__maintainer__ = 'Mathias Claus Jensen'
 
+from itertools import filterfalse
+
+
+def intersection(a, b):
+    return list(filterfalse(lambda x: x not in b, a))
+
+def natural_join_dicts(dict1, dict2, keys):
+    """
+    """
+    hashlist = [{row[k]: idx for idx, row in enumerate(dict1)} for k in keys] 
+    newtable = []
+    keyhash = {k, i for i, k in enumerate(keys)}
+    dflags = [False for k in keys]
+    flags = dflags.copy()
+                  
+    for row in dict2:
+        for k in keys:
+            i = keyhash[k]
+            if row[k] in hashlist[i]:
+                
 
 class DWRepresentation(object):
     """
@@ -11,6 +32,7 @@ class DWRepresentation(object):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
+        :param snowflakeddims: Tuble of SnowflakedDimensions
         :param connection: A PEP 249 connection to a database
         """
 
@@ -40,9 +62,6 @@ class DWRepresentation(object):
                 self.tabledict[entry.name] = entry
 
             self.refs = self._find_structure()
-
-
-
         finally:
             try:
                 pass
@@ -78,6 +97,41 @@ class DWRepresentation(object):
     def __repr__(self):
         return self.__str__()
 
+
+    def iter_join(self, names):
+        """ Iterate over a natural join of the given table names
+        :param names: List of table names
+        :yield: A dictionary representing a row
+        """
+        query = ""
+        if len(names) == 1:
+            query = "SELECT * FROM " + names[0]
+        else:
+            query = "SELECT * FROM " + " NATURAL JOIN ".join(names)
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query)
+            names = [t[0] for t in cursor.description]
+
+            while True:
+                data = cursor.fetchmany(500)
+                if not names:
+                    names = [t[0] for t in cursor.description]
+                if not data:
+                    break
+                if len(names) != len(data[0]):
+                     raise ValueError(
+                        "Incorrect number of names provided. " +
+                        "%d given, %d needed." % (len(names), len(data[0])))
+                for row in data:
+                    yield dict(zip(names, row))
+        finally:
+            try:
+                cursor.close()
+            except Exception:
+                pass        
+        
+    
     def get_data_representation(self, name):
         """
         :param name: Name of the requested table
@@ -87,8 +141,7 @@ class DWRepresentation(object):
 
 
 class TableRepresentation(object):
-    """
-    Super class for representing tables in a DW
+    """ Super class for representing tables in a DW
     """
 
     def __iter__(self):
@@ -122,8 +175,7 @@ class TableRepresentation(object):
                 pass
 
     def itercolumns(self, column_names):
-        """
-        Lets us fetch only a subset of columns from the table
+        """Lets us fetch only a subset of columns from the table
         :param column_names: The subset of columns of interest
         :return: A generator for iterating over the contents of the table
         """
