@@ -46,14 +46,14 @@ class NoDuplicateRowPredicate(Predicate):
         # all other columns than the one(s) specified.
         if not self.column_names and not self.column_names_exclude:
             self.column_names_exclude = True
+        # We can't iterate over a string so we convert self.column_names
+        # into a list if necessary.
         if isinstance(self.column_names, str):
             self.column_names = [self.column_names]
         if self.column_names_exclude:
             temp_columns_list = []
             for e in self.dw_rep.get_data_representation(self.table_name).all:
                 temp_columns_list.append(e)
-            # We can't iterate over a string so it converts self.column_names
-            # into a list.
             if self.column_names:
                 for e in self.column_names:
                     temp_columns_list.remove(e)
@@ -61,19 +61,19 @@ class NoDuplicateRowPredicate(Predicate):
         else:
             self.columns = self.column_names
 
-        # Otherwise we check for duplicates with the columns specified
+        # We check for duplicates with the columns specified
         while len(table) > 1:
-            dic = table.pop(0)  # this dict(row) is the one we will check
+            getting_checked_row = table.pop(0)  # this dict(row) is the one we will check
             if self.verbose:    # against all other rows in the table
                 print('Start predicate duplicates')
                 print("Rows remaining {}".format(len(table)))
             for row in table:
                 if self.verbose:
-                    print("Checking table against row: {}".format(dic))
+                    print("Checking table against row: {}".format(getting_checked_row))
                     print("Checking table row: {}".format(row))
                 flag = False
                 for column in self.columns:
-                    x = dic.get(column)
+                    x = getting_checked_row.get(column)
                     y = row.get(column)
                     if self.verbose:
                         print("Looking at column '{}'".format(column))
@@ -86,17 +86,17 @@ class NoDuplicateRowPredicate(Predicate):
                             #  the values in those rows
                             print('Unique')
                         flag = False
-                        break  # exit the for loop, this should bring us to the
-                               # next row in the outer for loop
+                        break  # exit the for loop, this brings us to the next
+                               # row in the outer for loop
                     else:
                         if self.verbose:
                             print('Duplicate value')
                         flag = True
-                if flag and dic not in self.duplicates:  # duplicates is a set
+                if flag and getting_checked_row not in self.duplicates:  # duplicates is a set
                     # and we check if we have already noted this duplicate row
                     if self.verbose:
                         print('Duplicate row found')
-                    self.duplicates.append(dic)
+                    self.duplicates.append(getting_checked_row)
                 if flag and row not in self.duplicates:
                     self.duplicates.append(row)
         if len(self.duplicates) < 1:
