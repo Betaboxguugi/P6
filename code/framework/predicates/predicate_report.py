@@ -2,7 +2,7 @@ __author__ = 'Mathias Claus Jensen'
 
 
  # The amount of errornous elements that will be printed
-MAX_ELEMENTS = 100
+MAX_ELEMENTS = 15
 
 
 class Report(object):

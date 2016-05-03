@@ -8,8 +8,7 @@ def intersection(a, b):
     return list(filterfalse(lambda x: x not in b, a))
 
 def natural_join_dicts(dict1, dict2, keys):
-    """
-    """
+
     hashlist = [{row[k]: idx for idx, row in enumerate(dict1)} for k in keys] 
     newtable = []
     keyhash = {k, i for i, k in enumerate(keys)}
@@ -244,12 +243,8 @@ class DimRepresentation(TableRepresentation):
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
-        row_list = []
-        for row in self.itercolumns(self.all):
-            row_list.append(row)
-        text = "{} {} {} {} {} {}".format(self.name, self.key, self.attributes,
-                                          self.lookupatts, self.connection,
-                                          row_list)
+        text = "{} {} {} {}".format(self.name, self.key, self.attributes,
+                                    self.lookupatts)
         return text
 
     def __repr__(self):
@@ -306,11 +301,7 @@ class FTRepresentation(TableRepresentation):
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
-        row_list = []
-        for row in self.itercolumns(self.all):
-            row_list.append(row)
-        text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures,
-                                       self.connection, row_list)
+        text = "{} {} {}".format(self.name, self.keyrefs, self.measures)
         return text
 
     def __repr__(self):

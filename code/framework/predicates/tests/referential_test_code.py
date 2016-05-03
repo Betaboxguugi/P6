@@ -6,7 +6,6 @@ from framework.reinterpreter.datawarehouse_representation \
 from pygrametl.tables import Dimension, SnowflakedDimension
 import pygrametl
 import os
-import random
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -18,6 +17,7 @@ query1 = "SELECT * FROM bookDim WHERE bookid < 3"
 query2 = "SELECT * FROM timeDim"
 query3 = "SELECT * FROM locationDim"
 query4 = "SELECT * FROM factTable WHERE bookid > 1"
+
 book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
 
 time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
@@ -39,7 +39,7 @@ dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
 ref_tester = ReferentialIntegrityPredicate()
 print(ref_tester.run(dw))
 
-#  Wow
+#  Snowflaking test
 
 open(os.path.expanduser('ref.db'), 'w')
 
@@ -125,18 +125,18 @@ special_snowflake = SnowflakedDimension(references=[(dim1, [dim2, dim3]),
 for row in data:
     special_snowflake.insert(row)
 
-dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes,
-                             conn, dim1.lookupatts)
-dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes,
-                             conn, dim2.lookupatts)
-dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes,
-                             conn, dim3.lookupatts)
-dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes,
-                             conn, dim4.lookupatts)
+dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes, conn,
+                             dim1.lookupatts)
+dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes, conn,
+                             dim2.lookupatts)
+dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
+                             dim3.lookupatts)
+dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
+                             dim4.lookupatts)
 
 dim1_rep.query = "SELECT * FROM dim1 WHERE attr1 <= 25"
-dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 > 25 and attr2 <= 75"
-dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 <= 25"
+dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 > 25 and attr2 < 75"
+dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 >= 75"
 
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
