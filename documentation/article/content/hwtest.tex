@@ -1,35 +1,10 @@
 \section{Overview of \FW{}}
-\FW{} is developed to assist in performing source to target testing of pygrametl programs. It is designed for functional testing at the system level, and it can also be used for regression testing.  In this section we will give an overview of the of \FW{}. First we touch upon the limits of the frameworks scope.  Afterwards we look into the general usage of the framework.
+In this section we will give a quick overview of \FW{}. The framework is developed to assist in performing source to target testing of pygrametl programs. It is designed for functional testing at the system level, and supports regression testing. The framework is not made for exhausitve testing, but rather to assist in reaching an adequate test coverage. It assists in testing for both data loss and conformity to business rules.
 
-\subsection{Testing limits}
-As \FW{} performs source to targets tests, it is important that users are able to express assertions about a DW. What assertions a user need to make, depends on what needs to be tested. As source-to-target testing is purely data-centric, we do not assert about  performance or security. We limit the framework to focus on testing the contents of a DW. The framework supplies some classes, known as predicates, which represents some data-centric assertion types. These are used to make the needed assertions for tests. In defining what assertions the framework needed to supply, we looked into some common data data-centric concerns. These include both data loss and whether business rules and data integrity are upheld.  These will be explained in the following sections: 
+\FW{} consists of two major components
 
-\subsubsection{Data Loss}
-Through the ETL process, data from sources makes its way into a DW. This new data contains information relevant to future business analysis performed by users. However, information may get lost during the process. Data loss may occur in any of the three subprocesses. It is possible that the wrong data is extracted from the sources. Transformations may be faulty and produce an incorrect result. Loss during load may occur through truncation. Truncation occurs, when the datatype of a DW attribute cannot store the amount of data necessary. This often results in the data being cut to fit the data type, and thus data is lost. The result of any data loss is a DW not containing the needed information. This leads to poor business analysis. The framework should assist in ensuring that no data loss occurs during the process.
+As \FW{} performs source to targets tests, it is important that users are able to express assertions about a DW. What assertions a user need to make, depends on what needs to be tested. We limit the framework to focus on testing the contents of a DW. The framework supplies some classes, known as predicates, which represents some data-centric assertion types. These are used to make the needed assertions for tests. In defining what assertions the framework needed to supply, we looked into some common data data-centric concerns. These include both data loss and whether business rules and data integrity are upheld.  These will be explained in the following sections: 
 
-\subsubsection{Business Rules}
-The term business rule is generally used for all rules applied to data stored in a database. This also includes data integrity as spoken about before. However data integrity could be seen as an ideal from which the business rules may differ. In the case of DWs the actual business rules often do not enforce entity integrity upon the fact table as the access of a specific entry may be unnecessary. Business rules however do not only pertain to data integrity as it is a rather broad term. An example of this could be an attribute relationships such as hierarchies. Another type of business rule could describe the schema of a specific table.
-
-\subsubsection{Data Integrity}
-For a DW to be useful we want there to be data integrity. That is, stored data is both accurate and consistent. 3 rules ensure data integrity:
-
-\begin{itemize}
-\item Entity integrity
-\item Referential integrity
-\item Domain integrity
-\end{itemize}
-
-Entity integrity concerns primary keys. It states that every table should have a primary key and that it should be unique and not null for each entry. Referential integrity is about foreign keys. It enforces that a foreign key should either refer to the primary key of another table or be null. This means that a foreign key can not refer to a primary key that does not exist. Domain integrity relates to the values taken on by attributes. It says that all attributes must have a defined domain. Likewise the values of attributes in all tuples should stay within their defined domain. Data integrity is important as it allows us to assert certain truths about our database. Such as each tuple in a table being identifiable or that a join between two tables is possible. Despite these advantages, DBMS' may not enforce them during loads. Loading data into a DW using an ETL usually involves a large amount of data and access to the DW is shut down temporarily. Checking each entry for data integrity can be expensive. Therefore a fast load often takes precedence over a safe load. If the ETL system is improperly designed, the DW ends up not having data integrity, which may hinder its usefulness. If the framework can assist in testing for data integrity, we can ensure future data integrity.
-
-\subsection{Using \FW{}}
-Often testers do not have access to actual data that their ETL will use once released. They are instead forced to define their own sources and DW  for their test cases. To avoid errors in the tests themselves, the test data needs to be small in size. This is acceptable as \FW{} does not focus upon  performance or stress testing. Some edge cases may also be absent from actual collected data. Thus even with access to actual data, testers may have issues with getting the needed test coverage. In \FW{} a test data source can be given as a  PEP 249 connection or a list of dictionaries. A test DW can be given only through a PEP 249 connection. 
-
-
-
-
-
-%% Vi har brug for noget text om at pygrametl presser os til at være generiske. PEP249. 
-%% Skal kunne connecte vores tanker om assertions her til predicates længere fremme. 
 
 
 
