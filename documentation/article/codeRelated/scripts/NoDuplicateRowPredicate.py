@@ -5,5 +5,5 @@ NoDuplicateRowPredicate(table_name='logins',
                         verbose=False)
 
 # Also acceptable instantiation, which checks all columns in each row.
-NoDuplicateRowPredicate(table_name='Adress')
+NoDuplicateRowPredicate(table_name='Address')
 # Please work now

@@ -3,7 +3,7 @@ __maintainer__ = 'Mathias Claus Jensen'
 
 from itertools import filterfalse
 
-
+"""
 def intersection(a, b):
     return list(filterfalse(lambda x: x not in b, a))
 
@@ -18,7 +18,7 @@ def natural_join_dicts(dict1, dict2, keys):
     for row in dict2:
         for k in keys:
             i = keyhash[k]
-            if row[k] in hashlist[i]:
+            if row[k] in hashlist[i]:"""
                 
 
 class DWRepresentation(object):
@@ -31,7 +31,7 @@ class DWRepresentation(object):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
-        :param snowflakeddims: Tuble of SnowflakedDimensions
+        :param snowflakeddims: Tuple of SnowflakedDimensions
         :param connection: A PEP 249 connection to a database
         """
 
@@ -162,8 +162,7 @@ class DWRepresentation(object):
                 cursor.close()
             except Exception:
                 pass        
-        
-    
+
     def get_data_representation(self, name):
         """
         :param name: Name of the requested table
@@ -286,9 +285,10 @@ class FTRepresentation(TableRepresentation):
     def __init__(self, name, keyrefs, connection, measures=()):
         """
         :param name: Name of table
-        :param keyrefs: List of attributes that are foreign keys to other tables
-        :param measures: List of attributes containing non-key values
+        :param keyrefs: List of attributes that are foreign keys to other
+        tables
         :param connection: PEP249 connection to a database
+        :param measures: List of attributes containing non-key values
         """
         self.name = name
         self.keyrefs = keyrefs
