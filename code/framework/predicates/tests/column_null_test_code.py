@@ -23,8 +23,8 @@ facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
                              dw_conn, ['sale'])
 dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
 
-notnull_tester1 = ColumnNotNullPredicate('sales', 'sale')
-notnull_tester2 = ColumnNotNullPredicate('book', 'genre')
+notnull_tester1 = ColumnNotNullPredicate('factTable', 'sale')
+notnull_tester2 = ColumnNotNullPredicate('bookdim', 'genre')
 
 print(notnull_tester1.run(dw))
 print(notnull_tester2.run(dw))

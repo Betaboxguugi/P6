@@ -4,7 +4,7 @@ CompareTablePredicate asserts that two tables are either equal or that one is a 
 \insertcodefile{codeRelated/scripts/CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
 
 \begin{description}
-\item [actual\_name] is a string containing the name of the table from your datawarehouse, you would like to compare with the given \textit{expected\_table}. It is used to index our datawarehouse representation and then retrieve the actual table.
+\item [actual\_name] is a string containing the name of the table from a datawarehouse, to be compared with the given \textit{expected\_table}. It is used to index the datawarehouse representation and then retrieve the actual table.
 \item [expected\_table] is a list of dictionaries, representing a database table, and is used to check whether it is equal to, or a subset of the actual table.
 \item [ignore\_atts] is a list of string containing the names of the attributes you wish to ignore when comparing the two tables. E.g. one could imagine that it would be nice to not compare on surrogate keys, as they might change from run to run of the pygrametl program.
   \item [subset] is a boolean, if \textit{true} the expected table only has to be a subset of the actual table, else they have to be equal.

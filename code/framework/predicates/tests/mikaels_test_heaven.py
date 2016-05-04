@@ -103,9 +103,9 @@ print(dup_tester3.run(dw))
 print(row_tester1.run(dw))
 print(row_tester1.run(dw))
 print(row_tester2.run(dw))
-print(tab_tester1.run(dw))
+"""print(tab_tester1.run(dw))
 print(tab_tester2.run(dw))
-print(tab_tester3.run(dw))
+print(tab_tester3.run(dw))"""
 print(nn_tester1.run(dw))
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det

@@ -129,13 +129,11 @@ class DWRepresentation(object):
     def __repr__(self):
         return self.__str__()
 
-
     def iter_join(self, names):
         """ Iterate over a natural join of the given table names
         :param names: List of table names
         :yield: A dictionary representing a row
         """
-        query = ""
         if len(names) == 1:
             query = "SELECT * FROM " + names[0]
         else:
@@ -152,7 +150,7 @@ class DWRepresentation(object):
                 if not data:
                     break
                 if len(names) != len(data[0]):
-                     raise ValueError(
+                    raise ValueError(
                         "Incorrect number of names provided. " +
                         "%d given, %d needed." % (len(names), len(data[0])))
                 for row in data:
