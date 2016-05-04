@@ -1,6 +1,6 @@
 import inspect
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'

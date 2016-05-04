@@ -30,7 +30,7 @@ class Report(object):
         s = self.predname + ': ' 
         if self.result:
             return s + 'SUCCESS\n'
-        elif elements:
+        elif self.elements:
             s += 'FAILED\nThe predicate did not hold on the following entries\n'
             i = 0
             for e in self.elements:
