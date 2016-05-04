@@ -23,7 +23,7 @@ In \FW{} a test case is defined as a run of an ETL program on a specific set of 
 The parameters are defined as follows:
 \begin{itemize}
 \item \textbf{program}: The ETL program under test
-\item \textbf{sources}: A list of test sources to insert into the program
+\item \textbf{sources}: A list of connection objects to test sources. These are ordered acording to the apperance of the corresponding hard coded connection in the program. 
 \item \textbf{predicates}: A list of predicates to execute on the populated DW
 \item \textbf{pep249\_module}: The pep249 module used to access the test DW
 \item \textbf{program\_is\_path}: Flag indicating whether the program was given as a path or string
