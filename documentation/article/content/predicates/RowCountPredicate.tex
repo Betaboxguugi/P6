@@ -1,0 +1,12 @@
+\subsection{RowCountPredicate}
+RowCountPredicate asserts if a table has the specified number of rows. This can be useful in situations where the user knows how many rows should be in a given table, after a function or transformation has been done upon it. RowCountPredicate is instantiated as follows, with description of the parameters below.
+
+\insertcodefile{codeRelated/scripts/RowCountPredicate.py}{Instantiation of RowCountPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of specific table from as data warehouse. 
+\item [number\_of\_rows] a integer representing the specified number of rows we are looking for
+\end{description}
+
+RowCountPredicate iterates over each row in a table, counting them and adding them to a list. The length of the list is then compared to number provided by number\_of\_rows. If equal, the test is successful, if not equal, the test return false and reports how many rows are actually in the table.
+

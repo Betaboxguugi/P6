@@ -2,69 +2,12 @@
 \todo[inline]{Skriv introduktion.}
 In the following section...
 
-\subsection{ColumnNotNullPredicate}
-ColumnNotNullPredicate asserts that a all entries of each row in a specified list of columns within a table, does not contain null. Allowing a user to ensure that the data within a table has all entries filled after a use of a function or insertion of data.
-The ColumnNotNullPredicate is instantiated as follows, with description of the parameters below.
+\input{content/predicates/ColumnNotNullPredicate.tex}
+\input{content/predicates/CompareTablePredicate.tex}
+\input{content/predicates/NoDuplicateRowPredicate.tex}
+\input{content/predicates/ReferentialIntegrityPredicate.tex}
+\input{content/predicates/RowCountPredicate.tex}
+\input{content/predicates/RuleColumnPredicate.tex}
+\input{content/predicates/TabelPredicate.tex}
+\input{content/predicates/FunctionalDependencyPredicate.tex}
 
-\insertcodefile{codeRelated/scripts/ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
-
-\begin{description}
-\item [table\_name] a string containing the name of the specific table from a data warehouse, that the test must run on. 
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within the table
-\end{description}
-
-ColumnNotNullPredicate iterates over every row in the specified table. In each row it then iterates over each element in the column(s) specified. Through this later iteration it ensures that each element is not null. If null is found, the row it was found in is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false.
-
-\subsection{CompareTablePredicate}
-CompareTablePredicate asserts that two tables are either equal or that one is a subset of the other. It is made to allow users to give an expected table to compare with the actual one populated by their pygrametl program. It checks if an identical row exists in the actual table, for each row in the expected table. The CompareTablePredicate is instantiated as follows, with description of the parameters below.
-
-\insertcodefile{codeRelated/scripts/CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
-
-\begin{description}
-\item [actual\_name] is a string containing the name of the table from your datawarehouse, you would like to compare with the given \textit{expected\_table}. It is used to index our datawarehouse representation and then retrieve the actual table.
-\item [expected\_table] is a list of dictionaries, representing a database table, and is used to check whether it is equal to, or a subset of the actual table.
-\item [ignore\_atts] is a list of string containing the names of the attributes you wish to ignore when comparing the two tables. E.g. one could imagine that it would be nice to not compare on surrogate keys, as they might change from run to run of the pygrametl program.
-  \item [subset] is a boolean, if \textit{true} the expected table only has to be a subset of the actual table, else they have to be equal.
-\end{description}
-
-CompareTablePredicate works by using the filterfalse function from the standard python package \textit{itertools}. It uses this to take the relative complement of the two tables and we assert that the predicate holds true for the case of \textit{subset} equal \textit{true} if,
-
-\[ A \backslash E \equiv \emptyset \]
-
-\noindent which implies that $E \subseteq A$, where A is the actual table and E is the expected table.
-
-And for \textit{subset} equal \textit{false} if,
-
-\[ A \backslash E \cup E \backslash A \equiv \emptyset \]
-
-\noindent which implies that $A \equiv E$, where A is the actual table and E is the expected table.
-
-\subsection{RuleColumnPredicate}
-
-RuleColumnPredicate asserts that all entries of each row in a specified list of columns within a table, complies with a constraint, given trough a predicate made by the user. This allows the user a lot of freedom in their tests, as they can test each row of elements in a given table, in any way they wish. Ensuring the data complies with the requirements they have set for it. The RuleColumnPredicate is instantiated as follows, with description of the parameters below.
-
-\insertcodefile{codeRelated/scripts/RuleColumnPredicate.py}{Instantiation of RuleColumnPredicate}
-
-\begin{description}
-\item [table\_name] a string containing the name of specific table from as data warehouse. 
-\item [constraint\_function] a predicate that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table
-\item [return\_list] a bool, if false then all elements from the column(s) is send as arguments to the constraint function, if true they are send as a list instead.
-\end{description}
-
-RuleColumnPredicate iterates over every row in the specified table. For each row, it iterates over the column(s) specified, where it takes each element from each column(s) and calls the constraint function on those elements as either arguments or a list, depending on what the user has specified. If the constraint function returns false on a row, then the row is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false. RuleColumnPredicate does not support constraints with a variable number of arguments.
-
-\subsection{NoDuplicateRowPredicate}
-
-NoDuplicateRowPredicate a table does not have 2 or more rows entries which are a duplicate of each other. \todo[inline]{this is helpful because...(include something about unique keys)}
-
-\insertcodefile{codeRelated/scripts/NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
-
-\begin{description}
-\item [table\_name] a string containing the name of specific table from as data warehouse. 
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table. Default for column\_names is null, which has some interaction with column\_names\_exclude.
-\item [column\_names\_exclude] a bool, if true, then columns\_names specifies which columns the predicate will exclude to look at when comparing. Default is None. Note if columns\_names is null then column\_names\_exclude will be set to true if false too.
-\item [verbose] a bool, if this is set to true information from each step in NoDuplicateRowPredicate is printed. Used for debugging.
-\end{description}
-
-NoDuplicateRowPredicate chooses a row from the specified table and checks whether it's unique from each of the remaining rows in the table, and does so for every row except the last. Through each iteration the chosen row is popped from the table first, so that each iteration will be smaller from the last. When the rows are checked against each other, each specified column (or if columns were excluded, all the non-excluded columns) have their values compared between the rows. If at least one of these values are unique between the rows, the two rows are not duplicates. It then stops checking values for the two rows and moves to check the next row. If the predicate fails to find unique values between the rows, it attempts to add the duplicate row to a set of duplicate rows, which is then shown in the report. Potential problems arise when column are somehow specified wrongly, as the predicate will collect None type values from non-existent columns and check them against each other, which are then seen as duplicates. Another problem is when primary key values are checked as well, as these should never be duplicates, but the rest of the attributes may still be duplicates between two rows, and thus that information is missed, the programmer needs to be aware of this.

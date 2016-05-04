@@ -8,6 +8,7 @@ from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.rule_predicate import RulePredicate
 from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
 from framework.predicates.row_count_predicate import RowCountPredicate
+from framework.predicates.tabel_predicate import TabelPredicate
 from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
@@ -71,14 +72,35 @@ dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
 
 ref_tester1 = NoDuplicateRowPredicate('bookdim', ['book', 'genre'])
 ref_tester2 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'])
-ref_tester3 = NoDuplicateRowPredicate('bookdim', ['bookid', 'book'], True, True)
+ref_tester3 = NoDuplicateRowPredicate('bookdim', ['bookid', 'book'], True)
+ref_tester4 = RowCountPredicate('bookdim', 4)
+ref_tester5 = RowCountPredicate('bookdim', 5)
+
+
+def constraint1(a, b):
+    print(a)
+    print(b)
+    return True
+
+
+def constraint2(a):
+    print(a)
+    return False
+
+ref_tester6 = TabelPredicate('bookdim', constraint1, ['book', 'genre'], False, False)
+ref_tester7 = TabelPredicate('bookdim', constraint2, ['genre'], False, False)
+ref_tester8 = TabelPredicate('timedim', constraint1, ['day', 'month'])
 
 
 print(ref_tester1.run(dw))
 print(ref_tester2.run(dw))
 print(ref_tester3.run(dw))
-
-
+print(ref_tester4.run(dw))
+print(ref_tester4.run(dw))
+print(ref_tester5.run(dw))
+print(ref_tester6.run(dw))
+print(ref_tester7.run(dw))
+print(ref_tester8.run(dw))
 
 
 

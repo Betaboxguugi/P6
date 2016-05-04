@@ -4,22 +4,7 @@ __maintainer__ = 'Mathias Claus Jensen'
 from itertools import filterfalse
 
 
-def intersection(a, b):
-    return list(filterfalse(lambda x: x not in b, a))
 
-def natural_join_dicts(dict1, dict2, keys):
-
-    hashlist = [{row[k]: idx for idx, row in enumerate(dict1)} for k in keys] 
-    newtable = []
-    keyhash = {k, i for i, k in enumerate(keys)}
-    dflags = [False for k in keys]
-    flags = dflags.copy()
-                  
-    for row in dict2:
-        for k in keys:
-            i = keyhash[k]
-            if row[k] in hashlist[i]:
-                
 
 class DWRepresentation(object):
     """
@@ -27,7 +12,7 @@ class DWRepresentation(object):
     Allows for access to specific tables simply through their name.
     """
 
-    def __init__(self, dims, connection, fts=[], snowflakeddims=()):
+    def __init__(self, dims, fts, connection, snowflakeddims=()):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
