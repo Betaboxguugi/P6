@@ -12,7 +12,7 @@ from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
 
-_author__ = 'Mikael Vind Mikkelsen'
+__author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 """
