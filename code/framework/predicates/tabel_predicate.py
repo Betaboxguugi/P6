@@ -44,37 +44,31 @@ class TabelPredicate(Predicate):
 
         if len(inspect.getargspec(self.constraint_function).args) \
                 != len(self.column_names):
-            raise ValueError("""Number of columns and number of arguments
-         do not match""")
+            raise ValueError("""Number of columns specified and number of
+            arguments do not match""")
+
+        constraint_list = []
+        for column_name in self.column_names:
+            elements_list = []
+            for row in dw_rep.get_data_representation(self.table_name):
+                elements_list.append(row.get(column_name.lower()))
+            constraint_list.append(elements_list)
 
         if self.return_list:
-            constraint_list = []
-            for column_name in self.column_names:
-                elements_list = []
-                for row in dw_rep.get_data_representation(self.table_name):
-                    elements_list.append(row.get(column_name.lower()))
-                constraint_list.append(elements_list)
-            print(constraint_list)
             if not self.constraint_function(*constraint_list):
                 self.__result__ = False
 
         elif not self.return_list:
-            constraint_list = []
-            for column_name in self.column_names:
-                elements_list = []
-                for row in dw_rep.get_data_representation(self.table_name):
-                    elements_list.append(row.get(column_name.lower()))
-                constraint_list.append(elements_list)
             temp_list = []
             for column in constraint_list:
-                # TODO: CHECK FOR WHOLE LIST, CAN'T BE CERTAIN ITS ALL THE SAME TYPE
+                # TODO: CHECK FOR WHOLE LIST, MIGHT NOT BE CERTAIN ITS ALL THE SAME TYPE
                 if isinstance(column[0], int):
                     temp_list.append(sum(column))
                 elif isinstance(column[0], str):
                     temp_list.append(''.join(column))
             constraint_arg = temp_list
 
-            if len(constraint_arg) <= len(self.column_names):
+            if len(constraint_arg) == len(self.column_names):
                 if not self.constraint_function(*constraint_arg):
                     self.__result__ = False
             else:

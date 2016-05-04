@@ -1,7 +1,7 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 
-from .reinterpreter.reinterpreter_mock import ReinterpreterMock as Reinterpreter
+from .reinterpreter.reinterpreter import Reinterpreter
 
 
 class Case:
