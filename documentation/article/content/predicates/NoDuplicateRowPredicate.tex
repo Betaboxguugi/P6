@@ -1,7 +1,7 @@
 \subsection{NoDuplicateRowPredicate}
 
-NoDuplicateRowPredicate a table does not have 2 or more rows entries which are a duplicate of each other. \todo[inline]{this is helpful because...(include something about unique keys)}
-
+NoDuplicateRowPredicate asserts that a table does not have 2 or more rows entries which are a duplicate of each other. It can be specified to only look at certain columns, where it will consider the columns specified as the rows it looks upon. This can helpful in routing out problems when applying joins, as duplicates can occur in one or more columns when doing so. Otherwise it can also be used after creation of a table or insertion of data into one, as this is also a common area where duplicates may be found if something were done improperly.
+ 
 \insertcodefile{codeRelated/scripts/NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
 \begin{description}

@@ -5,14 +5,14 @@ The purpose of \FW{} is to assist in functional source to target testing of ETL 
 
 \FW{} contains three major components:
 \begin{itemize}
-\item\textbf{ Reinterpreter}
-\item \textbf{DWRepresentation}
-\item \textbf{Predicates}
+\item\textbf{Reinterpreter}
+\item\textbf{DWRepresentation}
+\item\textbf{Predicates}
 \end{itemize}
 
-The purpose of the reinterpreter is to avoid having users change their pygrametl programs for testing. ETL developers will often hardcoded connections to sources and DW into their ETL program. These contain actual data collected and used by the organization. Because of regulations such data is not available for testers to use. Thus, they have to create their own test sources and DWs. However, they should avoid having to hardcode connections to test data in their programs, as this may be time consuming and error prone. Instead, the reinterpreter allows users to dynamically insert test connections into their ETL program, when performing tests.
+The purpose of the reinterpreter is to avoid having users change their pygrametl programs for testing. ETL developers will often hardcode connections to sources and DW's into their ETL program. These contain actual data collected and used by the organization. Because of regulations such data is not available for testers to use. Thus, they have to create their own test sources and DW's. However, they should avoid having to hardcode connections to test data in their programs, as this may be time consuming and error prone. Instead, the reinterpreter allows users to dynamically insert test connections into their ETL program, when performing tests.
 
-The reinterpreter also assists in building a DWRepresentation object from the ETL program under test. DWRepresentation is a class made to contain structural information about the DW being populated. It also allows for easy access of the DW tables and their metadata.
+The reinterpreter also assists in building a DWRepresentation object from the ETL program under test. DWRepresentation is a class made to contain structural information about the DW being populated. It also allows for easy access of the DW tables and their meta data.
 
 The Predicates are a family of classes used to make assertions about a populated DW. All of them inherit from the Predicate class. Testers make assertions by instantiating a predicate class with the tables of interest along with some other arguments depending on predicate type. Once instantiated, a predicate can be made to check whether the defined assertion hold or not and then report upon it.
 
@@ -30,7 +30,7 @@ The parameters are defined as follows:
 \item \textbf{**dw\_conn\_params}: Keyword arguments used to connect to the test DW through the given module. In the case above we use sqlite3 to connect to the DW. The only argument needed to connect is 'database' indicating the location of the DW. In other cases, different arguments may be needed to create a connection.
 \end{itemize}
 
-After instantiation of a Case object we call its run() method. This starts off by creating a connection to the test DW. Then the reinterpreter dynamically inserts test sources and DW into the program. The program is then executed. From there we pass over the program again to generate the DWRepresentation. This object is then used to access the DW, when we execute the predicates upon it. Once executed we allow the predicates to report to the user.
+After instantiation of a Case object we call its run() method. This starts off by creating a connection to the test DW. Then the reinterpreter dynamically inserts test sources and DW into the program. The program is then executed. From there we pass over the program again to generate the DWRepresentation. This object is then used to access the DW, when we execute the predicates with it. Once executed we allow the predicates to report to the user.
 
 In the following sections we go into detail about the implementation of the three components discussed in this section.
 
