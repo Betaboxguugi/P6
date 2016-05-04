@@ -6,10 +6,10 @@ __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
-class TabelPredicate(Predicate):
-    def __init__(self, table_name, constraint_function, column_names=None, column_names_exclude=False, return_list=True):
+class TablePredicate(Predicate):
+    def __init__(self, table_name, constraint_function, column_names=None,
+                 column_names_exclude=False, return_list=True):
 
-        self.__result__ = bool
         self.table_name = table_name
         self.constraint_function = constraint_function
         self.column_names = column_names
@@ -29,11 +29,11 @@ class TabelPredicate(Predicate):
             self.column_names = [self.column_names]
         if self.column_names_exclude:
             temp_columns_list = []
-            for e in dw_rep.get_data_representation(self.table_name).all:
-                temp_columns_list.append(e)
+            for column in dw_rep.get_data_representation(self.table_name).all:
+                temp_columns_list.append(column)
             if self.column_names:
-                for e in self.column_names:
-                    temp_columns_list.remove(e)
+                for column_name in self.column_names:
+                    temp_columns_list.remove(column_name)
             self.column_names = temp_columns_list
 
     def run(self, dw_rep):
@@ -61,7 +61,8 @@ class TabelPredicate(Predicate):
         elif not self.return_list:
             temp_list = []
             for column in constraint_list:
-                # TODO: CHECK FOR WHOLE LIST, MIGHT NOT BE CERTAIN ITS ALL THE SAME TYPE
+                # TODO: CHECK FOR WHOLE LIST,
+                # MIGHT NOT BE CERTAIN ITS ALL THE SAME TYPE
                 if isinstance(column[0], int):
                     temp_list.append(sum(column))
                 elif isinstance(column[0], str):
@@ -78,4 +79,5 @@ class TabelPredicate(Predicate):
         return Report(self.__result__,
                       self.__class__.__name__,
                       None,
-                      'TabelPredicate: FAILED\nThe predicate did not hold against the constraint')
+                      'TabelPredicate: FAILED\n'
+                      'The predicate did not hold against the constraint')

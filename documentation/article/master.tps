@@ -11,14 +11,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=master.tex
 
 [Frame0_View0,0]
-TopLine=60
-Cursor=3553
+TopLine=0
+Cursor=0
 
 [Frame1]
 Flags=0
@@ -29,8 +29,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\pygrametl.tex
 
@@ -47,52 +47,16 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
-Class=LaTeXView
-Document=content\basicTesting.tex
-
-[Frame2_View0,0]
-TopLine=15
-Cursor=3269
-
-[Frame3]
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-1
-MaxPos.y=-1
-NormalPos.left=4
-NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
-Class=LaTeXView
-Document=formalities\acknowledgments.tex
-
-[Frame3_View0,0]
-TopLine=0
-Cursor=0
-
-[Frame4]
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-1
-MaxPos.y=-1
-NormalPos.left=4
-NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\predicates.tex
 
-[Frame4_View0,0]
-TopLine=1
-Cursor=641
+[Frame2_View0,0]
+TopLine=0
+Cursor=449
 
 [SessionInfo]
-FrameCount=5
-ActiveFrame=4
+FrameCount=3
+ActiveFrame=2
 

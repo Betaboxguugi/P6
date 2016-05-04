@@ -1,17 +1,19 @@
-_author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
-
 # Imports
 import sqlite3
-from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
+from framework.predicates.column_not_null_predicate import \
+    ColumnNotNullPredicate
 from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.rule_predicate import RulePredicate
-from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
+from framework.predicates.no_duplicate_row_predicate import \
+    NoDuplicateRowPredicate
 from framework.predicates.row_count_predicate import RowCountPredicate
-from framework.predicates.tabel_predicate import TabelPredicate
+from framework.predicates.table_predicate import TablePredicate
 from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
+
+_author__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 """
 table_name1 = 'company'
@@ -68,13 +70,13 @@ location_dim.query = query3
 facttable.query = query4
 """
 
-dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable,], dw_conn)
+dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
 
-ref_tester1 = NoDuplicateRowPredicate('bookdim', ['book', 'genre'])
-ref_tester2 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'])
-ref_tester3 = NoDuplicateRowPredicate('bookdim', ['bookid', 'book'], True)
-ref_tester4 = RowCountPredicate('bookdim', 4)
-ref_tester5 = RowCountPredicate('bookdim', 5)
+dup_tester1 = NoDuplicateRowPredicate('bookdim', ['book', 'genre'])
+dup_tester2 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'])
+dup_tester3 = NoDuplicateRowPredicate('bookdim', ['bookid', 'book'], True)
+row_tester1 = RowCountPredicate('bookdim', 4)
+row_tester2 = RowCountPredicate('bookdim', 5)
 
 
 def constraint1(a, b):
@@ -87,30 +89,21 @@ def constraint2(a):
     print(a)
     return False
 
-ref_tester6 = TabelPredicate('bookdim', constraint1, ['book', 'genre'], False, False)
-ref_tester7 = TabelPredicate('bookdim', constraint2, ['genre'], False, False)
-ref_tester8 = TabelPredicate('timedim', constraint1, ['day', 'month'])
+tab_tester1 = TablePredicate('bookdim', constraint1, ['book', 'genre'], False,
+                             False)
+tab_tester2 = TablePredicate('bookdim', constraint2, ['genre'], False, False)
+tab_tester3 = TablePredicate('timedim', constraint1, ['day', 'month'])
 
 
-print(ref_tester1.run(dw))
-print(ref_tester2.run(dw))
-print(ref_tester3.run(dw))
-print(ref_tester4.run(dw))
-print(ref_tester4.run(dw))
-print(ref_tester5.run(dw))
-print(ref_tester6.run(dw))
-print(ref_tester7.run(dw))
-print(ref_tester8.run(dw))
-
-print(((True + True + True) ** (True+True)))
-
-
-
-
-
-
-
-
+print(dup_tester1.run(dw))
+print(dup_tester2.run(dw))
+print(dup_tester3.run(dw))
+print(row_tester1.run(dw))
+print(row_tester1.run(dw))
+print(row_tester2.run(dw))
+print(tab_tester1.run(dw))
+print(tab_tester2.run(dw))
+print(tab_tester3.run(dw))
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
