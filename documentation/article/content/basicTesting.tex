@@ -1,10 +1,11 @@
 \section{Software Testing}\label{sect:btesting}
+
 This section introduces some software testing terminology important in understanding the content of later sections. The first subsection describes the general terminology, while the second goes more into the specifics of ETL testing.
 
 \subsection{Basic Testing}
 In this subsection we wish to describe some core concepts relating to software testing. The information presented here is taken from the books \textit{Guide to Advanced Software Testing} by Anne Mette Jonassen Hass\cite{Hass} and \textit{Software Testing Techniques} by Boris Beizer\cite{Beizer}.
 
-Testing is an integral part of the software development process at large. It is included in many different software process models. But, what is testing exactly? Hass defines it as follows:
+Testing is an integral part of the software development process at large. It is included in many different software process models. But what is testing exactly? Hass defines it as follows:
 \begin{quotation} \textit{Testing gathers information about the quality of the object under test.}\end{quotation}
 Knowing the quality of a piece of software allows an organization to evaluate, whether it uphold the requirement they set for it. If not, test results may guide an effort to increase quality.
 
@@ -37,7 +38,7 @@ What should \FW{} test using a source-to-target test? According to Raubardi, ETL
 Through an ETL process, data from sources are propagated into a DW. This new data contains information relevant to future business analysis. Yet, information may get lost during execution. Data loss can occur in any of the three sub parts of the ETL process. The wrong data may be extracted from the sources. Transformations may be faulty and produce incorrect results. Loss during load may happen through truncation. Truncation occurs, when the data type of a DW attribute cannot store the amount of data necessary. This often results in data being cut to fit the data type. Any type of data loss results in a DW that does not contain required information. This may lead to faulty business analysis.
 
 \subsubsection{Business Rules}
-The term business rule is generally applied to any rule that states some constraint upon the data stored in a DW. These may be unique to the business in question. For an airline a rule could be  that any passenger with over 10 flights in the last year should be registered to receive a special discount on snacks. Rules could also indicate attribute relationships such as hierarchies. This may state that a city must be located in a country. 
+The term business rule is generally applied to any rule that states some constraint on the data stored in a DW. These may be unique to the business in question. For an airline a rule could be  that any passenger with over 10 flights in the last year should be registered to receive a special discount on snacks. Rules could also indicate attribute relationships such as hierarchies. These may state that a city must be located in a country. 
 
 Some more general business rules can be used to assert data integrity. Enforcing data integrity ensures the quality of data in a DW. Data integrity can be enforced using the following three types of rules:
 

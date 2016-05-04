@@ -10,7 +10,7 @@ TabelPredicate(table_name='BUDGET',
                column_names_exclude=False,
                return_list=False)
 
-def constraint1(a):
+def constraint2(a):
     if 'Elise' in a:
         return False
     else:
