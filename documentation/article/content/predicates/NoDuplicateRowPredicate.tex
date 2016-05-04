@@ -1,0 +1,14 @@
+\subsection{NoDuplicateRowPredicate}
+
+NoDuplicateRowPredicate a table does not have 2 or more rows entries which are a duplicate of each other. \todo[inline]{this is helpful because...(include something about unique keys)}
+
+\insertcodefile{codeRelated/scripts/NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of specific table from as data warehouse. 
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table. Default for column\_names is null, which has some interaction with column\_names\_exclude.
+\item [column\_names\_exclude] a bool, if true, then columns\_names specifies which columns the predicate will exclude to look at when comparing. Default is None. Note if columns\_names is null then column\_names\_exclude will be set to true if false too.
+\item [verbose] a bool, if this is set to true information from each step in NoDuplicateRowPredicate is printed. Used for debugging.
+\end{description}
+
+NoDuplicateRowPredicate iterates over every row in the specified table. There, it takes one 
