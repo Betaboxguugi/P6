@@ -1,0 +1,13 @@
+\subsection{TabelPredicate}
+TabelPredicate is a variation of the RuleColumnPredicate in \cref{RCP}. The difference being that TabelPredicate allows the user check their constraint against an the entire column at once, instead of each row. The user is then 
+
+\insertcodefile{codeRelated/scripts/TabelPredicate.py}{Instantiation of TabelPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of specific table from as data warehouse. 
+\item [constraint\_function] a predicate that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table
+\item [return\_list] a bool, if false then all elements from the column(s) is send as arguments to the constraint function, if true they are send as a list instead.
+\end{description}
+
+TabelPredicate iterates...

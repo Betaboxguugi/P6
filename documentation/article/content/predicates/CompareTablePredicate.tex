@@ -1,0 +1,23 @@
+\subsection{CompareTablePredicate}
+CompareTablePredicate asserts that two tables are either equal or that one is a subset of the other. It is made to allow users to give an expected table to compare with the actual one populated by their pygrametl program. It checks if an identical row exists in the actual table, for each row in the expected table. The CompareTablePredicate is instantiated as follows, with description of the parameters below.
+
+\insertcodefile{codeRelated/scripts/CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
+
+\begin{description}
+\item [actual\_name] is a string containing the name of the table from your datawarehouse, you would like to compare with the given \textit{expected\_table}. It is used to index our datawarehouse representation and then retrieve the actual table.
+\item [expected\_table] is a list of dictionaries, representing a database table, and is used to check whether it is equal to, or a subset of the actual table.
+\item [ignore\_atts] is a list of string containing the names of the attributes you wish to ignore when comparing the two tables. E.g. one could imagine that it would be nice to not compare on surrogate keys, as they might change from run to run of the pygrametl program.
+  \item [subset] is a boolean, if \textit{true} the expected table only has to be a subset of the actual table, else they have to be equal.
+\end{description}
+
+CompareTablePredicate works by using the filterfalse function from the standard python package \textit{itertools}. It uses this to take the relative complement of the two tables and we assert that the predicate holds true for the case of \textit{subset} equal \textit{true} if,
+
+\[ A \backslash E \equiv \emptyset \]
+
+\noindent which implies that $A \subseteq E$, where A is the actual table and E is the expected table.
+
+And for \textit{subset} equal \textit{false} if,
+
+\[ A \backslash E \cup E \backslash A \equiv \emptyset \]
+
+\noindent which implies that $A \equiv E$, where A is the actual table and E is the expected table.

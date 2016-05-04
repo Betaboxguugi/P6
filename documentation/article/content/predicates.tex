@@ -2,9 +2,14 @@
 \todo[inline]{Skriv introduktion.}
 In the following section...
 
-\subsection{ColumnNotNullPredicate}
-ColumnNotNullPredicate asserts that a all entries of each row in a specified list of columns within a table, does not contain null. Allowing a user to ensure that the data within a table has all entries filled after a use of a function or insertion of data.
-The ColumnNotNullPredicate is instantiated as follows, with description of the parameters below.
+\input{content/predicates/ColumnNotNullPredicate.tex}
+\input{content/predicates/CompareTablePredicate.tex}
+\input{content/predicates/NoDuplicateRowPredicate.tex}
+\input{content/predicates/ReferentialIntegrityPredicate.tex}
+\input{content/predicates/RowCountPredicate.tex}
+\input{content/predicates/RuleColumnPredicate.tex}
+\input{content/predicates/TabelPredicate.tex}
+\input{content/predicates/FunctionalDependencyPredicate.tex}
 
 \insertcodefile{codeRelated/scripts/ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
 
