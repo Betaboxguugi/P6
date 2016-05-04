@@ -19,7 +19,7 @@ def natural_join_dicts(dict1, dict2, keys):
         for k in keys:
             i = keyhash[k]
             if row[k] in hashlist[i]:"""
-                
+
 
 class DWRepresentation(object):
     """
@@ -27,7 +27,7 @@ class DWRepresentation(object):
     Allows for access to specific tables simply through their name.
     """
 
-    def __init__(self, dims, connection, fts=[], snowflakeddims=()):
+    def __init__(self, dims,  connection, fts=[], snowflakeddims=()):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
