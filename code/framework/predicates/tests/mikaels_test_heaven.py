@@ -8,6 +8,7 @@ from framework.predicates.no_duplicate_row_predicate import \
     NoDuplicateRowPredicate
 from framework.predicates.row_count_predicate import RowCountPredicate
 from framework.predicates.table_predicate import TablePredicate
+from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
 from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
@@ -94,6 +95,7 @@ tab_tester1 = TablePredicate('bookdim', constraint1, ['book', 'genre'], False,
 tab_tester2 = TablePredicate('bookdim', constraint2, ['genre'], False, False)
 tab_tester3 = TablePredicate('timedim', constraint1, ['day', 'month'])
 
+nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
 
 print(dup_tester1.run(dw))
 print(dup_tester2.run(dw))
@@ -104,6 +106,7 @@ print(row_tester2.run(dw))
 print(tab_tester1.run(dw))
 print(tab_tester2.run(dw))
 print(tab_tester3.run(dw))
+print(nn_tester1.run(dw))
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
