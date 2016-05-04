@@ -89,11 +89,11 @@ class RepresentationMaker(object):
         # when instantiating DWRepresentation.
         snowflakes = []
         for x, value in self.scope.items():
-            if isinstance(value,SnowflakedDimension):
+            if isinstance(value, SnowflakedDimension):
                 snowflakes.append(value)
 
-        dw_rep = DWRepresentation(self.dim_reps, self.fts_reps,
-                                  self.dw_conn, snowflakes)
+        dw_rep = DWRepresentation(self.dim_reps, self.dw_conn, self.fts_reps,
+                                  snowflakes)
 
         # Clears the list of tables as its contents may otherwise be retained,
         # when a new Case is executed.

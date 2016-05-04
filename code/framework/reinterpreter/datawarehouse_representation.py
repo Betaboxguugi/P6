@@ -1,5 +1,25 @@
 __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
+__maintainer__ = 'Mathias Claus Jensen'
 
+from itertools import filterfalse
+
+
+def intersection(a, b):
+    return list(filterfalse(lambda x: x not in b, a))
+
+def natural_join_dicts(dict1, dict2, keys):
+
+    hashlist = [{row[k]: idx for idx, row in enumerate(dict1)} for k in keys] 
+    newtable = []
+    keyhash = {k, i for i, k in enumerate(keys)}
+    dflags = [False for k in keys]
+    flags = dflags.copy()
+                  
+    for row in dict2:
+        for k in keys:
+            i = keyhash[k]
+            if row[k] in hashlist[i]:
+                
 
 class DWRepresentation(object):
     """
@@ -7,10 +27,11 @@ class DWRepresentation(object):
     Allows for access to specific tables simply through their name.
     """
 
-    def __init__(self, dims, fts, connection, snowflakeddims=()):
+    def __init__(self, dims, connection, fts=[], snowflakeddims=()):
         """
         :param dims: A list of DimensionRepresentation Objects
         :param fts: A lost of FTRepresentation Objects
+        :param snowflakeddims: Tuble of SnowflakedDimensions
         :param connection: A PEP 249 connection to a database
         """
 
@@ -24,6 +45,7 @@ class DWRepresentation(object):
             # Also collects a list of names for a later check
             name_list = []
             self.rep = self.dims + self.fts
+
             for entry in self.rep:
                 low = entry.name.lower()
                 entry.name = low
@@ -41,8 +63,6 @@ class DWRepresentation(object):
 
             # Re-creates the referencing structure of the DW
             self.refs = self._find_structure()
-
-
         finally:
             try:
                 pass
@@ -68,10 +88,18 @@ class DWRepresentation(object):
         references = {}
         all_dims = set(self.dims)
 
-        for flakes in self.snowflakeddims:
+        for flake in self.snowflakeddims:
             # Extends our references with internal snowflake refs
-            references.update(flakes.refs)
-            for key, value in flakes.refs.items():
+            rep_refs = {}
+            for key, value in flake.refs.items():
+                key = self._find_dim_rep(key, all_dims)
+                l = set()
+                for dim in value:
+                    l.add(self._find_dim_rep(dim, all_dims))
+                rep_refs[key] = l
+
+            references.update(rep_refs)
+            for key, value in rep_refs.items():
                 # Removes all non-root dimensions from the overall list of
                 # dimensions, so that they cannot be referenced by fact tables.
                 all_dims.difference_update(value)
@@ -89,12 +117,53 @@ class DWRepresentation(object):
 
         return references
 
+    def _find_dim_rep(self, dim, all_dims):
+        for rep in all_dims:
+            if rep.name == dim.name:
+                return rep
+        raise Exception('Snowflaked dimension rep not found.')
+
     def __str__(self):
         return self.tabledict.__str__()
 
     def __repr__(self):
         return self.__str__()
 
+
+    def iter_join(self, names):
+        """ Iterate over a natural join of the given table names
+        :param names: List of table names
+        :yield: A dictionary representing a row
+        """
+        query = ""
+        if len(names) == 1:
+            query = "SELECT * FROM " + names[0]
+        else:
+            query = "SELECT * FROM " + " NATURAL JOIN ".join(names)
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query)
+            names = [t[0] for t in cursor.description]
+
+            while True:
+                data = cursor.fetchmany(500)
+                if not names:
+                    names = [t[0] for t in cursor.description]
+                if not data:
+                    break
+                if len(names) != len(data[0]):
+                     raise ValueError(
+                        "Incorrect number of names provided. " +
+                        "%d given, %d needed." % (len(names), len(data[0])))
+                for row in data:
+                    yield dict(zip(names, row))
+        finally:
+            try:
+                cursor.close()
+            except Exception:
+                pass        
+        
+    
     def get_data_representation(self, name):
         """
         :param name: Name of the requested table
@@ -104,8 +173,7 @@ class DWRepresentation(object):
 
 
 class TableRepresentation(object):
-    """
-    Super class for representing tables in a DW
+    """ Super class for representing tables in a DW
     """
 
     def __iter__(self):
@@ -139,8 +207,7 @@ class TableRepresentation(object):
                 pass
 
     def itercolumns(self, column_names):
-        """
-        Lets us fetch only a subset of columns from the table
+        """Lets us fetch only a subset of columns from the table
         :param column_names: The subset of columns of interest
         :return: A generator for iterating over the contents of the table
         """
@@ -176,12 +243,8 @@ class DimRepresentation(TableRepresentation):
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
-        row_list = []
-        for row in self.itercolumns(self.all):
-            row_list.append(row)
-        text = "{} {} {} {} {} {}".format(self.name, self.key, self.attributes,
-                                          self.lookupatts, self.connection,
-                                          row_list)
+        text = "{} {} {} {}".format(self.name, self.key, self.attributes,
+                                    self.lookupatts)
         return text
 
     def __repr__(self):
@@ -238,11 +301,7 @@ class FTRepresentation(TableRepresentation):
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
 
     def __str__(self):
-        row_list = []
-        for row in self.itercolumns(self.all):
-            row_list.append(row)
-        text = "{} {} {} {} {}".format(self.name, self.keyrefs, self.measures,
-                                       self.connection, row_list)
+        text = "{} {} {}".format(self.name, self.keyrefs, self.measures)
         return text
 
     def __repr__(self):

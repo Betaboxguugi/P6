@@ -2,11 +2,12 @@ __author__ = 'Mathias Claus Jensen'
 
 MAX_ELEMENTS = 5
 
-
 class Report(object):
+    """ Container object, that holds information regarding predicate errors
+    """
     def __init__(self, result, predname, elements=[], msg=None):
         """
-        :param result: Boolean denoting whether the predicate was successful or
+        :param result: Boolean denoting wether the predicate was succesful or 
         not.
         :param predname: String that contains the name of the predicate we are 
         reporting for. E.g 'CompareTablePredicate'
@@ -29,7 +30,7 @@ class Report(object):
         s = self.predname + ': ' 
         if self.result:
             return s + 'SUCCESS\n'
-        elif self.elements:
+        elif elements:
             s += 'FAILED\nThe predicate did not hold on the following entries\n'
             i = 0
             for e in self.elements:
@@ -41,3 +42,5 @@ class Report(object):
             return s
         else:
             return self.msg
+            
+            
