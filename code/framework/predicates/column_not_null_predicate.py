@@ -19,6 +19,11 @@ class ColumnNotNullPredicate(Predicate):
         self.column_names = []
         self.rows_with_null = []
 
+        if isinstance(column_names, str):
+            self.column_names = [column_names]
+        else:
+            self.column_names = column_names
+
         # If else chain that insures column_names is either a list of strings
         # or a string
         if type(column_names) is list:
@@ -50,14 +55,16 @@ class ColumnNotNullPredicate(Predicate):
         if self.rows_with_null:
             self.__result__ = False
 
+        return self.report()
+
     def report(self):
         """
         If null is found, prints what table and column null resides in,
         otherwise prints true
         """
-        return Report(self.__class__.__name__,
-                      self.__result__,
-                      '',
+        return Report(self.__result__,
+                      self.__class__.__name__,
+                      self.rows_with_null,
                       'at rows {}'.format(self.rows_with_null)
                       )
 
