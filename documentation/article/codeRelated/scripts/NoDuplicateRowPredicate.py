@@ -6,4 +6,3 @@ NoDuplicateRowPredicate(table_name='logins',
 
 # Also acceptable instantiation, which checks all columns in each row.
 NoDuplicateRowPredicate(table_name='Address')
-# Please work now

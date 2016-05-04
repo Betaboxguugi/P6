@@ -75,9 +75,6 @@ class TabelPredicate(Predicate):
                 if not self.constraint_function(constraint_arg):
                     self.__result__ = False
 
-        return self.report()
-
-    def report(self):
         return Report(self.__result__,
                       self.__class__.__name__,
                       None,

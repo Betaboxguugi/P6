@@ -68,7 +68,7 @@ location_dim.query = query3
 facttable.query = query4
 """
 
-dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable], dw_conn)
+dw = DWRepresentation([book_dim, time_dim, location_dim], [facttable,], dw_conn)
 
 ref_tester1 = NoDuplicateRowPredicate('bookdim', ['book', 'genre'])
 ref_tester2 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'])
@@ -102,9 +102,7 @@ print(ref_tester6.run(dw))
 print(ref_tester7.run(dw))
 print(ref_tester8.run(dw))
 
-
-
-
+print(((True + True + True) ** (True+True)))
 
 
 
