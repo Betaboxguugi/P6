@@ -30,7 +30,7 @@ Once the entire tree has been walked, a transformed AST has been produced. This 
 \subsection{Compiler}
 In this component we compile and execute the transformed AST using the replacement scope as its local scope. This is done with calls to the build in python functions compile and exec. In python, a scope is given by a dictionary, where keys are variable names paired with object references. As we replaced the connecting objects in the transformed AST with keys from our own scope, we now force the program to use the test objects from the replacement scope. This way, we overwrite the hardcoded sources and DW from the program. Once the AST has been executed, the test DW will be populated, and the replacement scope expanded with the variables found in the executed pygrametl program. The expanded scope is sent to the RepresentationMaker. After execution we also make sure to reestablish connection to the test DW, in case it was closed during execution.
 
-\subsection{RepresentationMaker}
+\subsection{RepresentationMaker}\label{ssec:Representation}
 Using the expanded scope, the RepresentationMaker accesses all Dimension and FactTable objects instantiated through the execution of the pygrametl program. From this it creates a DWRepresentation object that allows for easy access to all the tables of the DW along with their metadata. It begins by instantiating the RepresentationMaker, then calling its run method to create the DWRepresentation object. This method can be seen below:
 
 \insertcodefile{codeRelated/scripts/representation_maker.py}{The run method of the representation\_maker class}
