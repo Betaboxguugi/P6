@@ -1,0 +1,14 @@
+\subsection{RuleRowPredicate}\label{RCP}
+
+RuleRowPredicate asserts that all entries of each row in a specified list of columns within a table, complies with a constraint, given trough a predicate made by the user. This allows the user a lot of freedom in their tests, as they can test each row of elements in a given table, in any way they wish. Insuring the data complies with the requirements they have set for it. The RuleColumnPredicate is instantiated as follows, with description of the parameters below.
+
+\insertcodefile{codeRelated/scripts/RuleRowPredicate.py}{Instantiation of RuleColumnPredicate}
+
+\begin{description}
+\item [table\_name] a string containing the name of specific table from as data warehouse. 
+\item [constraint\_function] a predicate that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table
+\item [return\_list] a bool, if false then all elements from the column(s) is send as arguments to the constraint function, if true they are send as a list instead.
+\end{description}
+
+RuleRowPredicate iterates over every row in the specified table. For each row, it iterates over the column(s) specified, where it takes each element from each column(s) and calls the constraint function on those elements as either arguments or a list, depending on what the user has specified. If the constraint function returns false on a row, then the row is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false. RuleRowPredicate does not support constraints with a variable number of arguments.

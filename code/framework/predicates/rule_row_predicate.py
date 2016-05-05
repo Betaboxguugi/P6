@@ -78,14 +78,11 @@ class RuleRowPredicate(Predicate):
                 self.__result__ = False
         else:
             raise TypeError('return_list must be type bool')
+        return self.report()
 
     def report(self):
-        # TODO: Make proper explanation of report
-        """
-
-        """
-        return Report(self.__class__.__name__,
-                      self.__result__,
-                      ': All is well',
-                      'at rows {}'.format(self.wrong_rows)
+        return Report(self.__result__,
+                      self.__class__.__name__,
+                      self.wrong_rows,
+                      'Unknown Error'
                       )

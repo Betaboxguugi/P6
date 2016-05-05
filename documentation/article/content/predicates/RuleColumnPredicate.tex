@@ -1,4 +1,5 @@
-\subsection{RuleColumnPredicate}\label{RCP}
+\subsection{RuleColumnPredicate}
+RuleColumnPredicate is a variation of the RuleRowPredicate in \cref{RCP}. The difference being that RuleColumnPredicate allows the user to check their constraint against an the entire column at once, instead of going through each row as RuleRowPredicate does. The input to arguments of the constraint is by default a list, each representing the column(s) in the order they are specified. However if return\_list is set to false, the input for the constraint is either the sum if the column contains integers, or the join of all the strings if the column contains strings. TablePredicate is instantiated as follows, with description of the parameters below
 
 RuleColumnPredicate asserts that all entries of each row in a specified list of columns within a table, complies with a constraint, given through a predicate function, i.e. a function that returns either true or false, made by the user. This allows the user a lot of freedom in their tests, as they can test each row of elements in a given table, in any way they wish. Insuring the data complies with the requirements they have set for it. The RuleColumnPredicate is instantiated as follows, with description of the parameters below.
 

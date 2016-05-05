@@ -1,53 +1,84 @@
-__author__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
-__maintainer__ = 'Arash Michael Sami Kjær and Mikael Vind Mikkelsen'
-
+import inspect
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
+
+__author__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class RuleColumnPredicate(Predicate):
-    def __init__(self, table_name, column_name, constraint_function):
-        """
-        :param table_name: name of specified table which needs to be tested
-        :type table_name: str
-        :param column_name: name of the specified column, which needs to be
-        tested within the table
-        :type column_name: str
-        :param constraint_function: a predicate that represent the constraint
-        which need to be tested.
-        :type constraint_function: def
-        """
+    def __init__(self, table_name, constraint_function, column_names=None,
+                 column_names_exclude=False, return_list=True):
+
         self.table_name = table_name
-        self.column_name = column_name
         self.constraint_function = constraint_function
-        self.wrong_elements = ()
+        self.column_names = column_names
+        self.column_names_exclude = column_names_exclude
+        self.return_list = return_list
+        self.columns = []
+
+    def setup_columns(self, dw_rep):
+
+        # setup of columns, if column_names_exclude is true, then columns is
+        # all other columns than the one(s) specified.
+        if not self.column_names and not self.column_names_exclude:
+            self.column_names_exclude = True
+        # We can't iterate over a string so we convert self.column_names
+        # into a list if necessary.
+        if isinstance(self.column_names, str):
+            self.column_names = [self.column_names]
+        if self.column_names_exclude:
+            temp_columns_list = []
+            for column in dw_rep.get_data_representation(self.table_name).all:
+                temp_columns_list.append(column)
+            if self.column_names:
+                for column_name in self.column_names:
+                    temp_columns_list.remove(column_name)
+            self.column_names = temp_columns_list
 
     def run(self, dw_rep):
-        """
-        Provides each element of the specified column to the given
-        constraint function.
-        Then logs which elements the constraint function returned
-        false on if any.
-        """
-        self.__result__ = True
-        self.wrong_elements = ()
-        for row in dw_rep.get_data_representation(self.table_name):
-            # returns the elements at the specified column from each row
-            element = row.get(self.column_name.upper())
-            # the given constraint function are given the elements here
-            if not self.constraint_function(element):
-                self.wrong_elements += element,
-                self.__result__ = False
-        self.report()
 
-    def report(self):
-        """
-        Reports results of tests. If results return false, it also report which
-        elements the constraint function
-        returned false upon and in which column these elements belong too.
-        """
-        return Report(self.__class__.__name__,
-                      self.__result__,
-                      ': All is well',
-                      ': All is not well',
-                      self.wrong_elements)
+        self.columns = []
+        self.setup_columns(dw_rep)
+        self.__result__ = True
+
+        if len(inspect.getargspec(self.constraint_function).args) \
+                != len(self.column_names):
+            raise ValueError('Number of columns specified and number of' +
+            ' arguments do not match')
+
+        constraint_list = []
+        for column_name in self.column_names:
+            elements_list = []
+            for row in dw_rep.get_data_representation(self.table_name):
+                elements_list.append(row.get(column_name.lower()))
+            constraint_list.append(elements_list)
+
+        if self.return_list:
+            if not self.constraint_function(*constraint_list):
+                self.__result__ = False
+
+        elif not self.return_list:
+            temp_list = []
+            for column in constraint_list:
+                if all(isinstance(item, int) for item in column):
+                    temp_list.append(sum(column))
+                elif all(isinstance(item, str) for item in column):
+                    temp_list.append(''.join(column))
+                else:
+                    raise TypeError("""All elements in column(s) provided is"""
+                     + """ not integers or strings""")
+            constraint_arg = temp_list
+
+            if len(constraint_arg) == len(self.column_names):
+                if not self.constraint_function(*constraint_arg):
+                    self.__result__ = False
+            else:
+                if not self.constraint_function(constraint_arg):
+                    self.__result__ = False
+
+        return Report(self.__result__,
+                      self.__class__.__name__,
+                      None,
+                      '{}: FAILED\n'.format(self.__class__.__name__,) +
+                      'The predicate did not hold against the constraint')
