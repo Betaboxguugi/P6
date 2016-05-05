@@ -1,15 +1,9 @@
-\begin{figure}
+\begin{figure*}
 \centering
-<<<<<<< HEAD
-\includegraphics[width=0.5\textwidth]{figures/reinterpreter.pdf}
-\caption{Data flow diagraml of the Reinterpreter}
-=======
-\includegraphics[width=1\textwidth]{figures/reinterpreter.pdf}
+\includegraphics[width=\textwidth]{figures/reinterpreter.pdf}
 \caption{Data flow diagram of the Reinterpreter}
->>>>>>> e872ef460683212f5015dfb71724f93619cf7ff8
 \label{fig:reinterpreter}
-\end{figure}
-
+\end{figure*}
 \section{pygrametl Reinterpreter}
 
 In this section we will describe, in detail, the implementation of the reinterpreter component. Its purpose is to make it easier for users to replace the sources and DW in their pygrametl programs. Users may give test sources and DW as input to the reinterpreter, rather than hardcoding them into the program itself. The reinterpreter also outputs a DWRepresentation object, which describes the structure and contents of the DW in question. On \cref{fig:reinterpreter} is a dataflow diagram which illustrates the flow of data through the reinterpreter. Please note that this depiction is abstracted from the actual implementation to ease explanation. In the following subsections, we will describe each of the four sub-components shown on the figure. Following this we describe what restrictions the component operates according to.
