@@ -40,11 +40,11 @@ c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
 conn.commit()
 columns = ['NAME', 'AGE', 'ADDRESS', 'SALARY']
 
-aa = DimRepresentation('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'],
-                       conn, ['NAME'])
-cc = DWRepresentation([aa], conn)
+dim = DimRepresentation('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'],
+                        conn, ['NAME'])
+dw = DWRepresentation([dim], conn)
 
 dup_predicate = DuplicatePredicate('company', columns, verbose=True)
-print(dup_predicate.run(cc))
+print(dup_predicate.run(dw))
 
 conn.close()
