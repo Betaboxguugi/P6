@@ -22,7 +22,7 @@ class Report(object):
         self.predicate = predicate
         self.tables = tables
         self.predname = predicate.__class__.__name__
-        if elements or msg:
+        if elements or msg or result:
             self.elements = elements
             self.msg = msg
         else:
