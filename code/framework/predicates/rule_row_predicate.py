@@ -1,5 +1,5 @@
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 import inspect
 
 __author__ = 'Mikael Vind Mikkelsen'
@@ -94,11 +94,9 @@ class RuleRowPredicate(Predicate):
                 self.__result__ = False
         else:
             raise TypeError('return_list must be type bool')
-        return self.report()
 
-    def report(self):
-        return Report(self.__result__,
-                      self.__class__.__name__,
-                      self.wrong_rows,
-                      'Unknown Error'
-                      )
+        return Report(result=self.__result__,
+                      tables=self.table_name,
+                      predicate=self,
+                      elements=self.wrong_rows,
+                      msg=None)

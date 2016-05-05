@@ -57,16 +57,8 @@ class ColumnNotNullPredicate(Predicate):
         if self.rows_with_null:
             self.__result__ = False
 
-        return self.report()
-
-    def report(self):
-        """
-        If null is found, prints what table and column null resides in,
-        otherwise prints true
-        """
-        return Report(self.__result__,
-                      self.__class__.__name__,
-                      self.rows_with_null,
-                      'at rows {}'.format(self.rows_with_null)
-                      )
-
+        return Report(result=self.__result__,
+                      predicate=self,
+                      tables=self.table_name,
+                      elements=self.rows_with_null,
+                      msg=None)

@@ -2,7 +2,7 @@ __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 
 
 class RowCountPredicate(Predicate):
@@ -40,11 +40,13 @@ class RowCountPredicate(Predicate):
         return self.report()
 
     def report(self):
-        return Report(self.__result__,
-                      self.__class__.__name__,
-                      None,
-                      """{}: FAILED\nThe predicate did not hold, tested for {}
-                      row(s), actual number of row(s): {}\n""".format(
-                          self.__class__.__name__, self.number_of_rows,
-                          self.row_number)
-                      )
+
+        return Report(result=self.__result__,
+                      tables=self.table_name,
+                      predicate=self,
+                      elements=None,
+                      msg="""The predicate did not hold, tested for {} row(s),
+                      actual number of row(s): {}""".format(
+                          self.number_of_rows, self.row_number
+                      ))
+

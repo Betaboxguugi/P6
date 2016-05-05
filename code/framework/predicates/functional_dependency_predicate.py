@@ -49,4 +49,4 @@ class FunctionalDependencyPredicate(Predicate): # TODO: Make this shit handle nu
                       elements=elements,
                       msg='The predicate failed for the following rows, given as (predicate, row) tubles')
                         
-            
+

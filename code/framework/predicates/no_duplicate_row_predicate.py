@@ -114,7 +114,10 @@ class NoDuplicateRowPredicate(Predicate):
         return self.report()
 
     def report(self):
-        return Report(self.__result__,
-                      self,
-                      self.table_name,
-                      self.duplicates)
+
+        return Report(result=self.__result__,
+                      tables=self.table_name,
+                      predicate=self,
+                      elements=self.duplicates,
+                      msg=None)
+
