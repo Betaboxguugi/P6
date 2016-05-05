@@ -1,5 +1,5 @@
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Mikael Vind Mikkelsen'

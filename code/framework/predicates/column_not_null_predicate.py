@@ -7,7 +7,7 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class ColumnNotNullPredicate(Predicate):
-    def __init__(self, table_name, column_names):
+    def __init__(self, table_name, column_names=None, column_names_exclude=False):
         """
         :param table_name: name of specified table which needs to be tested
         :type table_name: str
@@ -16,27 +16,28 @@ class ColumnNotNullPredicate(Predicate):
         :type column_names: list or str
         """
         self.table_name = table_name
-        self.column_names = []
         self.rows_with_null = []
+        self.column_names = column_names
+        self.column_names_exclude = column_names_exclude
 
-        if isinstance(column_names, str):
-            self.column_names = [column_names]
-        else:
-            self.column_names = column_names
+    def setup_columns(self, dw_rep):
 
-        # If else chain that insures column_names is either a list of strings
-        # or a string
-        if type(column_names) is list:
-            for column_name in range(0, len(column_names)):
-                if not type(column_names[column_name]) is str:
-                    raise TypeError(
-                        'column_names must be a list of strings or a string')
-                self.column_names.append(column_names[column_name])
-        elif type(column_names) is str:
-            self.column_names.append(column_names)
-        else:
-            raise TypeError(
-                'column_names must be a list of strings or a string')
+        # setup of columns, if column_names_exclude is true, then columns is
+        # all other columns than the one(s) specified.
+        if not self.column_names and not self.column_names_exclude:
+            self.column_names_exclude = True
+        # We can't iterate over a string so we convert self.column_names
+        # into a list if necessary.
+        if isinstance(self.column_names, str):
+            self.column_names = [self.column_names]
+        if self.column_names_exclude:
+            temp_columns_list = []
+            for column in dw_rep.get_data_representation(self.table_name).all:
+                temp_columns_list.append(column)
+            if self.column_names:
+                for column_name in self.column_names:
+                    temp_columns_list.remove(column_name)
+            self.column_names = temp_columns_list
 
     def run(self, dw_rep):
         """
@@ -45,6 +46,7 @@ class ColumnNotNullPredicate(Predicate):
         self.report()
         """
         self.__result__ = True
+        self.setup_columns(dw_rep)
 
         for row in dw_rep.get_data_representation(self.table_name):
             e = []  # list of elements

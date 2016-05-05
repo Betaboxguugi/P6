@@ -7,7 +7,8 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class RuleRowPredicate(Predicate):
-    def __init__(self, table_name, column_names, constraint_function, return_list = False):
+    def __init__(self, table_name, constraint_function, column_names=None,
+                 column_names_exclude=False, return_list=False):
         # TODO: Make predicate able to accept *args from constraint
         """
         :param table_name: name of table where the test will be run
@@ -29,14 +30,31 @@ class RuleRowPredicate(Predicate):
         """
         self.table_name = table_name
 
-    # If column_names is just one string, insert it as list with one element
-        if isinstance(column_names, str):
-            self.column_names = [column_names]
-        else:  # Otherwise just make the list as provided.
-            self.column_names = column_names
+        self.column_names = column_names
         self.constraint_function = constraint_function
         self.return_list = return_list
         self.wrong_rows = []
+        self.column_names_exclude = column_names_exclude
+
+    def setup_columns(self, dw_rep):
+
+        # setup of columns, if column_names_exclude is true, then columns is
+        # all other columns than the one(s) specified.
+        if not self.column_names and not self.column_names_exclude:
+            self.column_names_exclude = True
+        # We can't iterate over a string so we convert self.column_names
+        # into a list if necessary.
+        if isinstance(self.column_names, str):
+            self.column_names = [self.column_names]
+        if self.column_names_exclude:
+            temp_columns_list = []
+            for column in dw_rep.get_data_representation(
+                    self.table_name).all:
+                temp_columns_list.append(column)
+            if self.column_names:
+                for column_name in self.column_names:
+                    temp_columns_list.remove(column_name)
+            self.column_names = temp_columns_list
 
     def run(self, dw_rep):
         """
@@ -49,30 +67,28 @@ class RuleRowPredicate(Predicate):
             raise ValueError('Constraints using varargs is not yet supported')
 
         self.__result__ = True
-        if self.return_list:  # True
+
+        self.setup_columns(dw_rep)
+
+        if self.return_list:
             for row in dw_rep.get_data_representation(self.table_name):
-            # print(row)
                 element = []
                 for column_name in self.column_names:
-                    element.append(row.get(column_name.upper()))
-                # print(element)
-                if not self.constraint_function(element):  # False
+                    element.append(row.get(column_name))
+                if not self.constraint_function(element):
                     self.wrong_rows.append(row)
             if self.wrong_rows:
                 self.__result__ = False
-        elif not self.return_list:  # False
+        elif not self.return_list:
             if len(inspect.getargspec(self.constraint_function).args)\
                    != len(self.column_names):
-                # print('TESTCODE - Input NOT Acceptable')
                 raise ValueError("""Number of columns and number of arguments
                  do not match""")
             for row in dw_rep.get_data_representation(self.table_name):
-                # print(row)
                 element = []
                 for column_name in self.column_names:
-                    element.append(row.get(column_name.upper()))
-                # print(element)
-                if not self.constraint_function(*element):  # False
+                    element.append(row.get(column_name))
+                if not self.constraint_function(*element):
                     self.wrong_rows.append(row)
             if self.wrong_rows:
                 self.__result__ = False

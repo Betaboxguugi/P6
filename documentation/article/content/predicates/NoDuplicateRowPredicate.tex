@@ -2,7 +2,7 @@
 
 NoDuplicateRowPredicate asserts that a table does not have two or more rows which are a duplicate of each other. It can be specified to only look at certain columns, where it will consider the columns specified as the rows it looks upon. This can helpful in routing out problems when applying joins, as duplicates can occur in one or more columns when doing so. Otherwise it can also be used after creation of a table or insertion of data into one, as this is also a common area where duplicates may be found if something were done improperly.
  
-\insertcodefile{codeRelated/scripts/NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
+\insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
 \begin{description}
 \item [table\_name] a string containing the name of specific table from the DW. 
