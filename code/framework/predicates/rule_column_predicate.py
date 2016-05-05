@@ -6,7 +6,7 @@ __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
-class TablePredicate(Predicate):
+class RuleColumnPredicate(Predicate):
     def __init__(self, table_name, constraint_function, column_names=None,
                  column_names_exclude=False, return_list=True):
 
@@ -80,5 +80,5 @@ class TablePredicate(Predicate):
         return Report(self.__result__,
                       self.__class__.__name__,
                       None,
-                      'TabelPredicate: FAILED\n'
+                      '{}: FAILED\n'.format(self.__class__.__name__,) +
                       'The predicate did not hold against the constraint')
