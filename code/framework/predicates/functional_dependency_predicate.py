@@ -8,7 +8,6 @@ class FunctionalDependencyPredicate(Predicate):
     """ Predicate that can check if a table or a join of tables holds certain
     functional dependencies.
     """
-    
     def __init__(self, tables, func_dependencies, ignore_none=False):
         """
         :param tables: tables from the database, which we wish to join
@@ -23,6 +22,7 @@ class FunctionalDependencyPredicate(Predicate):
         self.func_dependencies = func_dependencies
         self.results = []
         self.ignore_none = ignore_none
+
 
     def run(self, dw_rep):
         """
@@ -55,5 +55,3 @@ class FunctionalDependencyPredicate(Predicate):
                       elements=elements,
                       msg='The predicate failed for the following rows,'
                           ' given as (predicate, row) tuples')
-                        
-

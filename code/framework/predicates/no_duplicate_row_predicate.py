@@ -19,7 +19,7 @@ class NoDuplicateRowPredicate(Predicate):
         :type column_names: List[str]
         :param column_names_exclude: a bool, if set to true, then the predicate
         will look at all columns excluding the one(s) specified in column_names
-        :type column_names_exclude: boo
+        :type column_names_exclude: bool
         :param verbose: if this is set to true information from each step in
         NoDuplicateRowPredicate is printed, this is for debugging purposes.
         :type verbose: bool
