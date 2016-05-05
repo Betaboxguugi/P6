@@ -89,12 +89,22 @@ def constraint2(a):
     print(a)
     return False
 
+
+def constraint3(a,b,c):
+    print(a, b, c)
+    return True
+
 tab_tester1 = RuleColumnPredicate('bookdim', constraint1, ['book', 'genre'], False,
                                   False)
 tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'], False, False)
 tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'month'])
 
 nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
+
+nn_tester2 = ColumnNotNullPredicate('bookdim', ['genre','book'], True)
+
+rrp_tester1 = RuleRowPredicate('bookdim', constraint3)
+
 
 print(dup_tester1.run(dw))
 print(dup_tester2.run(dw))
@@ -106,7 +116,8 @@ print(tab_tester1.run(dw))
 print(tab_tester2.run(dw))
 print(tab_tester3.run(dw))
 print(nn_tester1.run(dw))
-
+print(nn_tester2.run(dw))
+print(rrp_tester1.run(dw))
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
 """
