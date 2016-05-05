@@ -111,10 +111,10 @@ class NoDuplicateRowPredicate(Predicate):
                     self.duplicates.append(row)
         if len(self.duplicates) < 1:
             self.__result__ = True
-        return self.report()
 
-    def report(self):
-        return Report(self.__result__,
-                      self.__class__.__name__,
-                      self.duplicates,
-                      'Unknown Failure')
+        return Report(result=self.__result__,
+                      tables=self.table_name,
+                      predicate=self,
+                      elements=self.duplicates,
+                      msg=None)
+

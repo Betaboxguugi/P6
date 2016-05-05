@@ -76,8 +76,8 @@ class RuleColumnPredicate(Predicate):
                 if not self.constraint_function(constraint_arg):
                     self.__result__ = False
 
-        return Report(self.__result__,
-                      self.__class__.__name__,
-                      None,
-                      '{}: FAILED\n'.format(self.__class__.__name__,) +
-                      'The predicate did not hold against the constraint')
+        return Report(result=self.__result__,
+                      tables=self.table_name,
+                      predicate=self,
+                      elements=None,
+                      msg='The predicate did not hold against the constraint')
