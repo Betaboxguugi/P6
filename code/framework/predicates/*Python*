@@ -11,3 +11,344 @@ SyntaxError: invalid syntax
 ... 
 >>> p = MockPred()
 >>> Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/beta/Dropbox/Git/P6/code/framework/predicates/report.py", line 24, in __init__
+    self.id = id
+UnboundLocalError: local variable 'id' referenced before assignment
+>>> Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+<__main__.Report object at 0x7f9100646710>
+>>> r = Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> r
+<__main__.Report object at 0x7f90fe4004e0>
+>>> print(r)
+1| MockPred: 
+	Tables: ['t1', 't2']
+	Result: SUCCESS
+
+>>> Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+<__main__.Report object at 0x7f90fe400588>
+>>> r = Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+1| MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: SUCCESS
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+2| MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+3| MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+4| MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/beta/Dropbox/Git/P6/code/framework/predicates/report.py", line 34
+    s = s ' | ' + self.predname + ': \n' \
+              ^
+SyntaxError: invalid syntax
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+5| MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ | MockPred: 
+ |	Result: 
+ |	Tables: ['t1', 't2']FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Result: 
+ |	Tables: ['t1', 't2']FAILED
+ |	The predicate did not hold on the following rows
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Result: 
+ |	Tables: ['t1', 't2']FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1},
+ |		{'b': 3, 'a': 2},
+ |		{'b': 4, 'a': 3},
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> r
+<__main__.Report object at 0x7f90fe400c88>
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/beta/Dropbox/Git/P6/code/framework/predicates/report.py", line 25
+    else:
+       ^
+SyntaxError: invalid syntax
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+yu a fag
+>>> r = Report(False, p, ['t1', 't2'], [], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: SUCCESS
+
+>>> r = Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: SUCCESS
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [])
+>>> print(r)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/beta/Dropbox/Git/P6/code/framework/predicates/report.py", line 52, in __str__
+    return s + ' |\t' + self.msg + '\n'
+TypeError: Can't convert 'NoneType' object to str implicitly
+>>> r = Report(False, p, ['t1', 't2'], [])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/beta/Dropbox/Git/P6/code/framework/predicates/report.py", line 29, in __init__
+    raise ValueError('Either msg or elements has to be set, or both')
+ValueError: Either msg or elements has to be set, or both
+>>> r = Report(False, p, ['t1', 't2'], [], 'hej')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	hej
+
+>>> {1, 2 ,3} - {2, 3, 4} * {3, 1}
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unsupported operand type(s) for *: 'set' and 'set'
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}])
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	The predicate did not hold on the following elements:
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(False, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> r
+<__main__.Report object at 0x7f90fe3fc1d0>
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: FAILED
+ |	yu a fag
+ |		{'b': 2, 'a': 1}
+ |		{'b': 3, 'a': 2}
+ |		{'b': 4, 'a': 3}
+
+>>> r = Report(True, p, ['t1', 't2'], [{'a':1, 'b':2},{'a':2, 'b':3},{'a':3, 'b':4}], msg='yu a fag')
+>>> print(r)
+ |MockPred: 
+ |	Tables: ['t1', 't2']
+ |	Result: SUCCESS
+
+>>> o = object()
+>>> if o:
+... 	print('pik')
+... 
+pik
+>>> dir(o)
+['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__']
+>>> o.__hash__
+<method-wrapper '__hash__' of object object at 0x7f910263f0f0>
+>>> o.__hash__()
+8766299193103
+>>> o.__reduce__()
+(<function _reconstructor at 0x7f9100640268>, (<class 'object'>, <class 'object'>, None))
+>>> o.__doc_
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'object' object has no attribute '__doc_'
+>>> o.__doc__
+'The most base type'
+>>> Report.__doc__
+' Container object, that holds information regarding predicate errors\n    '
+>>> o.__format__
+<built-in method __format__ of object object at 0x7f910263f0f0>
+>>> o.__format__()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: __format__() takes exactly 1 argument (0 given)
+>>> o.__format__(2)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: must be str, not int
+>>> o.__format__('2')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: non-empty format string passed to object.__format__
+>>> s = ''
+>>> o.__format__(s)
+'<object object at 0x7f910263f0f0>'
+>>> s
+''
+>>> o.__format__ = lambda x: x = 'kage'
+  File "<stdin>", line 1
+SyntaxError: can't assign to lambda
+>>> o.__format__ = lambda x: x is 'kage'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'object' object attribute '__format__' is read-only
+>>> True = False
+  File "<stdin>", line 1
+SyntaxError: can't assign to keyword
+>>> o.__repr__
+<method-wrapper '__repr__' of object object at 0x7f910263f0f0>
+>>> o.__repr__()
+'<object object at 0x7f910263f0f0>'
+>>> o['a'] = b
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'b' is not defined
+>>> o['a'] = 2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'object' object does not support item assignment
+>>> dir(report)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'report' is not defined
+>>> dir(Report)
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__']
+>>> 
