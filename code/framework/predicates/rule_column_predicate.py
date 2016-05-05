@@ -66,7 +66,8 @@ class RuleColumnPredicate(Predicate):
                 elif all(isinstance(item, str) for item in column):
                     temp_list.append(''.join(column))
                 else:
-                    raise TypeError('All elements in column(s) provided is not integers or strings')
+                    raise TypeError('All elements in column(s) provided is '
+                                    'not integers or strings')
             constraint_arg = temp_list
 
             if len(constraint_arg) == len(self.column_names):

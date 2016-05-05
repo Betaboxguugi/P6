@@ -2,16 +2,16 @@ from pygrametl.tables import Dimension, SnowflakedDimension
 import pygrametl
 import os
 import sqlite3
-from framework.predicates import NoDuplicateRowPredicate as DuplicatePredicate
+from framework.predicates import FunctionalDependencyPredicate
 from framework.reinterpreter.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
-open(os.path.expanduser('ref.db'), 'w')
+open(os.path.expanduser('func.db'), 'w')
 
-conn = sqlite3.connect('ref.db')
+conn = sqlite3.connect('func.db')
 
 ref_cur = conn.cursor()
 
@@ -28,36 +28,22 @@ ref_cur.execute("CREATE TABLE dim3 " +
 ref_cur.execute("CREATE TABLE dim4 " +
                 "(key4 INTEGER PRIMARY KEY, attr4 INTEGER)")
 
+conn.commit()
 data = [
-    {'attr1': 24,
-     'attr2': 24,
-     'attr3': 24,
-     'attr4': 24},
+    {'attr1': 3,
+     'attr2': 6,
+     'attr3': 3,
+     'attr4': 9},
 
-    {'attr1': 25,
-     'attr2': 25,
-     'attr3': 25,
-     'attr4': 25},
+    {'attr1': 2,
+     'attr2': 8,
+     'attr3': 6,
+     'attr4': 4},
 
-    {'attr1': 26,
-     'attr2': 26,
-     'attr3': 26,
-     'attr4': 26},
-
-    {'attr1': 74,
-     'attr2': 74,
-     'attr3': 74,
-     'attr4': 74},
-
-    {'attr1': 75,
-     'attr2': 75,
-     'attr3': 75,
-     'attr4': 75},
-
-    {'attr1': 76,
-     'attr2': 76,
-     'attr3': 76,
-     'attr4': 76}
+    {'attr1': 4,
+     'attr2': 5,
+     'attr3': 3,
+     'attr4': 3}
 ]
 
 wrapper = pygrametl.ConnectionWrapper(connection=conn)
@@ -103,18 +89,24 @@ dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
 dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
                              dim4.lookupatts)
 
-dim1_rep.query = "SELECT * FROM dim1 WHERE attr1 <= 25"
-dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 > 25 and attr2 < 75"
-dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 >= 75"
 
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
 
 for dim in snow_dw_rep.dims:
     allatts = dim.all.copy()
-    lookupatts = dim.lookupatts.copy()
-    for attr in lookupatts:
-        allatts.remove(attr)
 
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
+
+a = dim1_rep.name
+b = dim2_rep.name
+c = dim3_rep.name
+d = dim3_rep.name
+print(a, b, c, d)
+
+func_dep = FunctionalDependencyPredicate([a, b, c, d],
+                                         (((a,), (b, c)), ((b,), (c,)))
+                                         )
+print(func_dep.run(snow_dw_rep))
+conn.close()

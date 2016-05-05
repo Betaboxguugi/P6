@@ -134,10 +134,6 @@ dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
 dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
                              dim4.lookupatts)
 
-dim1_rep.query = "SELECT * FROM dim1 WHERE attr1 <= 25"
-dim2_rep.query = "SELECT * FROM dim2 WHERE attr2 > 25 and attr2 < 75"
-dim4_rep.query = "SELECT * FROM dim4 WHERE attr4 >= 75"
-
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
 
