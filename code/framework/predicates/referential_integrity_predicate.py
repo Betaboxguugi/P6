@@ -94,12 +94,11 @@ class ReferentialIntegrityPredicate(Predicate):
                     self.__result__ = False
 
     def report(self):
-        report = Report(self.__result__, self.__class__.__name__,
+        tables = []
+        for key in self.refs.keys():
+            tables.append(key.name)
+        report = Report(self.__result__, self,
+                        tables,
                         self.missing_keys,
-                        'Something went wrong. {} returned '
-                        'false without failed entries. '
-                        'This should never happen.'.format(
-                            self.__class__.__name__
-                        )
                         )
         return report
