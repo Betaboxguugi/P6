@@ -1,5 +1,5 @@
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 from framework.reinterpreter.datawarehouse_representation \
     import FTRepresentation
 

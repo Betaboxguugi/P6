@@ -2,6 +2,7 @@ __author__ = 'Mathias Claus Jensen'
 
 MAX_ELEMENTS = 5
 
+
 class Report(object):
     """ Container object, that holds information regarding predicate errors
     """
@@ -20,8 +21,8 @@ class Report(object):
         self.predname = predname
         
         if not result and not elements and not msg:
-            raise ValueError('If result is False, then either elements or msg' \
-                              + 'has to be set')
+            raise ValueError('If result is False, then either elements or '
+                             'msg has to be set')
         else:
             self.elements = elements
             self.msg = msg
@@ -31,7 +32,8 @@ class Report(object):
         if self.result:
             return s + 'SUCCESS\n'
         elif self.elements:
-            s += 'FAILED\nThe predicate did not hold on the following entries\n'
+            s += 'FAILED\n' \
+                 'The predicate did not hold on the following entries\n'
             i = 0
             for e in self.elements:
                 if i < MAX_ELEMENTS:
@@ -42,5 +44,3 @@ class Report(object):
             return s
         else:
             return self.msg
-            
-            

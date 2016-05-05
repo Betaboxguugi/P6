@@ -1,6 +1,6 @@
 # IMPORTS
 from .predicate import Predicate
-from .predicate_report import Report
+from .report import Report
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
@@ -27,11 +27,11 @@ class ColumnNotNullPredicate(Predicate):
         # If else chain that insures column_names is either a list of strings
         # or a string
         if type(column_names) is list:
-            for cn in range(0, len(column_names)):
-                if not type(column_names[cn]) is str:
+            for column_name in range(0, len(column_names)):
+                if not type(column_names[column_name]) is str:
                     raise TypeError(
                         'column_names must be a list of strings or a string')
-                self.column_names.append(column_names[cn])
+                self.column_names.append(column_names[column_name])
         elif type(column_names) is str:
             self.column_names.append(column_names)
         else:

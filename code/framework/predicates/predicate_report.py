@@ -25,8 +25,8 @@ class Report(object):
         self.predname = predname
         
         if not result and not elements and not msg: # Maybe not do this
-            raise ValueError('If result is False, then either elements or msg' \
-                              + 'has to be set')
+            raise ValueError('If result is False, then either elements or '
+                             'msg has to be set')
         else:
             self.elements = elements
             self.msg = msg

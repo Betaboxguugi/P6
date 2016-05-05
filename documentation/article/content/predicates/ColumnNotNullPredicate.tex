@@ -1,5 +1,5 @@
 \subsection{ColumnNotNullPredicate}
-ColumnNotNullPredicate asserts that a all entries of each row in a specified list of columns within a table, does not contain null. Allowing a user to ensure that the data within a table has all entries filled after a use of a function or insertion of data.
+ColumnNotNullPredicate asserts that all entries of each row in a specified list of columns within a table, does not contain null. Allowing a user to ensure that the data within a table has all entries filled after a use of a function or insertion of data.
 The ColumnNotNullPredicate is instantiated as follows, with description of the parameters below.
 
 \insertcodefile{codeRelated/scripts/ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
@@ -9,4 +9,4 @@ The ColumnNotNullPredicate is instantiated as follows, with description of the p
 \item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within the table
 \end{description}
 
-ColumnNotNullPredicate iterates over every row in the specified table. In each row it then iterates over each element in the column(s) specified. Through this later iteration it insures that each element is not null. If null is found, the row it was found in is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false.
+ColumnNotNullPredicate iterates over every row in the specified table. In each row it then iterates over each element in the column(s) specified. Through this inner iteration it ensures that each element is not null. If null is found, the row it was found in is appended to a list, which is displayed as part of the report object, which will also report the result of the test, as false.
