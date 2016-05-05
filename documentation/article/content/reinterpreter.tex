@@ -42,7 +42,6 @@ In this method we access the \_alltables list from our scope. Every pygrametl Di
 Once instantiated, the DWRepresentation is returned to be used by the predicates and the reinterpretation process is completed.
 
 
-
-\subsections{Restrictions}
+\subsection{Restrictions}
 As the dynamic alteration of code can become rather complex if each edge case is considered, we decide to restrict the format of pygrametl programs that can be run through the reinterpreter. As mentioned previously, the program may only function on a single DW. We make this restriction as it makes implementation easierm while the use of more than one DW is uncommon. In the Representationmake we also restrict ourselves from extracting meta data from instantiations of the SubprocessFactTable class. This class is used to write data to some subprocess such as a bulkloader. We ignore it, as it does not contain the needed metadata such as a table name. As we replacee connections by walking over an AST, programs may not instansiate several source or table objects through iteration. This is because an AST walker only moves over the code within a loop a single time. Finally, the instantiation of pygrametl sources and tables may only occur in the script given to the reinterpreter. Imports are still useable, but because the AST walker only traverses the given script, replacements will not be performed inside imported modules.   
 
