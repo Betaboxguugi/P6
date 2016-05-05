@@ -1,4 +1,4 @@
-__author__ = 'Alexander Brandborg'
+__author__ = 'Mathias Claus Jensen'
 __maintainer__ = 'Mathias Claus Jensen'
 from itertools import filterfalse
 from .predicate import Predicate
@@ -67,7 +67,8 @@ class CompareTablePredicate(Predicate):
             result = False
             
         return Report(result=result,
-                      predname=self.__class__.__name__,
+                      tables=self.actual_name,
+                      predicate=self,
                       elements=errors,
                       msg=None)
         

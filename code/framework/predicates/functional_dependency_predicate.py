@@ -44,7 +44,9 @@ class FunctionalDependencyPredicate(Predicate): # TODO: Make this shit handle nu
 
         result = not elements
         return Report(result=result,
-                      predname='FunctionalDependencyPredicate',
-                      elements=elements)
+                      tables=self.tables,
+                      predicate=self,
+                      elements=elements,
+                      msg='The predicate failed for the following rows, given as (predicate, row) tubles')
                         
             
