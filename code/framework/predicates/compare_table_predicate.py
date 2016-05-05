@@ -18,7 +18,7 @@ class CompareTablePredicate(Predicate):
     """
     
     def __init__(self, actual_name, expected_table,
-                 ignore_atts=None, subset=False):
+                 ignore_atts=[], subset=False):
         """
         :param actual_name: Name of the table from dw to compare with
         :param expected_table: List of dicts for table to compare against
@@ -26,11 +26,9 @@ class CompareTablePredicate(Predicate):
         :param subset: Boolean, if True, it checks if the expected table is a 
         subset of the actual table.
         """
-
-        # Fetching the DW table through its name
         self.ignore_atts = ignore_atts
         self.actual_name = actual_name
-        self.expected_table = expected
+        self.expected_table = expected_table
         self.subset = subset
         self.incorrect_entries = []
         
@@ -45,16 +43,15 @@ class CompareTablePredicate(Predicate):
         # Ignoring the attributes denoted in self.ignore_atts
         for entry in dw_rep.get_data_representation(self.actual_name):
             new_entry = {key: value for key, value in entry.items()
-                                                if key not in self.ignore_atts}
+                         if key not in self.ignore_atts}
             actual.append(new_entry)
         
         for entry in self.expected_table:
             new_entry = {key: value for key, value in entry.items()
-                                                if key not in self.ignore_atts}
+                         if key not in self.ignore_atts}
             expected.append(new_entry)    
 
         # We find all errorneous rows
-        errors = []
         if self.subset: 
             errors = difference(expected, actual)
         else:
@@ -70,4 +67,3 @@ class CompareTablePredicate(Predicate):
                       predname=self.__class__.__name__,
                       elements=errors,
                       msg=None)
-        
