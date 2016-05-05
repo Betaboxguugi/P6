@@ -43,5 +43,8 @@ class RowCountPredicate(Predicate):
         return Report(self.__result__,
                       self.__class__.__name__,
                       None,
-                      """{}: FAILED\nThe predicate did not hold, tested for {} row(s), actual number of row(s): {}\n""".format(self.__class__.__name__, self.number_of_rows, self.row_number)
+                      """{}: FAILED\nThe predicate did not hold, tested for {}
+                      row(s), actual number of row(s): {}\n""".format(
+                          self.__class__.__name__, self.number_of_rows,
+                          self.row_number)
                       )
