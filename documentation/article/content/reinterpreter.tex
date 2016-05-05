@@ -15,7 +15,7 @@ The ScopeMaker has the job of connecting to the DW and creating the replacement 
 \subsection{TransformVisitor}
 The TransformVisitor is a class taking as input the replacement scope and the AST of the pygrametl program being tested. This component is used to walk over the AST, replacing the program's connections with those from the replacement scope. It inherits from ast.NodeVisitor and overwrites the visit\_Call method. This method is called, when a call node implementing a call to a method or function, is encountered. The overwritten method is shown below:
 
-\insertcodefile{codeRelated/scripts/CallNode.py}{The visit\_Call method of TransformVisitor}
+\insertcodefile{CallNode.py}{The visit\_Call method of TransformVisitor}
 
 
 The method only reacts to certain pygrametl method calls. After extracting the name of the method being called, we react if the name is contained in either ATOMIC\_SOURCES or WRAPPERS.
@@ -33,7 +33,7 @@ In this component we compile and execute the transformed AST using the replaceme
 \subsection{RepresentationMaker}\label{ssec:Representation}
 Using the expanded scope, the RepresentationMaker accesses all Dimension and FactTable objects instantiated through the execution of the pygrametl program. From this it creates a DWRepresentation object that allows for easy access to all the tables of the DW along with their metadata. It begins by instantiating the RepresentationMaker, then calling its run method to create the DWRepresentation object. This method can be seen below:
 
-\insertcodefile{codeRelated/scripts/representation_maker.py}{The run method of the representation\_maker class}
+\insertcodefile{representation_maker.py}{The run method of the representation\_maker class}
 
 In this method we access the \_alltables list from our scope. Every pygrametl Dimension and FactTable object instantiated during execution of the pygrametl program is logged in this list. Once acquired we iterate over the list and create a representation object for each table. check\_table\_type is a method that returns true, if the table in question has a type contained in a given list. DIM\_CLASSES contains the class names of all non-aggregate Dimension classes from pygrametl.tables. Similarly FT\_CLASSES contains all non-aggregate fact table classes with the exception of SubprocessFactTable. Once the type of a table has been identified relevant metadata such as table name and keys are extracted from the object and used to instantiate a DimenstionRepresentation or FactTableRepresentation respectively and stored in a list. After iteration we identify all SnowflakedDimension objects in our scope and store them in a list. These provide some assistance in discovering the structure of the DW. Afterwards the DWRepresentation object is instantiated with the two lists of tables, the list of SnowflakedDimensions and the PEP249 connection object connecting to the DW.
 

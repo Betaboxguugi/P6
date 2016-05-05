@@ -1,7 +1,7 @@
 \subsection{FunctionalDependencyPredicate}
 FunctionalDependencyPredicate asserts that a table, or natural join of tables, holds certain functional dependencies. This can prove useful to check if your DW holds certain hierachical properties i.a.. FunctionalDependencyPredicate is instantiate as follows, with description of parameters below.
 
-\insertcodefile{codeRelated/scripts/FunctionalDependencyPredicate.py}{Instantiation of FunctionalDependencyPredicate}
+\insertcodefile{FunctionalDependencyPredicate.py}{Instantiation of FunctionalDependencyPredicate}
 
 \begin{description}
 \item [tables] a list of table names, that will be natural joined together. Of which the result is what the predicate runs on.
@@ -10,9 +10,9 @@ FunctionalDependencyPredicate asserts that a table, or natural join of tables, h
   
 \end{description}
 
-Below in \cref{codeRelated/scripts/FunctionalDependencyPredicate_code.py} is the main functionality of FunctionalDependencyPredicate written in Python.
+Below in \cref{FunctionalDependencyPredicate_code.py} is the main functionality of FunctionalDependencyPredicate written in Python.
 
-\insertcodefile{codeRelated/scripts/FunctionalDependencyPredicate_code.py}{Main functionality of FunctionalDependencyPredicate} 
+\insertcodefile{FunctionalDependencyPredicate_code.py}{Main functionality of FunctionalDependencyPredicate} 
 
 \begin{description}
 \item [line 1] We create a hash table for each functional dependency given
