@@ -125,6 +125,8 @@ special_snowflake = SnowflakedDimension(references=[(dim1, [dim2, dim3]),
 for row in data:
     special_snowflake.insert(row)
 
+conn.commit()
+
 dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes, conn,
                              dim1.lookupatts)
 dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes, conn,
@@ -148,5 +150,4 @@ for dim in snow_dw_rep.dims:
 
 print(ref_tester.run(snow_dw_rep))
 
-conn.commit()
 conn.close()

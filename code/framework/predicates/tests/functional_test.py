@@ -13,22 +13,22 @@ open(os.path.expanduser('func.db'), 'w')
 
 conn = sqlite3.connect('func.db')
 
-ref_cur = conn.cursor()
+cur = conn.cursor()
 
-ref_cur.execute("CREATE TABLE dim1 " +
-                "(key1 INTEGER PRIMARY KEY, attr1 INTEGER, key2 INTEGER, "
-                "key3 INTEGER)")
+cur.execute("CREATE TABLE dim1 " +
+            "(key1 INTEGER PRIMARY KEY, attr1 INTEGER, key2 INTEGER, "
+            "key3 INTEGER)")
 
-ref_cur.execute("CREATE TABLE dim2 " +
-                "(key2 INTEGER PRIMARY KEY, attr2 INTEGER, key4 INTEGER)")
+cur.execute("CREATE TABLE dim2 " +
+            "(key2 INTEGER PRIMARY KEY, attr2 INTEGER, key4 INTEGER)")
 
-ref_cur.execute("CREATE TABLE dim3 " +
-                "(key3 INTEGER PRIMARY KEY, attr3 INTEGER)")
+cur.execute("CREATE TABLE dim3 " +
+            "(key3 INTEGER PRIMARY KEY, attr3 INTEGER)")
 
-ref_cur.execute("CREATE TABLE dim4 " +
-                "(key4 INTEGER PRIMARY KEY, attr4 INTEGER)")
+cur.execute("CREATE TABLE dim4 " +
+            "(key4 INTEGER PRIMARY KEY, attr4 INTEGER)")
 
-conn.commit()
+
 data = [
     {'attr1': 3,
      'attr2': 6,
@@ -43,7 +43,12 @@ data = [
     {'attr1': 4,
      'attr2': 5,
      'attr3': 3,
-     'attr4': 3}
+     'attr4': 3},
+
+    {'attr1': 1,
+     'attr2': 3,
+     'attr3': 4,
+     'attr4': 4}
 ]
 
 wrapper = pygrametl.ConnectionWrapper(connection=conn)
@@ -80,6 +85,8 @@ special_snowflake = SnowflakedDimension(references=[(dim1, [dim2, dim3]),
 for row in data:
     special_snowflake.insert(row)
 
+conn.commit()
+
 dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes, conn,
                              dim1.lookupatts)
 dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes, conn,
@@ -89,7 +96,6 @@ dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
 dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
                              dim4.lookupatts)
 
-
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
 
@@ -98,15 +104,27 @@ for dim in snow_dw_rep.dims:
 
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
+print('\n')
+a = ('key3',)
+b = ('key1',)
+c = (a, b)
 
-a = dim1_rep.name
-b = dim2_rep.name
-c = dim3_rep.name
-d = dim3_rep.name
-print(a, b, c, d)
+d = ('key4',)
+e = ('attr2',)
+f = (d, e)
 
-func_dep = FunctionalDependencyPredicate([a, b, c, d],
-                                         (((a,), (b, c)), ((b,), (c,)))
-                                         )
-print(func_dep.run(snow_dw_rep))
+g = ('key2',)
+h = (d, g)
+
+
+func_dep1 = FunctionalDependencyPredicate([dim1_rep.name], (c,))
+func_dep2 = FunctionalDependencyPredicate([dim2_rep.name], (f,))
+func_dep3 = FunctionalDependencyPredicate([dim2_rep.name, dim4_rep.name], (h,))
+func_dep4 = FunctionalDependencyPredicate([dim2_rep.name], (h,))
+
+print(func_dep1.run(snow_dw_rep))
+print(func_dep2.run(snow_dw_rep))
+print(func_dep3.run(snow_dw_rep))
+print(func_dep4.run(snow_dw_rep))
+
 conn.close()

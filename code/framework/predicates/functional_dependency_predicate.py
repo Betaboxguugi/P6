@@ -36,8 +36,8 @@ class FunctionalDependencyPredicate(Predicate):
 
         for row in dw_rep.iter_join(self.tables): # Natural join of tables
             for idx, fd in enumerate(self.func_dependencies):
-                alpha = (row[x] for x in fd[0])
-                beta = (row[y] for y in fd[1])
+                alpha = tuple(row[x] for x in fd[0])
+                beta = tuple(row[y] for y in fd[1])
 
                 if self.ignore_none and any(x is None for x in alpha):
                     pass
