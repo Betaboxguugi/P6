@@ -1,7 +1,6 @@
 import ast
-
 from .transform_visitor import TransformVisitor
-from .representation_maker import RepresentationMaker
+
 
 __author__ = 'Mathias Claus Jensen'
 __all__ = ['Reinterpreter']
@@ -12,33 +11,23 @@ class Reinterpreter(object):
     connections.
     """
 
-    def __init__(self, program, source_conns, pep249_module,
-                 dw_conn_params, program_is_path=False):
+    def __init__(self, program, source_conns, dw_conn):
         """ 
         :param program: A string containing the program that is to be 
-        reinterpreted or a path to it.
+        reinterpreted.
         :type program: str
         :param source_conns: A dictionary of string:connection pairs. Used to
         specify which connections should be used in the program. The dictionary
         must be ordered in the occurrence of use in the program, and there has
         to be as many connections in the dictionary as there are used in the
         program
-        :param pep249_module: Module used for connecting to the DW.
-        :param dw_conn_params: Dict of parameters used for connecting to DW.
-        :param program_is_path: Bool telling whether the program input is a
-        path or not. If it's not, it's a string.
-        :type program_is_path: bool
+        :param dw_conn: PEP249 connection object
         """
 
         self.program = program
-        self.pep249_module = pep249_module
-        self.dw_conn_params = dw_conn_params
         self.conn_scope = source_conns
-        self.program_is_path = program_is_path
+        self.dw_conn = dw_conn
         self.source_ids = []
-
-        # Connects to the DW
-        self.dw_conn = self.pep249_module.connect(**self.dw_conn_params)
 
         # Generates id names for sources and DW,
         # zipping names an replacement objects into a dictionary,
@@ -73,17 +62,8 @@ class Reinterpreter(object):
         Reinterpretes the pygrametl program, returns a DWRepresentation
         :return: DWRepresentation of dw from the given program
         """
-        #  Retrieves the program as a string or path
-        if self.program_is_path:
-            try:
-                with open(self.program, 'r') as f:
-                    program = f.read()
-            except:
-                raise RuntimeError('pygrametl program not found at location')
-        else:
-            program = self.program
 
-        tree = ast.parse(program)  # Parsing the pygrametl program to an AST
+        tree = ast.parse(self.program)  # Parsing the pygrametl program to an AST
 
         # Transforming the AST to include the user defined connections
         self.__transform(tree)
@@ -93,14 +73,6 @@ class Reinterpreter(object):
 
         exec(p, self.scope)
 
-        # Reestablishes connection to the DW, if it was closed through
-        # the execution of the pygrametl program
-        self.dw_conn.close()
-        self.dw_conn = self.pep249_module.connect(**self.dw_conn_params)
+        return self.scope
 
-        # Creates the DWRepresentation with the transformed scope
-        rep_maker = RepresentationMaker(dw_conn=self.dw_conn, scope=self.scope)
-        dw_rep = rep_maker.run()
-        print(dw_rep)
 
-        return dw_rep, self.dw_conn
