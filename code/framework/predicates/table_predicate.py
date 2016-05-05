@@ -44,8 +44,8 @@ class TablePredicate(Predicate):
 
         if len(inspect.getargspec(self.constraint_function).args) \
                 != len(self.column_names):
-            raise ValueError("""Number of columns specified and number of
-            arguments do not match""")
+            raise ValueError('Number of columns specified and number of' +
+            ' arguments do not match')
 
         constraint_list = []
         for column_name in self.column_names:
@@ -61,12 +61,13 @@ class TablePredicate(Predicate):
         elif not self.return_list:
             temp_list = []
             for column in constraint_list:
-                # TODO: CHECK FOR WHOLE LIST,
-                # MIGHT NOT BE CERTAIN ITS ALL THE SAME TYPE
-                if isinstance(column[0], int):
+                if all(isinstance(item, int) for item in column):
                     temp_list.append(sum(column))
-                elif isinstance(column[0], str):
+                elif all(isinstance(item, str) for item in column):
                     temp_list.append(''.join(column))
+                else:
+                    raise TypeError("""All elements in column(s) provided is"""
+                     + """ not integers or strings""")
             constraint_arg = temp_list
 
             if len(constraint_arg) == len(self.column_names):
