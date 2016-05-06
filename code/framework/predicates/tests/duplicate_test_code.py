@@ -44,7 +44,7 @@ dim = DimRepresentation('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'],
                         conn, ['NAME'])
 dw = DWRepresentation([dim], conn)
 
-dup_predicate = DuplicatePredicate('company', columns, verbose=True)
+dup_predicate = DuplicatePredicate('company', columns)
 print(dup_predicate.run(dw))
 
 conn.close()
