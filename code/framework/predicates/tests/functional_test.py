@@ -87,14 +87,29 @@ for row in data:
 
 conn.commit()
 
-dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes, conn,
-                             dim1.lookupatts)
-dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes, conn,
-                             dim2.lookupatts)
-dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
-                             dim3.lookupatts)
-dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
-                             dim4.lookupatts)
+dim1_rep = DimRepresentation(name=dim1.name,
+                             key=dim1.key,
+                             attributes=dim1.attributes,
+                             connection=conn,
+                             lookupatts=dim1.lookupatts)
+
+dim2_rep = DimRepresentation(name=dim2.name,
+                             key=dim2.key,
+                             attributes=dim2.attributes,
+                             connection=conn,
+                             lookupatts=dim2.lookupatts)
+
+dim3_rep = DimRepresentation(name=dim3.name,
+                             key=dim3.key,
+                             attributes=dim3.attributes,
+                             connection=conn,
+                             lookupatts=dim3.lookupatts)
+
+dim4_rep = DimRepresentation(name=dim4.name,
+                             key=dim4.key,
+                             attributes=dim4.attributes,
+                             connection=conn,
+                             lookupatts=dim4.lookupatts)
 
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
@@ -105,6 +120,8 @@ for dim in snow_dw_rep.dims:
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
 print('\n')
+
+# writing functional dependencies is an annoying chore
 a = ('key3',)
 b = ('key1',)
 c = (a, b)
@@ -116,15 +133,26 @@ f = (d, e)
 g = ('key2',)
 h = (d, g)
 
+i = ('attr1',)
+j = (i, b)
+k = (g, a)
+l = (j, k)
 
+# key3 -> key1 | dim1
 func_dep1 = FunctionalDependencyPredicate([dim1_rep.name], (c,))
+# key4 -> attr2 | dim2
 func_dep2 = FunctionalDependencyPredicate([dim2_rep.name], (f,))
+# key4 -> key2 | dim2, dim4
 func_dep3 = FunctionalDependencyPredicate([dim2_rep.name, dim4_rep.name], (h,))
+# key4 -> key2 | dim2
 func_dep4 = FunctionalDependencyPredicate([dim2_rep.name], (h,))
+# attr1, key1 -> key2, key3 | dim1
+func_dep5 = FunctionalDependencyPredicate([dim1_rep.name], l)
 
 print(func_dep1.run(snow_dw_rep))
 print(func_dep2.run(snow_dw_rep))
 print(func_dep3.run(snow_dw_rep))
 print(func_dep4.run(snow_dw_rep))
+print(func_dep5.run(snow_dw_rep))
 
 conn.close()

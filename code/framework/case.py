@@ -1,8 +1,9 @@
-__author__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
-__maintainer__ = 'Mathias Claus Jensen'
 from .reinterpreter.reinterpreter import Reinterpreter
 from .reinterpreter.representation_maker import RepresentationMaker
 import ast
+
+__author__ = 'Alexander Brandborg & Arash Michael Sami Kjær'
+__maintainer__ = 'Mathias Claus Jensen'
 
 
 class Case:
@@ -49,6 +50,7 @@ class Case:
         self.replace = replace
         self.scope = {}
         self.dw_rep = None
+        self.dw_conn = None
 
     def _execute_program(self):
         """

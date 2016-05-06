@@ -23,7 +23,6 @@ class FunctionalDependencyPredicate(Predicate):
         self.results = []
         self.ignore_none = ignore_none
 
-
     def run(self, dw_rep):
         """
         Checks whether each function dependency holds.
@@ -34,7 +33,7 @@ class FunctionalDependencyPredicate(Predicate):
         hts = [{} for fd in self.func_dependencies]
         elements = []
 
-        for row in dw_rep.iter_join(self.tables): # Natural join of tables
+        for row in dw_rep.iter_join(self.tables):  # Natural join of tables
             for idx, fd in enumerate(self.func_dependencies):
                 alpha = tuple(row[x] for x in fd[0])
                 beta = tuple(row[y] for y in fd[1])

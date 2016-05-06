@@ -2,7 +2,7 @@ __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 from pygrametl.datasources import *
 from csv import DictReader
-from .predicate_report import Report
+
 
 class Predicate:
     """A class that implements basic functionality of a predicate.
@@ -18,9 +18,12 @@ class Predicate:
         # Runs over all data source objects
         for table_name, content in conns.items():
             if not isinstance(content, DictReader):
-                # Creates a temporary SQLSource object, as we cannot iterate over the same cursor twice.
-                temp = SQLSource(connection=content.connection, query=content.query,
-                                 names=content.names, parameters=content.parameters)
+                # Creates a temporary SQLSource object, as we cannot iterate
+                # over the same cursor twice.
+                temp = SQLSource(connection=content.connection,
+                                 query=content.query,
+                                 names=content.names,
+                                 parameters=content.parameters)
             else:
                 temp = content
 
@@ -40,14 +43,4 @@ class Predicate:
         """
         returns the result of the test
         """
-        return Report(self.__class__.__name__,
-                      self.__result__
-                      )
 
-    # def __init__(self, conns):  # It pleases PEP8 when this init is gone
-        # """
-        # :param conns: a dictionary of object connections to the data we need to test.
-        # """
-        # tables = self.dictify(conns)
-        # self.run()
-        # print(self.report())

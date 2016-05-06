@@ -17,8 +17,7 @@ path = "C:/Users/Alexander/Documents/GitHub/P6/code/examples/pygrametl" \
 
 s1 = sqlite3.connect(SALES_DB_NAME)
 s2 = open(CSV_NAME, "r")
-n = RowCountPredicate('bookdim',1)
+n = RowCountPredicate('bookdim', 1)
 
 
-c = Case(path,[n], sqlite3, True, True, (s1,s2), database=DW_NAME)
-c.run()
+c = Case(path, [n], sqlite3, True, True, (s1, s2), database=DW_NAME)

@@ -9,7 +9,7 @@ class Report(object):
     
     def __init__(self, result, predicate, tables, elements=[], msg=None):
         """
-        :param result: Boolean denoting wether the predicate was succesful or 
+        :param result: Boolean denoting whether the predicate was successful or
         not.
         :param predicate: The predicate object from which the report originates
         :param tables: The tables that the predicate ran on.
@@ -42,7 +42,8 @@ class Report(object):
             if self.msg:
                 s += ' |\t' + self.msg + '\n'
             else:
-                s += ' |\tThe predicate did not hold on the following elements:\n'
+                s += ' |\tThe predicate did not hold on the following ' \
+                     'elements:\n'
             i = 0
             for e in self.elements:
                 if i < MAX_ELEMENTS:
