@@ -2,7 +2,7 @@ from .predicate import Predicate
 from .report import Report
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Arash Michael Sami Kjær'
 
 
 class NoDuplicateRowPredicate(Predicate):
@@ -23,7 +23,6 @@ class NoDuplicateRowPredicate(Predicate):
         self.table_name = table_name
         self.column_names = column_names
         self.duplicates = []
-        set(self.duplicates)
         self.table = None
         self.columns = None
         self.dw_rep = None
@@ -31,13 +30,6 @@ class NoDuplicateRowPredicate(Predicate):
 
     def run(self, dw_rep):
         self.dw_rep = dw_rep
-        table = []
-
-        self.table = self.dw_rep.get_data_representation(self.table_name)
-
-        for e in self.table:
-            table.append(e)
-
         # setup of columns, if column_names_exclude is true, then columns is
         # all other columns than the one(s) specified.
         if not self.column_names and not self.column_names_exclude:
@@ -57,36 +49,15 @@ class NoDuplicateRowPredicate(Predicate):
         else:
             self.columns = self.column_names
 
-        # We check for duplicates with the columns specified
-        while len(table) > 1:
-            getting_checked_row = table.pop(0)
-            # this getting_checked_row is the row we will check
-            # against all other rows in the table
-            for row in table:
-                flag = False
-                for column in self.columns:
-                    x = getting_checked_row.get(column)
-                    y = row.get(column)
+        hts = {}
+        self.table = dw_rep.get_data_representation(self.table_name)
+        for row in self.table.itercolumns(self.columns):
+            row_tuple = tuple(row.values())
+            if row_tuple not in hts:
+                hts[row_tuple] = None
+            else:
+                self.duplicates.append(row)
 
-                    # if two values between the rows are not duplicates,
-                    # the rows are not duplicates, and we don't care about the
-                    # rest of the values in those rows
-                    if x != y:
-                        flag = False
-                        # exit the for loop, this brings us to the next
-                        # row in the outer for loop, since have we confirmed
-                        # that the rows are unique
-                        break
-                    else:
-                        flag = True
-                if flag and getting_checked_row not in self.duplicates:
-                    # duplicates is a set
-                    # and we check if we have already noted this duplicate row
-                    self.duplicates.append(getting_checked_row)
-                if flag and row not in self.duplicates:
-                    self.duplicates.append(row)
-        if len(self.duplicates) < 1:
-            self.__result__ = True
         return self.report()
 
     def report(self):
