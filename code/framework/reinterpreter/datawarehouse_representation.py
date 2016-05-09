@@ -1,26 +1,6 @@
 __author__ = 'Mathias Claus Jensen & Alexander Brandborg'
 __maintainer__ = 'Mathias Claus Jensen'
 
-from itertools import filterfalse
-
-"""
-def intersection(a, b):
-    return list(filterfalse(lambda x: x not in b, a))
-
-def natural_join_dicts(dict1, dict2, keys):
-
-    hashlist = [{row[k]: idx for idx, row in enumerate(dict1)} for k in keys] 
-    newtable = []
-    keyhash = {k, i for i, k in enumerate(keys)}
-    dflags = [False for k in keys]
-    flags = dflags.copy()
-                  
-    for row in dict2:
-        for k in keys:
-            i = keyhash[k]
-            if row[k] in hashlist[i]:"""
-
-
 class DWRepresentation(object):
     """
     Class used to represent an entire DW.
@@ -249,7 +229,7 @@ class DimRepresentation(TableRepresentation):
         return self.__str__()
 
 
-class Type1DimRepresentation(DimRepresentation):
+class SCDType1DimRepresentation(DimRepresentation):
     def __init__(self, name, key, attributes, connection, lookupatts,
                  type1atts=()):
         DimRepresentation.__init__(self,
@@ -264,7 +244,7 @@ class Type1DimRepresentation(DimRepresentation):
             self.type1atts = type1atts
 
 
-class Type2DimRepresentation(DimRepresentation):
+class SCDType2DimRepresentation(DimRepresentation):
     def __init__(self, name, key, attributes, connection, lookupatts,
                  versionatt, fromatt=None):
         DimRepresentation.__init__(self,

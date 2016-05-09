@@ -2,7 +2,8 @@ __author__ = 'Alexander Brandborg'
 __maintainer__='Alexander Brandborg'
 
 from .predicate import Predicate
-from ..reinterpreter.datawarehouse_representation import Type2DimRepresentation
+from ..reinterpreter.datawarehouse_representation import \
+    SCDType2DimRepresentation
 from .report import Report
 
 
@@ -34,20 +35,21 @@ class SCDVersionPredicate(Predicate):
 
         dim = dw_rep.get_data_representation(self.table)
 
-        if dim is not Type2DimRepresentation:
-            raise RuntimeError('Given table is not a SCDType2')
+        if not isinstance(dim,SCDType2DimRepresentation):
+            raise RuntimeError('Given table is not'
+                               ' a SCDType2DimRepresentation')
 
         if not set(dim.lookupatts) == set(self.entry.keys()):
             raise RuntimeError('Correct lookupatts not given')
 
-        lookupatts = set(dim.lookupatts)
-        versionatt = set(dim.version)
+        lookupatts = dim.lookupatts
+        versionatt = dim.versionatt
 
-        columns_to_get = lookupatts
-        columns_to_get.add(versionatt)
+        columns_to_get = list(lookupatts)
+        columns_to_get.append(versionatt)
 
         largest_version = None
-        for row in dim.iter_columns(columns_to_get):
+        for row in dim.itercolumns(columns_to_get):
 
             # Gets only the lookupatts subset of the row
             row_lookupatts = {key: value for key, value in row.items() if
@@ -56,7 +58,7 @@ class SCDVersionPredicate(Predicate):
             # If the row corresponds to the test entry
             if row_lookupatts == self.entry:
                 row_version = row[versionatt]
-                if row_version is None or largest_version < row_version:
+                if largest_version is None or largest_version < row_version:
                     largest_version = row_version
 
         return Report(result= largest_version == self.version,
@@ -64,6 +66,6 @@ class SCDVersionPredicate(Predicate):
                       predicate=self,
                       elements=(),
                       msg='Version number not as asserted. ' +
-                          'Was asserted to be ' + self.version +
-                          ',but was instead ' + largest_version)
+                          'Was asserted to be ' + str(self.version) +
+                          ',but was instead ' + str(largest_version))
 
