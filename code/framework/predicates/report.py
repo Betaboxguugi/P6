@@ -15,8 +15,8 @@ class Report(object):
         :param tables: The tables that the predicate ran on.
         :param elements: A list of elements in which errors were found. Each 
         element has to be printable
-        :param msg: A message that is displayed if elements is empty and the
-        result is False
+        :param msg: The message printed when reporting a false result. If None,
+        a default message will be used.
         """
         self.result = result
         self.predicate = predicate
