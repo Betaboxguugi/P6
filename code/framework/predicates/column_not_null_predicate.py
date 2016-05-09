@@ -1,6 +1,7 @@
 # IMPORTS
 from .predicate import Predicate
 from .report import Report
+import time
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
@@ -50,8 +51,7 @@ class ColumnNotNullPredicate(Predicate):
         self.__result__ = True
         self.setup_columns(dw_rep)
         for row in dw_rep.get_data_representation(self.table_name):
-            row_tuple = tuple(row.values())
-            if None in row_tuple:
+            if None in row.values():
                 self.rows_with_null.append(row)
         if self.rows_with_null:
             self.__result__ = False

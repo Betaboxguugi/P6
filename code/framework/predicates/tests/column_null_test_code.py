@@ -19,10 +19,25 @@ null_cur.execute("CREATE TABLE dim1(key1 INTEGER PRIMARY KEY, attr1 INTEGER)")
 data = [
     {'attr1': 20},
     {'attr1': None},
+    {'attr1': 15},
+    {'attr1': None},
+    {'attr1': None},
+    {'attr1': 1},
+    {'attr1': 25},
+    {'attr1': None},
     {'attr1': 5},
     {'attr1': None},
+    {'attr1': 20},
     {'attr1': None},
-    {'attr1': 1}
+    {'attr1': 15},
+    {'attr1': None},
+    {'attr1': None},
+    {'attr1': 1},
+    {'attr1': 25},
+    {'attr1': None},
+    {'attr1': 5},
+    {'attr1': None},
+    {'attr1': None}
 ]
 
 wrapper = pygrametl.ConnectionWrapper(connection=null_conn)
