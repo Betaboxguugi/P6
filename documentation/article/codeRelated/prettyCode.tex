@@ -25,7 +25,7 @@ numberstyle=\tiny\color{Gray}, % Style used for line numbers
 commentstyle=\usefont{T1}{pcr}{m}{sl}\color{color1}
 } 
 
-\newcommand{\insertcodefile}[2]{\lstinputlisting[caption=#2,label=#1,style=Python1,float=h]{codeRelated/scripts/#1}} % The first argument is the script location/filename and the second is a caption for the code
+\newcommand{\insertcodefile}[2]{\lstinputlisting[caption=#2,label=#1,style=Python1,float=h,belowskip=-0.8\baselineskip]{codeRelated/scripts/#1}} % The first argument is the script location/filename and the second is a caption for the code
 
 \newcommand{\insertcodefileline}[4]{\begin{itemize}\item[]\lstinputlisting[firstnumber=#3,firstline=#3,lastline=#4,caption=#2,label=#1,style=Python1]{codeRelated/scripts/#1}\end{itemize}}
 

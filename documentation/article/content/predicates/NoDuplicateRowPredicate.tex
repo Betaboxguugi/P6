@@ -4,11 +4,4 @@ NoDuplicateRowPredicate asserts that a table does not have two or more rows whic
  
 \insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
-\begin{description}
-\item [table\_name] a string containing the name of specific table from the DW. 
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within in the table. Default for column\_names is null, which has some interaction with column\_names\_exclude.
-\item [column\_names\_exclude] a bool, if true, then columns\_names specifies which columns the predicate will exclude to look at when comparing. Default is None. Note if columns\_names is null then column\_names\_exclude will be set to true if false too.
-\item [verbose] a bool, if this is set to true information from each step in NoDuplicateRowPredicate is printed. Used for debugging.
-\end{description}
-
 NoDuplicateRowPredicate chooses a row from the specified table and checks whether it's unique from each of the remaining rows in the table, and does so for every row, except previously tested rows. Through each iteration the chosen row is popped from the table first, so that each iteration will be smaller from the previous. When the rows are checked against each other, each specified column (or if columns were excluded, all the non-excluded columns) have their values compared between the rows. If at least one of these values are unique between the rows, the two rows are not duplicates. It then stops checking values for the two rows and moves to check the next row. If the predicate fails to find unique values between the rows, it attempts to add the duplicate row to a set of duplicate rows, which is then shown in the report. Potential problems arise when columns are somehow specified wrongly, as the predicate will collect None type values from non-existent columns and check them against each other, which are then seen as duplicates. Another problem is when primary key values are checked as well, as these should never be duplicates, but the rest of the attributes may still be duplicates between two rows, and thus that information is missed, the programmer needs to be aware of this.

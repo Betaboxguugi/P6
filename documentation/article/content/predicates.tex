@@ -1,9 +1,14 @@
 \section{Predicates}
-This section will describe each of the predicates found in \FW. Each predicate will be presented with an introduction of its purpose, a small code example and what each of the arguments are used. This is then finally followed by an more in depth description of how it functions.
+This section will describe each of the predicates found in \FW. Each predicate will be presented with an introduction of its purpose, a small code example and what each of the arguments are used. This is then finally followed by an more in depth description of how the predicate function.
 
 \subsection{Commonly used arguments in the predicates}
-In our predicates, some arguments repeat in their name and use. To avoid repetition we will go through each of them here. If any of these arguments has additional functionality than stated here, 
+In our predicates, some arguments repeat in their name and use. To avoid repetition, each of these arguments are presented and explained here.
 
+\begin{description}
+\item [table\_name] a string containing the name of a table from the DW, specifying which table the predicate will run on.
+\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate will test against within the table. If column\_names\_exclude is also an argument for the predicate, then the default value for column\_names is null, which has some interaction with column\_names\_exclude.
+\item [column\_names\_exclude] a bool, if true, then columns\_names specifies which columns the predicate will exclude to look at when comparing. Default is False. Note that if columns\_names is Null and column\_names\_exclude is false, then the predicate will set column\_names\_exclude to true. This feature enables the user to just write the table as the only argument, the predicate will then test all columns of the specified table.
+\end{description}
 
 \input{content/predicates/ColumnNotNullPredicate.tex}
 \input{content/predicates/CompareTablePredicate.tex}

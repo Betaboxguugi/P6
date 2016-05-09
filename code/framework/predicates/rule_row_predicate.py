@@ -8,7 +8,7 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 class RuleRowPredicate(Predicate):
     def __init__(self, table_name, constraint_function, column_names=None,
-                 column_names_exclude=False, return_list=False):
+                 column_names_exclude=False, constraint_input_list=False):
         # TODO: Make predicate able to accept *args from constraint
         """
         :param table_name: name of table where the test will be run
@@ -23,16 +23,15 @@ class RuleRowPredicate(Predicate):
         multiple args or a list, but no varargs(not yet supported). Must return
          true or false for each row given.
         :type constraint_function: function
-        :param return_list: If true, constraint_function will be given lists as
+        :param constraint_input_list: If true, constraint_function will be given lists as
          input, if false constraint_function will
         be given args as input. Default is False
-        :type return_list: bool
+        :type constraint_input_list: bool
         """
         self.table_name = table_name
-
         self.column_names = column_names
         self.constraint_function = constraint_function
-        self.return_list = return_list
+        self.constraint_input_list = constraint_input_list
         self.wrong_rows = []
         self.column_names_exclude = column_names_exclude
 
@@ -70,7 +69,7 @@ class RuleRowPredicate(Predicate):
 
         self.setup_columns(dw_rep)
 
-        if self.return_list:
+        if self.constraint_input_list:
             for row in dw_rep.get_data_representation(self.table_name):
                 element = []
                 for column_name in self.column_names:
@@ -79,7 +78,7 @@ class RuleRowPredicate(Predicate):
                     self.wrong_rows.append(row)
             if self.wrong_rows:
                 self.__result__ = False
-        elif not self.return_list:
+        elif not self.constraint_input_list:
             if len(inspect.getargspec(self.constraint_function).args)\
                    != len(self.column_names):
                 raise ValueError("""Number of columns and number of arguments
@@ -93,7 +92,7 @@ class RuleRowPredicate(Predicate):
             if self.wrong_rows:
                 self.__result__ = False
         else:
-            raise TypeError('return_list must be type bool')
+            raise TypeError('constraint_input_list must be type bool')
 
         return Report(result=self.__result__,
                       tables=self.table_name,

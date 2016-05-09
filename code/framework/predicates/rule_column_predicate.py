@@ -8,13 +8,13 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 class RuleColumnPredicate(Predicate):
     def __init__(self, table_name, constraint_function, column_names=None,
-                 column_names_exclude=False, return_list=True):
+                 column_names_exclude=False, constraint_input_list=True):
 
         self.table_name = table_name
         self.constraint_function = constraint_function
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
-        self.return_list = return_list
+        self.constraint_input_list = constraint_input_list
         self.columns = []
 
     def setup_columns(self, dw_rep):
@@ -54,14 +54,14 @@ class RuleColumnPredicate(Predicate):
                 elements_list.append(row.get(column_name.lower()))
             constraint_list.append(elements_list)
 
-        if self.return_list:
+        if self.constraint_input_list:
             if not self.constraint_function(*constraint_list):
                 self.__result__ = False
 
-        elif not self.return_list:
+        elif not self.constraint_input_list:
             temp_list = []
             for column in constraint_list:
-                if all(isinstance(item, int) for item in column):
+                if all(isinstance(item, int, float, complex) for item in column):
                     temp_list.append(sum(column))
                 elif all(isinstance(item, str) for item in column):
                     temp_list.append(''.join(column))
