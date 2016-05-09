@@ -184,7 +184,8 @@ class TableRepresentation(object):
 
             while True:
                 data = cursor.fetchmany(500)
-                # Some cursor.description return null if the cursor hasn't fetched.
+                # Some cursor.description return null if the cursor hasn't
+                # fetched.
                 # Thus we call it again after fetch if this is the case.
                 if not names:
                     names = [t[0] for t in cursor.description]
