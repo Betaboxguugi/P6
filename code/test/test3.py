@@ -2,6 +2,7 @@ __author__ = 'Alexander'
 import sys
 sys.path.append('../')
 from framework.case import Case
+from framework.dw_populator import DWPopulator
 from framework.predicates import ColumnNotNullPredicate
 from framework.predicates import CompareTablePredicate
 from framework.predicates import RowCountPredicate
@@ -20,4 +21,8 @@ s2 = open(CSV_NAME, "r")
 n = RowCountPredicate('bookdim', 1)
 
 
-c = Case(path, [n], sqlite3, True, True, (s1, s2), database=DW_NAME)
+dwp = DWPopulator(path, sqlite3, True, database=DW_NAME)
+rep = dwp.run()
+
+c = Case(rep, [n])
+c.run()

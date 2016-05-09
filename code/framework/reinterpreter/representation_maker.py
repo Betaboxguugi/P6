@@ -1,6 +1,6 @@
 from .datawarehouse_representation import DWRepresentation,\
-    DimRepresentation, FTRepresentation, Type1DimRepresentation, \
-    Type2DimRepresentation
+    DimRepresentation, FTRepresentation, SCDType1DimRepresentation, \
+    SCDType2DimRepresentation
 from pygrametl.tables import Dimension, FactTable, \
     TypeOneSlowlyChangingDimension, CachedDimension, SlowlyChangingDimension, \
     SCDimension, BulkDimension, CachedBulkDimension, BatchFactTable, \
