@@ -1,13 +1,11 @@
 \section{Predicates}
-This section will describe each of the predicates found in \FW. Each predicate will be presented with an introduction of its purpose, a small code example and what each of the arguments are used. This is then finally followed by an more in depth description of how the predicate function.
+This section will describe each of the predicate classes found in \FW. These are used to assert specific properties of a DW during test. Each subsection will describe the purpose of a predicate, how it is instantiated and how it functions.
 
-\subsection{Commonly used arguments in the predicates}
-In our predicates, some arguments repeat in their name and use. To avoid repetition, each of these arguments are presented and explained here.
-
+For instantiation some common parameters are used. These are presented here, as not to repeat the information later.
 \begin{description}
-\item [table\_name] a string containing the name of a table from the DW, specifying which table the predicate will run on.
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate will test against within the table. If column\_names\_exclude is also an argument for the predicate, then the default value for column\_names is null, which has some interaction with column\_names\_exclude.
-\item [column\_names\_exclude] a bool, if true, then columns\_names specifies which columns the predicate will exclude to look at when comparing. Default is False. Note that if columns\_names is Null and column\_names\_exclude is false, then the predicate will set column\_names\_exclude to true. This feature enables the user to just write the table as the only argument, the predicate will then test all columns of the specified table.
+\item [table\_name] a string with the name of a table from the DW. Using the get\_data\_representation method from DWRepresentation, this is used to fetch the corresponding table.
+\item [column\_names] a string or list indicating one or more attributes from the table. If the attribute is None, we fetch all attributes for each row. If not, the data fetched depends on column\_names\_exclude.
+\item [column\_names\_exclude] a boolean that indicates, how to fetch data using column\_names, when iterating over the table. We iterate using the itercolumns method from TableRepresentation. If the boolean is false, we only fetch the subset of attributes from column\_names for each row. If true, we fetch all attributes not appearing in column\_names.
 \end{description}
 
 \input{content/predicates/ColumnNotNullPredicate.tex}
@@ -19,3 +17,5 @@ In our predicates, some arguments repeat in their name and use. To avoid repetit
 \input{content/predicates/RuleColumnPredicate.tex}
 \input{content/predicates/FunctionalDependencyPredicate.tex}
 \input{content/predicates/SCDVersionPredicate.tex}
+
+
