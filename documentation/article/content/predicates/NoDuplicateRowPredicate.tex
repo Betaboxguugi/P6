@@ -1,9 +1,5 @@
 \subsection{NoDuplicateRowPredicate}
-
-NoDuplicateRowPredicate asserts that a table does not have two or more rows which are a duplicate of each other. It can be specified to only look at certain columns, where it will consider the columns specified as the rows it looks upon. This can be helpful in routing out problems when applying joins, as duplicates can occur in one or more columns when doing so. Otherwise it can also be used after creation of a table or insertion of data into one, as this is also a common area where duplicates may be found if something were done improperly.
- 
+NoDuplicateRowPredicate asserts that a table contains only unique entries. This is often important, when we want to ensure no duplicates of primary keys. Using the predicate, the tester may also indicate, what columns should be considered as part of the assertion. As such, we may specify that a whole row does not have to be unique, only a subset of its columns. This is useful when asserting unique keys or lookup attributes. Below is an example of how the predicate is instantiated:
 \insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
-NoDuplicateRowPredicate iterates through each row as tuples and inserts them into a hashtable(dictionary). If the tuple already exists in the hashtable, it is a duplicate and is saved to a list for reporting.
-Potential problems arise when primary key values are checked as well, as these should never be duplicates, but the rest of the attributes may still be duplicates between two rows, and thus that information is missed, the programmer needs to be aware of this.
-
+The predicate discovers duplicates by iterating over the given table. For each row we generate a key to a hash table/dictionary. The key is then paired with some default value and inserted into the data structure. If we generate the same key again for another row, we must have a duplicate. In this case, the assertion does not hold. Each time we meet a duplicate, we store it, so that it may be reported to the tester.

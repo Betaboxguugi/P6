@@ -13,28 +13,39 @@ class Predicate:
 
     def run(self, *args):
         """ Runs the actual test. Stores result in __result__"""
-        self.__result__ = True
-
-    def setup_columns(self, dw_rep):
-        # setup of columns, if column_names_exclude is true, then columns is
-        # all other columns than the one(s) specified.
-        if not self.column_names and not self.column_names_exclude:
-            self.column_names_exclude = True
-        # We can't iterate over a string so we convert self.column_names
-        # into a list if necessary.
-        if isinstance(self.column_names, str):
-            self.column_names = [self.column_names]
-        if self.column_names_exclude:
-            temp_columns_list = []
-            for column in dw_rep.get_data_representation(self.table_name).all:
-                temp_columns_list.append(column)
-            if self.column_names:
-                for column_name in self.column_names:
-                    temp_columns_list.remove(column_name)
-            self.column_names = temp_columns_list
 
     def report(self):
+        return self.__result__
+
+    def setup_columns(self, dw_rep, table_name,
+                      column_names, column_names_exclude):
         """
-        returns the result of the test
+        Produces a list of columns, which we want to iterate over.
+        :param: dw_rep: A DWRepresentation
+        :param: table_name: A string indicating a DW table
+        :param: column_names: A string or list of attribute names
+        :param: column_names_exclude: A bool indicating whether
+         the column_names is inclusive or exclusive
+        :return chosen_columns: columns we want to iterate over
         """
 
+        # If a single column is given as string, we place it in a list.
+        if isinstance(column_names, str):
+            column_names = [column_names]
+
+        # If no columns are given
+        if not column_names:
+            chosen_columns = dw_rep.get_data_representation(table_name).all
+
+        # If we want to exclude column names
+        elif column_names_exclude:
+            chosen_columns = []
+            for name in dw_rep.get_data_representation(table_name).all:
+                if name not in column_names:
+                    chosen_columns.append(name)
+
+        # If we want to include column names
+        else:
+            chosen_columns = list(column_names)
+
+        return chosen_columns

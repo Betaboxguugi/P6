@@ -3,6 +3,8 @@ import os
 from framework.predicates import NoDuplicateRowPredicate as DuplicatePredicate
 from framework.reinterpreter.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
+from pygrametl.tables import Dimension
+from pygrametl import  ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -40,11 +42,16 @@ c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
 conn.commit()
 columns = ['NAME', 'AGE', 'ADDRESS', 'SALARY']
 
-dim = DimRepresentation('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'],
-                        conn, ['NAME'])
-dw = DWRepresentation([dim], conn)
+wrapper = ConnectionWrapper(conn)
+dim = Dimension( name='COMPANY',
+           key='ID',
+           attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
+           lookupatts=['NAME'])
 
-dup_predicate = DuplicatePredicate('company', ['ID'], True)
+dim_rep = DimRepresentation(dim,conn)
+dw = DWRepresentation([dim_rep], conn)
+
+dup_predicate = DuplicatePredicate('company', [''], True)
 print(dup_predicate.run(dw))
 
 conn.close()
