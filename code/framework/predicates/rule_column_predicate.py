@@ -20,14 +20,17 @@ class RuleColumnPredicate(Predicate):
     def run(self, dw_rep):
 
         self.columns = []
-        self.setup_columns(dw_rep)
+        self.column_names = self.setup_columns(dw_rep, self.table_name,
+                                               self.column_names,
+                                               self.column_names_exclude)
         self.__result__ = True
 
-        if len(inspect.getargspec(self.constraint_function).args) \
-                != len(self.column_names):
+        function_arguments = inspect.getargspec(self.constraint_function).args
+        if len(function_arguments) != len(self.column_names):
             raise ValueError('Number of columns specified and number of' +
-            ' arguments do not match')
+                             ' arguments do not match')
 
+        # Collects all column values in lists and places them in a list of lists
         constraint_list = []
         for column_name in self.column_names:
             elements_list = []
@@ -35,14 +38,18 @@ class RuleColumnPredicate(Predicate):
                 elements_list.append(row.get(column_name.lower()))
             constraint_list.append(elements_list)
 
+        # If constraints should be given as a list, we run our constraints here
         if self.constraint_input_list:
             if not self.constraint_function(*constraint_list):
                 self.__result__ = False
 
+        # For each column we create a sum/join, then use that as an argument.
         elif not self.constraint_input_list:
             temp_list = []
             for column in constraint_list:
-                if all(isinstance(item, int, float, complex) for item in column):
+                if all((isinstance(item, int) or
+                            isinstance(item, float) or
+                            isinstance(item, complex)) for item in column):
                     temp_list.append(sum(column))
                 elif all(isinstance(item, str) for item in column):
                     temp_list.append(''.join(column))

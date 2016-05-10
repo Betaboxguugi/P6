@@ -47,8 +47,12 @@ class RuleRowPredicate(Predicate):
 
         self.__result__ = True
 
-        self.setup_columns(dw_rep)
+        self.column_names = self.setup_columns(dw_rep, self.table_name,
+                                               self.column_names,
+                                               self.column_names_exclude)
 
+        # if the constraint takes a list as input
+        # For each row we rip out the elements and send to the function
         if self.constraint_input_list:
             for row in dw_rep.get_data_representation(self.table_name):
                 element = []
@@ -58,6 +62,9 @@ class RuleRowPredicate(Predicate):
                     self.wrong_rows.append(row)
             if self.wrong_rows:
                 self.__result__ = False
+
+        # if the constraint take regular arguments as input
+        # For each row we rip out the elements and send to the function
         elif not self.constraint_input_list:
             if len(inspect.getargspec(self.constraint_function).args)\
                    != len(self.column_names):
@@ -71,6 +78,7 @@ class RuleRowPredicate(Predicate):
                     self.wrong_rows.append(row)
             if self.wrong_rows:
                 self.__result__ = False
+
         else:
             raise TypeError('constraint_input_list must be type bool')
 

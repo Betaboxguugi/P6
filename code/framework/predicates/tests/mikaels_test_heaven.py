@@ -11,6 +11,8 @@ from framework.predicates.column_not_null_predicate import ColumnNotNullPredicat
 from framework.case import Case
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
+from pygrametl.tables import Dimension, FactTable
+from pygrametl import ConnectionWrapper
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
@@ -53,16 +55,42 @@ query1 = "SELECT * FROM bookDim WHERE bookid < 3"
 query2 = "SELECT * FROM timeDim"
 query3 = "SELECT * FROM locationDim"
 query4 = "SELECT * FROM factTable WHERE bookid > 1"
-book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
 
-time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
-                             dw_conn)
+cw = ConnectionWrapper(dw_conn)
 
-location_dim = DimRepresentation('locationDim', 'locationid',
-                                 ['city', 'region'], dw_conn, ['city'])
+dim1 =  Dimension(
+    name = 'bookdim',
+    key='bookid',
+    attributes=['book', 'genre'],
+)
 
-facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
-                             dw_conn, ['sale'])
+book_dim = DimRepresentation(dim1,dw_conn)
+
+dim2 =  Dimension(
+    name = 'timedim',
+    key='timeid',
+    attributes=['day', 'month', 'year'],
+)
+
+time_dim = DimRepresentation(dim2,dw_conn)
+
+dim3 =  Dimension(
+    name = 'locationDim',
+    key='locationid',
+    attributes= ['city', 'region'],
+    lookupatts= ['city', 'region']
+)
+
+location_dim = DimRepresentation(dim3,dw_conn)
+
+ft = FactTable(
+    name='factTable',
+    keyrefs= ['bookid', 'locationid', 'timeid'],
+    measures=['sale']
+)
+
+facttable =  FTRepresentation(ft, dw_conn)
+
 """
 book_dim.query = query1
 time_dim.query = query2
@@ -112,12 +140,12 @@ rrp_tester1 = RuleRowPredicate('bookdim', constraint3)
 #print(row_tester1.run(dw))
 #print(row_tester1.run(dw))
 #print(row_tester2.run(dw))
-#print(tab_tester1.run(dw))
-#print(tab_tester2.run(dw))
-#print(tab_tester3.run(dw))
-print(nn_tester1.run(dw))
-print(nn_tester2.run(dw))
-#print(rrp_tester1.run(dw))
+print(tab_tester1.run(dw))
+print(tab_tester2.run(dw))
+print(tab_tester3.run(dw))
+#print(nn_tester1.run(dw))
+#print(nn_tester2.run(dw))
+print(rrp_tester1.run(dw))
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
