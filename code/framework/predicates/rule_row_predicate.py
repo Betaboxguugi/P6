@@ -47,6 +47,8 @@ class RuleRowPredicate(Predicate):
 
         self.__result__ = True
 
+        table = dw_rep.get_data_representation(self.table_name)
+
         self.column_names = self.setup_columns(dw_rep, self.table_name,
                                                self.column_names,
                                                self.column_names_exclude)
@@ -54,7 +56,7 @@ class RuleRowPredicate(Predicate):
         # if the constraint takes a list as input
         # For each row we rip out the elements and send to the function
         if self.constraint_input_list:
-            for row in dw_rep.get_data_representation(self.table_name):
+            for row in table:
                 element = []
                 for column_name in self.column_names:
                     element.append(row.get(column_name))
@@ -70,7 +72,8 @@ class RuleRowPredicate(Predicate):
                    != len(self.column_names):
                 raise ValueError("""Number of columns and number of arguments
                  do not match""")
-            for row in dw_rep.get_data_representation(self.table_name):
+
+            for row in table:
                 element = []
                 for column_name in self.column_names:
                     element.append(row.get(column_name))
