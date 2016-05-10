@@ -1,14 +1,7 @@
 \subsection{ColumnNotNullPredicate}
-ColumnNotNullPredicate asserts that all entries in a specified list of columns, within a table, does not contain null. Allowing a user to ensure that the data within a table has all entries filled after a use of a function or insertion of data.
-
-The ColumnNotNullPredicate is instantiated as follows, with description of the parameters below.
+For a set of specified columns within a table, ColumnNotNullPredicate lets testers assert that no member of the given columns are null. While nulls may be allowed to occur within a table, they could indicate data loss. It may also be the case that not null constraints are placed upon certain columns. This is the case for primary keys. The ColumnNotNullPredicate is instantiated as exemplified below:
 
 \insertcodefile{ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
 
-\begin{description}
-\item [table\_name] a string containing the name of the specific table from the DW, that the test must run on. 
-\item [column\_names] a list of strings or a string containing the name(s) of the column(s), which specifies which column(s) the predicate should test within the table
-\end{description}
-
-ColumnNotNullPredicate iterates over every row in the specified table. The predicate checks for None membership within the row dictionary values. When membership is found, the row is added to a list for reporting.
+ColumnNotNullPredicate functions by iterating over every row in the specified table. For each row it checks, whether any of its specified column attributes have the value null. If this is the case, the assertion is broken. As we iterate, we store all offending rows, so that they may be reported to the tester. 
 

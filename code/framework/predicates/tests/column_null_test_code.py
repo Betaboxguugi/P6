@@ -6,6 +6,7 @@ import sqlite3
 import os
 import pygrametl
 from pygrametl.tables import Dimension
+from pygrametl import  ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -51,7 +52,7 @@ dim1 = Dimension(
 for row in data:
     dim1.insert(row)
 
-dim_rep = DimRepresentation('dim1', 'key1', ['attr1'], null_conn)
+dim_rep = DimRepresentation(dim1, null_conn)
 notnull_tester = ColumnNotNullPredicate('dim1')
 null_rep = DWRepresentation([dim_rep], null_conn)
 

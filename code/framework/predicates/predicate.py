@@ -13,9 +13,7 @@ class Predicate:
 
     def run(self, *args):
         """ Runs the actual test. Stores result in __result__"""
-
-    def report(self):
-        return self.__result__
+        self.__result__ = True
 
     def setup_columns(self, dw_rep, table_name,
                       column_names, column_names_exclude):

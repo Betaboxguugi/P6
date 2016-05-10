@@ -40,14 +40,14 @@ class NoDuplicateRowPredicate(Predicate):
         """
 
         # Gets the columns to iterate over
-        self.column_names = self.setup_columns(dw_rep, self.table_name,
-                                               self.column_names,
-                                               self.column_names_exclude)
+        chosen_columns = self.setup_columns(dw_rep, self.table_name,
+                                            self.column_names,
+                                            self.column_names_exclude)
 
         # Using a hash table to find duplicates
         hts = {}
-        self.table = dw_rep.get_data_representation(self.table_name)
-        for row in self.table.itercolumns(self.column_names):
+        table = dw_rep.get_data_representation(self.table_name)
+        for row in table.itercolumns(chosen_columns):
             row_tuple = tuple(row.values())
             if row_tuple not in hts:
                 hts[row_tuple] = True

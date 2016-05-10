@@ -8,6 +8,10 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class ColumnNotNullPredicate(Predicate):
+    """
+    Predicate for asserting that nulls do not exist in the columns of a table
+    """
+
     def __init__(self, table_name, column_names=None,
                  column_names_exclude=False):
         """
@@ -24,18 +28,23 @@ class ColumnNotNullPredicate(Predicate):
 
     def run(self, dw_rep):
         """
-        :param dw_rep
-        Then checks each element in the specified column,
-        if any are null, it sets self.__result__ to false. Finally calls
-        self.report()
+        Iterates over the table, storing any row containing nulls.
+        :param dw_rep : DWRepresentation object
         """
-        self.__result__ = True
-        self.setup_columns(dw_rep)
-        for row in dw_rep.get_data_representation(self.table_name):
+
+        # Gets the columns to iterate over
+        chosen_columns = self.setup_columns(dw_rep,self.table_name,
+                                            self.column_names,
+                                            self.column_names_exclude)
+
+        # Iterates over the table and checks for nulls in chosen columns
+        table = dw_rep.get_data_representation(self.table_name)
+        for row in table.itercolumns(chosen_columns):
             if None in row.values():
                 self.rows_with_null.append(row)
-        if self.rows_with_null:
-            self.__result__ = False
+
+        if not self.rows_with_null:
+            self.__result__ = True
 
         return Report(result=self.__result__,
                       predicate=self,

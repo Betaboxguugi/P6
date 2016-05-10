@@ -51,7 +51,7 @@ dim = Dimension( name='COMPANY',
 dim_rep = DimRepresentation(dim,conn)
 dw = DWRepresentation([dim_rep], conn)
 
-dup_predicate = DuplicatePredicate('company', [''], True)
+dup_predicate = DuplicatePredicate('company',['ID'], True)
 print(dup_predicate.run(dw))
 
 conn.close()
