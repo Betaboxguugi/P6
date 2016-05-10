@@ -200,7 +200,7 @@ class DimRepresentation(TableRepresentation):
     """
     An object for representing data in a DW dimension
     """
-    def __init__(self, name, key, attributes, connection, lookupatts=()):
+    def __init__(self, dimension, connection):
         """
         :param name: Name of table
         :param key: Name of primary key attribute
@@ -208,14 +208,10 @@ class DimRepresentation(TableRepresentation):
         :param lookupatts: List of lookup attributes of the table
         :param connection: PEP249 connection to a database
         """
-        self.name = name
-        self.key = key
-        self.attributes = attributes
-        if lookupatts == ():
-            self.lookupatts = self.attributes
-        else:
-            self.lookupatts = lookupatts
-
+        self.name = dimension.name
+        self.key = dimension.key
+        self.attributes = dimension.attributes
+        self.lookupatts = dimension.lookupatts
         self.connection = connection
         self.all = [self.key] + self.attributes
         self.query = "SELECT " + ",".join(self.all) + " FROM " + self.name
@@ -230,38 +226,23 @@ class DimRepresentation(TableRepresentation):
 
 
 class SCDType1DimRepresentation(DimRepresentation):
-    def __init__(self, name, key, attributes, connection, lookupatts,
-                 type1atts=()):
-        DimRepresentation.__init__(self,
-                                   name,
-                                   key,
-                                   attributes,
-                                   connection,
-                                   lookupatts)
-        if type1atts == ():
-            self.type1atts = list(set(self.attributes) - set(self.lookupatts))
-        else:
-            self.type1atts = type1atts
+    def __init__(self, dimension, connection):
+        DimRepresentation.__init__(self, dimension, connection)
+        self.type1atts = dimension.type1atts
 
 
 class SCDType2DimRepresentation(DimRepresentation):
-    def __init__(self, name, key, attributes, connection, lookupatts,
-                 versionatt, fromatt=None):
-        DimRepresentation.__init__(self,
-                                   name,
-                                   key,
-                                   attributes,
-                                   connection,
-                                   lookupatts)
-        self.versionatt = versionatt
-        self.fromatt = fromatt
+    def __init__(self, dimension, connection):
+        DimRepresentation.__init__(self, dimension, connection)
+        self.versionatt = dimension.versionatt
+        self.fromatt = dimension.fromatt
 
 
 class FTRepresentation(TableRepresentation):
     """
     An Object for representing data in a DW fact table
     """
-    def __init__(self, name, keyrefs, connection, measures=()):
+    def __init__(self, factable, connection):
         """
         :param name: Name of table
         :param keyrefs: List of attributes that are foreign keys to other
@@ -269,9 +250,9 @@ class FTRepresentation(TableRepresentation):
         :param connection: PEP249 connection to a database
         :param measures: List of attributes containing non-key values
         """
-        self.name = name
-        self.keyrefs = keyrefs
-        self.measures = measures
+        self.name = factable.name
+        self.keyrefs = factable.keyrefs
+        self.measures = factable.measures
         self.connection = connection
         if self.measures == ():
             self.all = self.keyrefs

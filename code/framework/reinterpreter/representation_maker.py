@@ -60,28 +60,16 @@ class RepresentationMaker(object):
             # If the table is a dimension.
             if self.check_table_type(table, DIM_CLASSES):
                 if isinstance(table, TypeOneSlowlyChangingDimension):
-                    dim = Type1DimRepresentation(table.name, table.key,
-                                                 table.attributes,
-                                                 self.dw_conn,
-                                                 table.lookupatts,
-                                                 table.type1atts)
+                    dim = SCDType1DimRepresentation(table, self.dw_conn)
                 elif isinstance(table, SlowlyChangingDimension):
-                    dim = Type2DimRepresentation(table.name, table.key,
-                                                 table.attributes,
-                                                 self.dw_conn,
-                                                 table.lookupatts,
-                                                 table.versionatt,
-                                                 table.fromatt)
+                    dim = SCDType2DimRepresentation(table, self.dw_conn)
                 else:
-                    dim = DimRepresentation(table.name, table.key,
-                                            table.attributes, self.dw_conn,
-                                            table.lookupatts)
+                    dim = DimRepresentation(table, self.dw_conn)
                 self.dim_reps.append(dim)
 
             # If the table is a fact table
             elif self.check_table_type(table, FT_CLASSES):
-                    ft = FTRepresentation(table.name, table.keyrefs,
-                                          self.dw_conn, table.measures)
+                    ft = FTRepresentation(table, self.dw_conn)
                     self.fts_reps.append(ft)
 
         # From the scope, gets all SnowflakedDimensions.

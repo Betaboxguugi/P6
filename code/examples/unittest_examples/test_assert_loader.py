@@ -1,5 +1,5 @@
 import unittest
-from code.unittest_examples.tests.test_asserts import TestAsserts
+from .tests.test_asserts import TestAsserts
 
 #suite = unittest.defaultTestLoader.loadTestsFromModule(TestAsserts)
 #suite = unittest.makeSuite(TestAsserts)
