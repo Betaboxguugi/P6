@@ -37,10 +37,6 @@ class RowCountPredicate(Predicate):
         else:
             self.__result__ = False
 
-        return self.report()
-
-    def report(self):
-
         return Report(result=self.__result__,
                       tables=self.table_name,
                       predicate=self,
@@ -49,4 +45,5 @@ class RowCountPredicate(Predicate):
                       actual number of row(s): {}""".format(
                           self.number_of_rows, self.row_number
                       ))
+
 

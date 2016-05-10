@@ -22,7 +22,13 @@ class ReferentialIntegrityPredicate(Predicate):
             for key in key_dic.keys():
                 self._check_ref(table, key)
 
-        return self.report()
+        tables = []
+        for key in self.refs.keys():
+            tables.append(key.name)
+        return Report(self.__result__, self,
+                      tables,
+                      self.missing_keys,
+                      )
 
     def _find_refs(self):
         """
@@ -92,13 +98,3 @@ class ReferentialIntegrityPredicate(Predicate):
                 if error_entry not in self.missing_keys:
                     self.missing_keys.append(error_entry)
                     self.__result__ = False
-
-    def report(self):
-        tables = []
-        for key in self.refs.keys():
-            tables.append(key.name)
-        report = Report(self.__result__, self,
-                        tables,
-                        self.missing_keys,
-                        )
-        return report
