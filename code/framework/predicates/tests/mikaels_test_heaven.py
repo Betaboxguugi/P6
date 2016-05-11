@@ -125,7 +125,7 @@ def constraint3(bookid, book, genre, constant):
     return True
 
 tab_tester1 = RuleColumnPredicate(table_name='bookdim', constraint_function=constraint1,
-                                column_names=['book', 'genre'], constrain_args=[5])
+                                column_names=['book', 'genre'], constraint_args=[5])
 tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'])
 tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'timeid'], [6], True)
 
@@ -133,7 +133,7 @@ nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
 
 nn_tester2 = ColumnNotNullPredicate('bookdim', ['genre','book'], True)
 
-rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constraint3, constrain_args=[5])
+rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constraint3, constraint_args=[5])
 
 
 #print(dup_tester1.run(dw))

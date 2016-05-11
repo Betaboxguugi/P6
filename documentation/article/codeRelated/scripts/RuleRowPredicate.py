@@ -1,11 +1,8 @@
-def constraint1(a, b):
-    if a > 20000 and b < 80:
-        return true
-    else:
-        return false
+def initials_id(aid, name):
+    return aid == get_initials(name)
 
-
-RuleRowPredicate(table_name='company',
-                 constraint_function=constraint1,
-                 column_names=['sales', 'age'],
-                 return_list=None)
+RuleRowPredicate(table_name='AuthorDim',
+                 constraint_function=initials_id,
+                 column_names=['aid', 'name'],
+                 constraint_args=[],
+                 column_names_exclude=False)

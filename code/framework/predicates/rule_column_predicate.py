@@ -13,7 +13,7 @@ class RuleColumnPredicate(Predicate):
     """
 
     def __init__(self, table_name, constraint_function,
-                 column_names=None, constrain_args=[],
+                 column_names=None, constraint_args=[],
                  column_names_exclude=False):
         """
         :param table_name: name of table used for test
@@ -30,7 +30,7 @@ class RuleColumnPredicate(Predicate):
         """
         self.table_name = table_name
         self.constraint_function = constraint_function
-        self.constrain_args = constrain_args
+        self.constraint_args = constraint_args
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
 
@@ -44,7 +44,7 @@ class RuleColumnPredicate(Predicate):
                                               self.column_names_exclude)
 
         func_args = inspect.getargspec(self.constraint_function).args
-        if len(func_args) != len(column_arg_names) + len(self.constrain_args):
+        if len(func_args) != len(column_arg_names) + len(self.constraint_args):
             raise ValueError("""Number of columns and number of arguments
                                 do not match""")
 
@@ -60,8 +60,8 @@ class RuleColumnPredicate(Predicate):
         for name in column_arg_names:
             arguments.append(columns[name])
 
-        if self.constrain_args:
-            arguments.append(*self.constrain_args)
+        if self.constraint_args:
+            arguments.append(*self.constraint_args)
 
         # Running the constraint function
         self.__result__ = self.constraint_function(*arguments)
