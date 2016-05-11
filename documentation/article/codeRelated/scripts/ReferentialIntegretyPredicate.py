@@ -1,0 +1,1 @@
+ReferentialIntegrityPredicate() # Takes no arguments
