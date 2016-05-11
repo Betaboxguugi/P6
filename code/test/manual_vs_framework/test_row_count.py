@@ -5,7 +5,7 @@ from dw import setup
 
 path = 'row_count.db'
 
-setup(path, 100)
+setup(path, 1000)
 suite = unittest.defaultTestLoader.loadTestsFromModule(TestRowCount)
 suite = unittest.makeSuite(TestRowCount)
 unittest.TextTestRunner(verbosity=2).run(suite)

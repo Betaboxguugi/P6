@@ -38,7 +38,7 @@ def framework_row_count(path):
     dim2rep = DimRepresentation(dim2, conn)
     ft1rep = FTRepresentation(ft1, conn)
     dw_rep = DWRepresentation([dim1rep, dim2rep], conn, [ft1rep])
-    count = RowCountPredicate('ft1', 10000)
+    count = RowCountPredicate('ft1', 1000000)
     case = Case(dw_rep, [count])
     start = time.monotonic()
     case.run()
