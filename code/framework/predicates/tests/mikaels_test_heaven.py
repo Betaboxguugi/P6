@@ -107,9 +107,10 @@ row_tester1 = RowCountPredicate('bookdim', 4)
 row_tester2 = RowCountPredicate('bookdim', 5)
 
 
-def constraint1(a, b):
+def constraint1(a, b, c):
     print(a)
     print(b)
+    print(c)
     return True
 
 
@@ -118,20 +119,21 @@ def constraint2(a):
     return False
 
 
-def constraint3(a,b,c):
-    print(a, b, c)
+def constraint3(bookid, book, genre, constant):
+    print(bookid, book, genre)
+    print(constant)
     return True
 
-tab_tester1 = RuleColumnPredicate('bookdim', constraint1, ['book', 'genre'], False,
-                                  False)
-tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'], False, False)
-tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'month'])
+tab_tester1 = RuleColumnPredicate(table_name='bookdim', constraint_function=constraint1,
+                                column_names=['book', 'genre'], constrain_args=[5])
+tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'])
+tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'timeid'], [6], True)
 
 nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
 
 nn_tester2 = ColumnNotNullPredicate('bookdim', ['genre','book'], True)
 
-rrp_tester1 = RuleRowPredicate('bookdim', constraint3)
+rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constraint3, constrain_args=[5])
 
 
 #print(dup_tester1.run(dw))

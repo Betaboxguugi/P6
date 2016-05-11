@@ -3,87 +3,71 @@ from .report import Report
 import inspect
 
 __author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Alexander Brandborg'
 
 
 class RuleRowPredicate(Predicate):
+    """
+    Predicate for asserting using a user defined-function returning a bool.
+    The function is applied to each row.
+    """
+
     def __init__(self, table_name, constraint_function, column_names=None,
-                 column_names_exclude=False, constraint_input_list=False):
-        # TODO: Make predicate able to accept *args from constraint
+                 constrain_args=[], column_names_exclude=False):
         """
-        :param table_name: name of table where the test will be run
+        :param table_name: name of table used for test
         :type table_name: str
-        :param column_names: list of all the columns which need to tested
-        against the predicates.
-        Note their order in the list, as that is the order they will appear in
-        the constraints args.
+        :param column_names: list of column names
         :type column_names: list
-        :param constraint_function: a predicate that represent the constraint
-        which need to be tested. May take
-        multiple args or a list, but no varargs(not yet supported). Must return
-         true or false for each row given.
+        :param constraint_function: user-defined function to run on each row.
+        Must return a boolean.
         :type constraint_function: function
-        :param constraint_input_list: If true, constraint_function will be given lists as
-         input, if false constraint_function will
-        be given args as input. Default is False
-        :type constraint_input_list: bool
+        :param costraint_args: Additional arguments for the constrain function.
+        :type list
+        :param column_names_exclude: bool, indicating how column_names is
+        used to fetch columns from the table.
         """
         self.table_name = table_name
-        self.column_names = column_names
         self.constraint_function = constraint_function
-        self.constraint_input_list = constraint_input_list
-        self.wrong_rows = []
+        self.constrain_args = constrain_args
+        self.column_names = column_names
         self.column_names_exclude = column_names_exclude
+        self.wrong_rows = []
 
     def run(self, dw_rep):
         """
-        Provides a list of element of the specified columns to the given
-         constraint function and its args.
-        Then logs which list of elements the constraint function returned
-         false on if any.
+        Runs the constraint function on the specified columns of each row.
+        Stores rows asserted faulty by the function for reporting.
         """
-        if inspect.getargspec(self.constraint_function).varargs:  # True
-            raise ValueError('Constraints using varargs is not yet supported')
-
-        self.__result__ = True
-
         table = dw_rep.get_data_representation(self.table_name)
 
-        self.column_names = self.setup_columns(dw_rep, self.table_name,
-                                               self.column_names,
-                                               self.column_names_exclude)
+        # Gets the attribute names for columns needed for test
+        column_arg_names = self.setup_columns(dw_rep, self.table_name,
+                                              self.column_names,
+                                              self.column_names_exclude)
 
-        # if the constraint takes a list as input
-        # For each row we rip out the elements and send to the function
-        if self.constraint_input_list:
-            for row in table:
-                element = []
-                for column_name in self.column_names:
-                    element.append(row.get(column_name))
-                if not self.constraint_function(element):
-                    self.wrong_rows.append(row)
-            if self.wrong_rows:
-                self.__result__ = False
+        func_args = inspect.getargspec(self.constraint_function).args
+        if len(func_args) != len(column_arg_names) + len(self.constrain_args):
+            raise ValueError("""Number of columns and number of arguments
+                                do not match""")
 
-        # if the constraint take regular arguments as input
-        # For each row we rip out the elements and send to the function
-        elif not self.constraint_input_list:
-            if len(inspect.getargspec(self.constraint_function).args)\
-                   != len(self.column_names):
-                raise ValueError("""Number of columns and number of arguments
-                 do not match""")
+        # Iterates over each row, calling the constraint function upon it
+        for row in table.itercolumns(column_arg_names):
 
-            for row in table:
-                element = []
-                for column_name in self.column_names:
-                    element.append(row.get(column_name))
-                if not self.constraint_function(*element):
-                    self.wrong_rows.append(row)
-            if self.wrong_rows:
-                self.__result__ = False
+            # Finds parameters. First attributes then additional params.
+            arguments = []
+            for name in column_arg_names:
+                arguments.append(row[name])
 
-        else:
-            raise TypeError('constraint_input_list must be type bool')
+            if self.constrain_args:
+                arguments.append(*self.constrain_args)
+
+            # Runs function on parameters
+            if not self.constraint_function(*arguments):
+                self.wrong_rows.append(row)
+
+        if not self.wrong_rows:
+            self.__result__ = True
 
         return Report(result=self.__result__,
                       tables=self.table_name,
