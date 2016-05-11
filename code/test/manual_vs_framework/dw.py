@@ -11,7 +11,7 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 def setup(path, number):
     open(os.path.expanduser(path), 'w')
 
-    output_conn = sqlite3.connect('row_count.db')
+    output_conn = sqlite3.connect(path)
     output_cur = output_conn.cursor()
 
     output_cur.execute("CREATE TABLE dim1 "
@@ -115,6 +115,6 @@ def setup(path, number):
     total_elapsed += elapsed
 
     print('dw populated')
-    print('Total time: {}{}'.format(round(total_elapsed, 3), 's'))
+    print('Total time: {}{}\n'.format(round(total_elapsed, 3), 's'))
 
     output_conn.commit()
