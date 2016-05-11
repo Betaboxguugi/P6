@@ -11,7 +11,7 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 def setup(path, number):
     open(os.path.expanduser(path), 'w')
 
-    output_conn = sqlite3.connect(path)
+    output_conn = sqlite3.connect('row_count.db')
     output_cur = output_conn.cursor()
 
     output_cur.execute("CREATE TABLE dim1 "
@@ -56,7 +56,7 @@ def setup(path, number):
     start = time.monotonic()
     counter = 0
     for i in range(1, number + 1):
-        for j in range(1, number + 1):  # 10k entries
+        for j in range(1, number + 1):
             counter += 10
             facts.append({'key1': i, 'key2': j, 'measure': counter})
     end = time.monotonic()
@@ -68,7 +68,7 @@ def setup(path, number):
     print('Generating dim1 data')
     start = time.monotonic()
     for i in range(1, number + 1):
-        dim1_data.append({'attr1': i, 'attr2': number + 1 - i})  # 100 entries
+        dim1_data.append({'attr1': i, 'attr2': number + 1 - i})
     end = time.monotonic()
     elapsed = end - start
     print('Generated')
@@ -78,7 +78,7 @@ def setup(path, number):
     print('Generating dim2 data')
     start = time.monotonic()
     for i in range(1, number + 1):
-        dim2_data.append({'attr3': i, 'attr4': number + 1 - i})  # 100 entries
+        dim2_data.append({'attr3': i, 'attr4': number + 1 - i})
     end = time.monotonic()
     elapsed = end - start
     print('Generated')
@@ -118,4 +118,3 @@ def setup(path, number):
     print('Total time: {}{}'.format(round(total_elapsed, 3), 's'))
 
     output_conn.commit()
-    output_conn.close()

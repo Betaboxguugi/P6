@@ -12,5 +12,4 @@ class TestRowCount(unittest.TestCase):
         cur = conn.cursor()
         cur.execute('SELECT * FROM ft1')
         l = cur.fetchall()
-        self.assertEqual(l.__len__(), 10000)
-        conn.close()
+        self.assertEqual(l.__len__(), 1000000)
