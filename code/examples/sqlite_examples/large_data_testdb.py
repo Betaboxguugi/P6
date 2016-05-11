@@ -12,7 +12,7 @@ import os.path
 # Function to print a table
 def print_table(str, name=None):
     print("-----------------------------")
-    if name is not None:
+    if name:
         print("Table: " + name)
     for row in c.execute(str):
         print(row)
