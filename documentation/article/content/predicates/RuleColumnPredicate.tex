@@ -1,11 +1,7 @@
 \subsection{RuleColumnPredicate}
-RuleColumnPredicate is a variation of the RuleRowPredicate in \cref{RCP}. The difference being that RuleColumnPredicate allows the user to check their constraint against an the entire column at once, instead of going through each row as RuleRowPredicate does. The input to arguments of the constraint is by default a list, each representing the column(s) in the order they are specified. However if return\_list is set to false, the input for the constraint is either the sum if the column contains integers, or the join of all the strings if the column contains strings. Which can be useful in some edge cases, such as testing the total sum of 2 columns, is equal to sum of a 3'rd column. TablePredicate is instantiated as follows, with description of the parameters below
+RuleColumnPredicate is similar to RuleRowPredicate in \cref{RCP}, even taking the same parameters as input. The difference is that RuleColumnPredicate allows for the assertion of business rules that apply to sets of columns. It is instantiated as follows:
 
 \insertcodefile{RuleColumnPredicate.py}{Instantiation of RuleColumnPredicate}
 
-\begin{description}
-\item [constraint\_function] a predicate function that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
-\item [constraint\_input\_list] a bool, if true a list for each column specified, will be given to the constraint function as input. If false, the predicate will sum up all numerics, or join all strings depending on what the column. Once done for all the columns, it will be given to the constraint function as input. Default is true.
-\end{description}
-
-RuleColumnPredicate iterates over every row in the specified table. For each row, it iterates over the column(s) specified, where it takes each element from each column(s) and calls the constraint function on those elements as either arguments or a list, depending on what the user has specified. If the constraint function returns false on a row, then the row is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false. RuleColumnPredicate does not support constraints with a variable number of arguments.
+During execution, each column specified by column\_name is fetched from the database in its entirety. The columns are then supplied to the constraint\_function along with the additional parameters in constraint\_args. Note that in contrast to RuleRowPredicate, we only call the function a single time, since it takes entire columns as input. The assertion made by the predicate holds, based on whether constraint\_function returns True or False.
+In the code example, we give no\_forgotten\_cities as the constraint function. The predicate asserts that no city in the AuthorDim table is named Constantinople.

@@ -1,12 +1,14 @@
 \subsection{RuleRowPredicate}\label{RCP}
+RuleRowPredicate is used to assert that every row of a table complies with some user-defined constraint. Thus, this predicate allows users a lot of flexibility in how they test business rules for individual rows. The RuleRowPredicate is instantiated as shown below:
 
-RuleRowPredicate asserts that all entries of each row in a specified list of columns within a table, complies with a constraint, given trough a predicate made by the user. This allows the user a lot of freedom in their tests, as they can test each row of elements in a given table, in any way they wish. Insuring the data complies with the requirements they have set for it. The RuleColumnPredicate is instantiated as follows, with description of the parameters below.
+\insertcodefile{RuleRowPredicate.py}{Instantiation of RuleRowPredicate}
 
-\insertcodefile{RuleRowPredicate.py}{Instantiation of RuleColumnPredicate}
-
+The parameters comprise of:
 \begin{description}
-\item [constraint\_function] a predicate that represent the constraint which need to be tested. When called it must return either true, if the constraint is fulfilled, or false if it's not.
-\item [constraint\_input\_list] a bool, if false then all elements from the column(s) is send as arguments to the constraint function, if true they are send as a list instead. Default is false.
+\item [constraint\_function] a function that represent the user constraint. It must return a boolean, indicating whether a given row conforms to the constraint.
+\item [constraint\_args] a list of additional arguments given to the constraint\_function.
 \end{description}
 
-RuleRowPredicate iterates over every row in the specified table. For each row, it iterates over the column(s) specified, where it takes each element from each column(s) and calls the constraint function on those elements as either arguments or a list, depending on what the user has specified. If the constraint function returns false on a row, then the row is appended to a list, which is displayed as part of the report object, which also will report the result of the test, as false. RuleRowPredicate does not support constraints with a variable number of arguments.
+With column\_names we define, which row attributes that constraint\_function should get as input. As we iterate over each row, we call constraint\_function. The function receives the defined row attributes as parameters along with those from constraint\_args. If the function returns false for a row, the assertion did not hold.
+
+In the instantiation above, we use the initials\_id as our constraint function. Using the predicate as a whole, we assert that every author's primary key corresponds to their initials. 

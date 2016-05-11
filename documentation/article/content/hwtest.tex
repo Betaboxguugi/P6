@@ -19,13 +19,30 @@ The Predicates are a family of classes used to make assertions about a populated
 
 The Case is a class representing a test case, and serves as a users primary way of interacting with \FW{}. It is the class used to run a set of predicates on a DWRepresentation. It is also responsible for reporting the results of the predicates back to the users.
 
-Below is an example of a \FW{} program, some of the modules used are explained further in depth in later sections.
+
+\subsection{Example Scenario}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{figures/example_dw.pdf}
+\caption{Diagram of an example DW}
+\label{fig:exdw}
+\end{figure}
+
+The remainder of this section will be used to describe an example scenario, in which \FW{} is used to conduct tests. For this example we imagine that we have already written a pygrametl program which performs the necessary ETL operations to populate the DW specified by \cref{fig:exdw}. We wish to test if this pygrametl program, given two user defined sources, correctly populates the DW so that the fact table has exactly 99 rows and that there is referential integrety.
+An example of a python program that does this using \FW{} can be seen in \cref{Case.py}, with an explanation of the code below.
 
 \insertcodefile{Case.py}{Example of a \FW{} program}
 
-In \cref{Case.py} we first execute a pygrametl program, but with other specified sources for extract data, using the DWPopulator. This results in a populated DW from which the DWPopulator creates a DWRepresentation object. We then set up a set of predicates that we wish to test for, in this case it is if there is referential integrety in the DW and if \texttt{table1} has exactly 99 rows. After this we run these predicates on the provided DWRepresentation using the Case class. If the predicates' assertions couldn't hold, the Case object would report this to the user per predicate. Note, that instead of using the DWPopulator to create a DWRepresentation from a pygrametl program, the user could instead have created a DWRepresentation himself that holds information regarding an already populated DW.
+\begin{description}
+\item[line 5-13] In order to execute the pygrametl program with the two given sources, and to get a DWRepresentation of our DW, we use the DWPopulator. It takes as arguments the program, a pep249 module, the list of sources you wish to use, and relevant keyword arguments used for creating connections to our DW. We then call the \texttt{run} method, which returns the DWRepresentation. Note that it isn't necessary to run the DWPopulator to get a DWRepresentation, a user can simply instatiate one himself, if he already has a populated DW.
+\item[line 16-18] We instantiate two predicates, one for checking if the fact table has exactly 99 rows, and one for checking if there is referential integrety in the DW.
+  \item[line 21-23] We instantiate a Case, by giving the DWRepresentation and a tuple of our predicates. We then call \texttt{run} on our case, which would result in it checking if all the predicates hold and reporting accordingly. 
+\end{description}
+
 
 In the following sections we go into detail about the implementation of the three of the four components discussed in this section, i.e. DWPopulator, DWRepresentation and the predicates.
+
 
 
 
