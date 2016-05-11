@@ -13,9 +13,9 @@ dwp = DWPopulator(program=program,
 dwrep = dwp.run()
 
 # We create our predicates
-p1 = ReferentialIntegretyPredicate()
-p2 = RowCountPredicate(table_name='table1',
+p2 = RowCountPredicate(table_name='FactTable',
                        number_of_rows=99)
+p1 = ReferentialIntegretyPredicate()
 
 # We create our Case and run it
 c = Case(dw_rep=dwrep,
