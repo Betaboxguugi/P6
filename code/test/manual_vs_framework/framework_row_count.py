@@ -40,9 +40,9 @@ def framework_row_count(path):
     dw_rep = DWRepresentation([dim1rep, dim2rep], conn, [ft1rep])
     count = RowCountPredicate('ft1', 1000000)
     case = Case(dw_rep, [count])
-    start = time.monotonic()
-    case.run()
-    conn.close()
+    start = time.monotonic()  # the instantiations take almost no time
+    case.run()                # but we may as well measure the time for
+    conn.close()              # executing the case
     end = time.monotonic()
     elapsed = end - start
     print('{}{}'.format(round(elapsed, 3), 's'))
