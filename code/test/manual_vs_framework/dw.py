@@ -8,10 +8,11 @@ __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
 
-def setup(path, number):
-    open(os.path.expanduser(path), 'w')
+def setup(dbname, number):
 
-    output_conn = sqlite3.connect(path)
+    open(os.path.expanduser(dbname), 'w')
+
+    output_conn = sqlite3.connect(dbname)
     output_cur = output_conn.cursor()
 
     output_cur.execute("CREATE TABLE dim1 "
@@ -61,8 +62,7 @@ def setup(path, number):
             facts.append({'key1': i, 'key2': j, 'measure': counter})
     end = time.monotonic()
     elapsed = end - start
-    print('Generated')
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Generated: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
     print('Generating dim1 data')
@@ -71,8 +71,7 @@ def setup(path, number):
         dim1_data.append({'attr1': i, 'attr2': number + 1 - i})
     end = time.monotonic()
     elapsed = end - start
-    print('Generated')
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Generated: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
     print('Generating dim2 data')
@@ -81,8 +80,7 @@ def setup(path, number):
         dim2_data.append({'attr3': i, 'attr4': number + 1 - i})
     end = time.monotonic()
     elapsed = end - start
-    print('Generated')
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Generated: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
     print('Inserting data into ft1')
@@ -91,8 +89,7 @@ def setup(path, number):
         ft1.insert(row)
     end = time.monotonic()
     elapsed = end - start
-    print('Inserted')
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Inserted: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
     print('Inserting data into dim1')
@@ -101,7 +98,7 @@ def setup(path, number):
         dim1.insert(row)
     end = time.monotonic()
     elapsed = end - start
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Inserted: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
     print('Inserting data into dim2')
@@ -110,11 +107,10 @@ def setup(path, number):
         dim2.insert(row)
     end = time.monotonic()
     elapsed = end - start
-    print('Inserted')
-    print('{}{}'.format(round(elapsed, 3), 's'))
+    print('Inserted: {}{}'.format(round(elapsed, 3), 's'))
     total_elapsed += elapsed
 
-    print('dw populated')
+    print('DW populated')
     print('Total time: {}{}\n'.format(round(total_elapsed, 3), 's'))
 
     output_conn.commit()

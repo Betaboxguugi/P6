@@ -11,7 +11,7 @@ def TimePassed(start):
     return '{}{}'.format(round(elapsed, 3), 's')
 
 
-def manual_ref(path):
+def manual_ref_test(path):
     conn = sqlite3.connect(path)
     cur = conn.cursor()
     start = time.monotonic()
@@ -24,6 +24,5 @@ def manual_ref(path):
 
     cur.execute('PRAGMA foreign_key_list(dim2)')
     print(cur.fetchall())
-
 
     return print(True, TimePassed(start))
