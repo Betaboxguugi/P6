@@ -1,7 +1,7 @@
 \section{Overview of \FW{}}\label{sect:Overview}
-In this section we give an overview of \FW{} and its major components. The sections following this,  goes into detail about each individual part of the framework.
+In this section, we give an overview of \FW{} and its major components. The sections following this go into detail about some of the individual parts of the framework.
 
-The purpose of \FW{} is to assist in functional source to target testing of ETL programs developed using pygrametl. As such, testing is performed by asserting about properties of DWs, which have been populated by an ETL program. The focus of testing lies on data loss and business rules. Testers can make assertions about new functionality or perform regression testing using old assertions. Testing is performed at the system level, meaning that the extraction, transformation and loading components have been integrated prior to test. The framework is not designed for exhaustive testing, but rather it is meant to assist in reaching an adequate level of test coverage.
+The purpose of \FW{} is to assist in functional source-to-target testing of ETL programs developed using pygrametl. As such, testing is performed by asserting about properties of DWs, which have been populated by a pygrametl program. The focus of testing lies on data loss and business rules. Testers can make assertions about new functionality or perform regression testing using old assertions. Testing is performed at the system level. Thus, the extraction, transformation and loading components have been integrated prior to test. The framework is not designed for exhaustive testing. It is instead meant to assist in reaching an adequate level of test coverage.
 
 \FW{} contains four major components:
 \begin{itemize}
@@ -11,37 +11,41 @@ The purpose of \FW{} is to assist in functional source to target testing of ETL 
 \item\textbf{Case}
 \end{itemize}
 
-The purpose of the DWPopulator is to avoid having users change their pygrametl programs for testing. ETL developers will often hardcode connections to sources and DW's into their ETL program. These contain actual data collected and used by the organization. Because of regulations such data is not available for testers to use. Thus, they have to create their own test sources and DW's. However, they should avoid having to hardcode connections to test data in their programs, as this may be time consuming and error prone. Instead, the reinterpreter allows users to dynamically insert test connections into their ETL program, when performing tests.
+The purpose of the DWPopulator is to execute the pygrametl program under test and populate the corresponding DW. When the DW is populated, we can run tests on it.  Testers may choose, how the program is executed. They may just run it as usual, using the connections to sources and DW hardcoded into the program. However, these data sources may contain actual data collected and used by an organization. Because of regulations, such data may not be available for testers to use. Instead, \FW{} allows testers to dynamically insert test sources and DW into the program before execution. This way, test data may easily be switched in and out without messing with the program itself.  
 
-The DWPopulator also assists in building a DWRepresentation object from the ETL program under test. DWRepresentation is a class made to contain structural information about the DW being populated. It also allows for easy access of the DW tables and their meta data.
+After executing the program, the DWPopulator builds a DWRepresentation object corresponding to the populated DW. DWRepresentation is a class made to contain structural information about a DW. It also allows for easy access of the DW tables and their metadata.
 
-The Predicates are a family of classes used to make assertions about a populated DW. All of them inherit from the Predicate class. Testers make assertions by instantiating a predicate class with the tables of interest along with some other arguments depending on the predicate type. Once instantiated, a predicate can be made to check whether the defined assertion hold or not and then report upon it.
+The Predicates are a family of classes used to make assertions about the properties of a populated DW. All of them inherit from the Predicate class. Testers assert by instantiating a predicate class with the tables of interest, along with some additional arguments depending on the predicate type. Once instantiated, a predicate can be executed to check, whether the defined assertion holds or not. After execution, it creates a Report object that indicates the result of the check. If the assertion did not hold, the report may contain a special message along with data that caused the assertion to break.
 
-The Case is a class representing a test case, and serves as a users primary way of interacting with \FW{}. It is the class used to run a set of predicates on a DWRepresentation. It is also responsible for reporting the results of the predicates back to the users.
-
+Case is a class representing a test case. It serves as the tester’s primary way of interacting with \FW{}. The class is rather simple, executing a set of predicates on a DW through a DWRepresentation. After a predicate is executed, Case displays the contents of the Report object made by the predicate to the user.  Note that since Case takes a DWRepresentation as input, the user does not have to run DWPopulator to perform testing. Testers may construct a DWRepresentation themselves. 
 
 \subsection{Example Scenario}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.48\textwidth]{figures/example_dw.pdf}
-\caption{Diagram of an example DW}
+\caption{BookAndAuthor DW schema}
 \label{fig:exdw}
 \end{figure}
 
-The remainder of this section will be used to describe an example scenario, in which \FW{} is used to conduct tests. For this example we imagine that we have already written a pygrametl program which performs the necessary ETL operations to populate the DW specified by \cref{fig:exdw}. We wish to test if this pygrametl program, given two user defined sources, correctly populates the DW so that the fact table has exactly 99 rows and that there is referential integrety.
-An example of a python program that does this using \FW{} can be seen in \cref{Case.py}, with an explanation of the code below.
+This subsection will be used to describe an example scenario, in which \FW{} is used to conduct tests. For this example, we imagine that we have already written a pygrametl program. This program performs the necessary ETL operations to populate the BookAndAuthor test DW using two databases as test sources. All three use sqlite3. The DW schema of BookAndAuthor can be seen in \cref{fig:exdw}. By example, we wish to test that our program correctly populates the DW, so that the fact table has exactly 99 rows. We also assert that there is referential integrity. This test is performed through the python script in \cref{Case.py}. We explain the code below.
 
 \insertcodefile{Case.py}{Example of a \FW{} program}
 
 \begin{description}
-\item[line 5-13] In order to execute the pygrametl program with the two given sources, and to get a DWRepresentation of our DW, we use the DWPopulator. It takes as arguments the program, a pep249 module, the list of sources you wish to use, and relevant keyword arguments used for creating connections to our DW. We then call the \texttt{run} method, which returns the DWRepresentation. Note that it isn't necessary to run the DWPopulator to get a DWRepresentation, a user can simply instatiate one himself, if he already has a populated DW.
-\item[line 16-18] We instantiate two predicates, one for checking if the fact table has exactly 99 rows, and one for checking if there is referential integrety in the DW.
-  \item[line 21-23] We instantiate a Case, by giving the DWRepresentation and a tuple of our predicates. We then call \texttt{run} on our case, which would result in it checking if all the predicates hold and reporting accordingly. 
+\item[line 3-15] As we are using both test sources and a test DW, we wish to have these used as replacements for the data connections, which are hardcoded into the pygrametl program. This requires that the tester first creates pep249-connections to the sources. We then instantiate the DWPopulator with some parameters. These describe the program to run, how to connect to the test DW as well as the replacement sources.  After instantiation, we execute the object by calling the \texttt{run} method. This runs the pygrametl program with the test sources and DW. It then returns a DWRepresentation object corresponding to the BookAndAuthor test DW. 
+
+\item[line 16-20] We instantiate two Predicate objects. One asserts that  the fact table has exactly 99 rows. The other asserts that there is referential integrity in the DW.
+
+\item[line 21-23] We instantiate a Case with our DWRepresentation and Predicate objects. We then call its \texttt{run} method. This runs each predicate on the populated BookAndAuthor DW. As each predicate is execute, its results are reported.  
 \end{description}
 
+In the following sections, we go into detail about the implementation of the three major components of \FW{}, as discussed in this section. These include DWPopulator, DWRepresentation as well as all of the Predicate classes. Case will not be covered as it is so simple. 
 
-In the following sections we go into detail about the implementation of the three of the four components discussed in this section, i.e. DWPopulator, DWRepresentation and the predicates.
+
+
+
+
 
 
 
