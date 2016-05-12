@@ -20,10 +20,7 @@ class SCDVersionPredicate(Predicate):
         :param version: The asserted maximum version of the entry.
         :return:
         """
-        if isinstance(table_name, str):
-            self.table_name = [table_name]
-        else:
-            self.table_name = table_name
+        self. table_name = table_name
         self.entry = entry
         self.version = version
 
@@ -36,7 +33,7 @@ class SCDVersionPredicate(Predicate):
         :return report object describing results of the predicate
         """
 
-        dim = dw_rep.get_data_representation(self.table)
+        dim = dw_rep.get_data_representation(self.table_name)
 
         if not isinstance(dim, SCDType2DimRepresentation):
             raise RuntimeError('Given table is not'
@@ -53,38 +50,39 @@ class SCDVersionPredicate(Predicate):
 
 
         self.entry.keys()
-        null_condition_sql = \
-            (x + " = " + self.entry[x] for x in self.entry.keys)
 
-        lookup_sql = " SELECT " + versionatt + \
-                     " NATURAL JOIN ".join(self.table_name) + \
-                     " WHERE " + ",".join(null_condition_sql)
+        null_condition_sql = []
+        for a,b in self.entry.items():
+            if isinstance(b,str):
+                new = "\'" + b + "\'"
+                null_condition_sql.append(a + " = " + new)
+
+            else:
+                null_condition_sql.append(a + " = " + str(b))
 
 
-        max_sql = "SELECT max(*)"
+        lookup_sql = " SELECT max(" + versionatt + ")" \
+                    " FROM " + self.table_name + \
+                     " WHERE " + " AND ".join(null_condition_sql)
 
+
+        print(lookup_sql)
         cursor = dw_rep.connection.cursor()
         cursor.execute(lookup_sql)
-        query_result = cursor.fetchall()
+        (query_result,) = cursor.fetchall()
 
-        largest_version = None
-        for row in dim.itercolumns(columns_to_get):
 
-            # Gets only the lookupatts subset of the row
-            row_lookupatts = {key: value for key, value in row.items() if
-                      key in lookupatts}
+        if query_result[0] == None :
+            raise RuntimeError('Table empty or Row not found')
 
-            # If the row corresponds to the test entry
-            if row_lookupatts == self.entry:
-                row_version = row[versionatt]
-                if largest_version is None or largest_version < row_version:
-                    largest_version = row_version
+        if query_result[0] == self.version:
+            self.__result__ = True
 
-        return Report(result=largest_version == self.version,
-                      tables=self.table,
+        return Report(result=self.__result__,
+                      tables=self.table_name,
                       predicate=self,
                       elements=(),
                       msg='Version number not as asserted. ' +
                           'Was asserted to be ' + str(self.version) +
-                          ',but was instead ' + str(largest_version))
+                          ',but was instead ' + str(query_result[0]))
 

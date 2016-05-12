@@ -3,6 +3,8 @@ import os
 from framework.reinterpreter.datawarehouse_representation import \
     DWRepresentation, SCDType2DimRepresentation
 from framework.predicates import SCDVersionPredicate
+from pygrametl.tables import SlowlyChangingDimension
+from pygrametl import  ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjr'
 __maintainer__ = 'Arash Michael Sami Kjr'
@@ -34,9 +36,13 @@ c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,VERSION) VALUES (?,?,?,?)",
               company_info)
 conn.commit()
 
-dim = SCDType2DimRepresentation('COMPANY', 'ID',
+ConnectionWrapper(conn)
+
+s = SlowlyChangingDimension('COMPANY', 'ID',
                              ['NAME', 'AGE', 'ADDRESS', 'VERSION'],
-                              conn, ['NAME', 'AGE'], 'VERSION')
+                              ['NAME', 'AGE'], 'VERSION')
+
+dim = SCDType2DimRepresentation(s, conn)
 
 dw = DWRepresentation([dim], conn)
 
