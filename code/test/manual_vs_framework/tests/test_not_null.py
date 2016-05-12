@@ -1,11 +1,14 @@
-from manual_not_null import column_not_null
-from framework_not_null import framework_not_null
-from dw import setup
+import os
+from test.manual_vs_framework import manual_not_null_test
+from test.manual_vs_framework.dw import setup
+from test.manual_vs_framework import framework_not_null_test
 
-path = 'row_count.db'
+dbname = 'not_null.db'
 
-setup(path, 1000)
+number = 100
+if not os.path.isfile('./'+dbname):
+    setup(dbname, number)
 
-column_not_null(path, 'ft1', ['key1', 'key2'])
+manual_not_null_test(dbname, 'ft1', ['key1', 'key2'])
 
-framework_not_null(path)
+framework_not_null_test(dbname)

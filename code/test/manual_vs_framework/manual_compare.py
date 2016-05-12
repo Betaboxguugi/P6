@@ -22,9 +22,9 @@ def manual_compare_test(path, number):
     print('Done: {}{}'.format(round(elapsed, 3), 's'))
 
     start = time.monotonic()
-    cur.execute("SELECT * FROM ft1 ORDER BY key1")
-
+    cur.execute("SELECT * FROM ft1")
     error_rows = []
+    #  This might not actually work, infinite loop
     while expected_rows.__len__() > 0:
         row = cur.fetchone()
         if row not in expected_rows:

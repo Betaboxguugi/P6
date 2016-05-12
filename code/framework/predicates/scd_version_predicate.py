@@ -35,7 +35,7 @@ class SCDVersionPredicate(Predicate):
 
         dim = dw_rep.get_data_representation(self.table)
 
-        if not isinstance(dim,SCDType2DimRepresentation):
+        if not isinstance(dim, SCDType2DimRepresentation):
             raise RuntimeError('Given table is not'
                                ' a SCDType2DimRepresentation')
 
@@ -81,7 +81,7 @@ FROM matchingRow
                 if largest_version is None or largest_version < row_version:
                     largest_version = row_version
 
-        return Report(result= largest_version == self.version,
+        return Report(result=largest_version == self.version,
                       tables=self.table,
                       predicate=self,
                       elements=(),

@@ -10,7 +10,8 @@ def TimePassed(start):
     elapsed = end - start
     return '{}{}'.format(round(elapsed, 3), 's')
 
-def manual__no_duplicates(path, table_name, column_names):
+
+def manual_no_duplicates_test(path, table_name, column_names):
     start = time.monotonic()
     conn = sqlite3.connect(path)
     cur = conn.cursor()

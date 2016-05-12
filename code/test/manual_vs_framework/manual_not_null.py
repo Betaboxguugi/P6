@@ -11,7 +11,7 @@ def TimePassed(start):
     return '{}{}'.format(round(elapsed, 3), 's')
 
 
-def column_not_null(path, table_name, column_names):
+def manual_not_null_test(path, table_name, column_names):
     start = time.monotonic()
     conn = sqlite3.connect(path)
     cur = conn.cursor()

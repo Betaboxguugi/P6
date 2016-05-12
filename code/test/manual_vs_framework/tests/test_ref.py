@@ -1,12 +1,15 @@
-from test.manual_vs_framework import manual_ref
+import os
+from test.manual_vs_framework import manual_ref_test
 from test.manual_vs_framework.dw import setup
-from test.manual_vs_framework import framework_ref
+from test.manual_vs_framework import framework_ref_test
 
 
-path = 'row_count.db'
+dbname = 'ref.db'
 
-#setup(path, 100)
+number = 100
+if not os.path.isfile('./'+dbname):
+    setup(dbname, number)
 
-manual_ref(path)
+manual_ref_test(dbname)
 
-framework_ref(path)
+framework_ref_test(dbname)

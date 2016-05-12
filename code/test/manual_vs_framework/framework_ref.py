@@ -11,7 +11,7 @@ __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
-def framework_ref(path):
+def framework_ref_test(path):
 
     conn = sqlite3.connect(path)
     wrapper = pygrametl.ConnectionWrapper(connection=conn)
