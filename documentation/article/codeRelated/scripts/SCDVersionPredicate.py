@@ -1,4 +1,3 @@
-SCDVersionPredicate(table_name='Books',
-                    entry={'BOOK': 'The Hobbit',
-                           'Author': 'Tolkien'},
+SCDVersionPredicate(table_name='BookDim',
+                    entry={'Title': 'The Hobbit'},
                     version=10)

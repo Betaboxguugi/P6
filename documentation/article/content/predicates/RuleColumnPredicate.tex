@@ -3,5 +3,6 @@ RuleColumnPredicate is similar to RuleRowPredicate in \cref{RCP}, even taking th
 
 \insertcodefile{RuleColumnPredicate.py}{Instantiation of RuleColumnPredicate}
 
+In this code example, we give no\_forgotten\_cities as the constraint function. The predicate asserts that no city in the AuthorDim table is named Constantinople.
+
 During execution, each column specified by column\_name is fetched from the database in its entirety. The columns are then supplied to the constraint\_function along with the additional parameters in constraint\_args. Note that in contrast to RuleRowPredicate, we only call the function a single time, since it takes entire columns as input. The assertion made by the predicate holds, based on whether constraint\_function returns True or False.
-In the code example, we give no\_forgotten\_cities as the constraint function. The predicate asserts that no city in the AuthorDim table is named Constantinople.

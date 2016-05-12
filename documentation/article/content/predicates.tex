@@ -1,7 +1,7 @@
 \section{Predicates}\label{sect:pred}
-This section will describe each of the predicate classes found in \FW. These are used to assert specific properties of a DW during test. Each subsection will describe the purpose of a predicate, how it is instantiated and how it functions.
+This section will describe each of the predicate classes found in \FW. These are used to assert specific properties of a DW during test. Each subsection will describe the purpose of a predicate, how it is instantiated and how it functions. Each predicate is related to \cref{fig:exdw} as to show, how it may be used in practice. Note that in our implementations, we have not used any SQL code. This is because, different DBMS' usable with \FW{} use different implementations of SQL. Therefore we risk damaging the compatibility of \FW{}, if we implement using SQL. Instead we fetch the rows from tables into dictionaries, and work on that type of data structure. This is expected to decrease performance, but we weigh compatibility and robustness of \FW{} to be of higher importance.
 
-For instantiation some common parameters are used. These are presented here, as not to repeat the information later.
+For instantiation of different predicate types some common parameters are used. These are presented here, as not to repeat the information later.
 \begin{description}
 \item [table\_name] a string with the name of a table from the DW. Using the get\_data\_representation method from DWRepresentation, this is used to fetch the corresponding table.
 \item [column\_names] a string or list indicating one or more attributes from the table. If the attribute is None, we fetch all attributes for each row. If not, the data fetched depends on column\_names\_exclude.
