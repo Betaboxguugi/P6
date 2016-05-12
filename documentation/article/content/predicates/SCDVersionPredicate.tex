@@ -9,5 +9,6 @@ This predicate allows testers to check, if a given entry in a table has an asser
 \item [version] A number indicating the largest version that the entry is asserted to have.
 \end{description}
 
-The predicate works by iterating over each row of the table. Once we find a row that matches the test entry, we check whether its version is bigger than any found before. If yes, we update the value of our largest version. After processing the table, we try to equate the largest version with the one asserted by the tester. If they are equal, the predicate succeeds, and it fails otherwise.   
+In the instantiation, we use the predicate to assert that The Hobbit's highest version number in BookDim is 10.
 
+The predicate works by iterating over each row of the table. Once we find a row that matches the test entry, we check whether its version is bigger than any found before. If yes, we update the value of our largest version. After processing the table, we try to equate the largest version with the one asserted by the tester. If they are equal, the predicate succeeds, and it fails otherwise.   

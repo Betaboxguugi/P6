@@ -2,4 +2,7 @@
 NoDuplicateRowPredicate asserts that a table contains only unique entries. This is often important, when we want to ensure no duplicates of primary keys. Using the predicate, the tester may also indicate, what columns should be considered as part of the assertion. As such, we may specify that a whole row does not have to be unique, only a subset of its columns. This is useful when asserting unique keys or lookup attributes. Below is an example of how the predicate is instantiated:
 \insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
+In the instantiation displayed, the predicate asserts that  each entry in the aid column of AuthorDim is unique. This is important as aid is the primary key to the table. 
+
 The predicate discovers duplicates by iterating over the given table. For each row we generate a key to a hash table/dictionary. The key is then paired with some default value and inserted into the data structure. If we generate the same key again for another row, we must have a duplicate. In this case, the assertion does not hold. Each time we meet a duplicate, we store it, so that it may be reported to the tester.
+

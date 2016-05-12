@@ -1,5 +1,4 @@
-FunctionalDependencyPredicate(tables=['table1',
-                                      'table2'],
-                              fds=[('a', 'b'),
-                                   ('b', 'c')],
+FunctionalDependencyPredicate(tables=['BookDim',
+                                      'FactTable'],
+                              fds=[(('title'), ('aid'))],
                               ignore_None=False)
