@@ -20,7 +20,10 @@ class SCDVersionPredicate(Predicate):
         :param version: The asserted maximum version of the entry.
         :return:
         """
-        self.table = table_name
+        if isinstance(table_name, str):
+            self.table_name = [table_name]
+        else:
+            self.table_name = table_name
         self.entry = entry
         self.version = version
 
@@ -51,22 +54,18 @@ class SCDVersionPredicate(Predicate):
 
         self.entry.keys()
         null_condition_sql = \
-            (x + " IS NULL" for x in self.entry)
+            (x + " = " + self.entry[x] for x in self.entry.keys)
 
         lookup_sql = " SELECT " + versionatt + \
                      " NATURAL JOIN ".join(self.table_name) + \
+                     " WHERE " + ",".join(null_condition_sql)
 
 
+        max_sql = "SELECT max(*)"
 
-        WITH matchingrow AS(
-SELECT versionatt
-FROM <join>
-WHERE A = lookupatt.A (osv.)
-)
-
-SELECT max(*)
-FROM matchingRow
-
+        cursor = dw_rep.connection.cursor()
+        cursor.execute(lookup_sql)
+        query_result = cursor.fetchall()
 
         largest_version = None
         for row in dim.itercolumns(columns_to_get):
