@@ -37,7 +37,10 @@ class Predicate:
 
         chosen_columns = set()
         table_names = set(table_names)
-        column_names = set(column_names)
+        if column_names:
+            column_names = set(column_names)
+        else:
+            column_names = set()
 
         # If no columns are given we add all columns
         if not column_names:
