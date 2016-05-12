@@ -13,7 +13,7 @@ class RowCountPredicate(Predicate):
         :param number_of_rows: number of rows we are testing for
         """
         if isinstance(table_name, str):
-            self.table_name = list(table_name)
+            self.table_name = [table_name]
         else:
             self.table_name = table_name
         self.number_of_rows = number_of_rows
@@ -29,13 +29,13 @@ class RowCountPredicate(Predicate):
 
         pred_sql = \
             " SELECT COUNT(*) " + \
-            " NATURAL JOIN ".join(self.table_name)
+            " FROM " +  "NATURAL JOIN ".join(self.table_name)
 
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
-        query_result = cursor.fetchall()
+        (query_result,) = cursor.fetchall()
 
-        if query_result == self.number_of_rows:
+        if query_result[0] == self.number_of_rows:
             self.__result__ = True
 
 
@@ -45,7 +45,7 @@ class RowCountPredicate(Predicate):
                       elements=None,
                       msg="""The predicate did not hold, tested for {} row(s),
                       actual number of row(s): {}""".format(
-                          self.number_of_rows, query_result
+                          self.number_of_rows, query_result[0]
                       ))
 
 
