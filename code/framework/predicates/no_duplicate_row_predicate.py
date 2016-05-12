@@ -9,6 +9,7 @@ class NoDuplicateRowPredicate(Predicate):
     """
     Predicate for asserting whether duplicated rows appear in a table.
     """
+
     def __init__(self, table_name, column_names=None,
                  column_names_exclude=False):
         """
@@ -23,7 +24,10 @@ class NoDuplicateRowPredicate(Predicate):
         :type column_names_exclude: bool
         """
 
+        if isinstance(self.table_name, str):
+            self.table_name = list(table_name)
         self.table_name = table_name
+
         self.column_names = column_names
         self.duplicates = []
         self.table = None
@@ -44,21 +48,28 @@ class NoDuplicateRowPredicate(Predicate):
                                             self.column_names,
                                             self.column_names_exclude)
 
-        # Using a hash table to find duplicates
-        hts = {}
-        table = dw_rep.get_data_representation(self.table_name)
-        for row in table.itercolumns(chosen_columns):
-            row_tuple = tuple(row.values())
-            if row_tuple not in hts:
-                hts[row_tuple] = True
-            else:
-                self.duplicates.append(row)
+        join_column_list = []
+        for table in self.table_name:
+            all_columns = set(dw_rep.get_data_representation(table).all)
+            join_column_list.append(all_columns)
 
-        if not self.duplicates:
+        join_attributes = set.intersection(*join_column_list)
+        pred_sql = \
+            " SELECT " ",".join(join_attributes) + " ,COUNT(*)" + \
+            " NATURAL JOIN ".join(self.table_name) + \
+            " GROUP BY " ",".join(chosen_columns) + \
+            " HAVING COUNT(*) > 1 "
+
+        print(pred_sql)
+        cursor = dw_rep.connection.cursor()
+        cursor.execute(pred_sql)
+        query_result = cursor.fetchall()
+
+        if not query_result:
             self.__result__ = True
 
         return Report(result=self.__result__,
                       tables=self.table_name,
                       predicate=self,
-                      elements=self.duplicates,
+                      elements=query_result,
                       msg=None)

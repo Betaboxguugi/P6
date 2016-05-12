@@ -48,6 +48,26 @@ class SCDVersionPredicate(Predicate):
         columns_to_get = list(lookupatts)
         columns_to_get.append(versionatt)
 
+
+        self.entry.keys()
+        null_condition_sql = \
+            (x + " IS NULL" for x in self.entry)
+
+        lookup_sql = " SELECT " + versionatt + \
+                     " NATURAL JOIN ".join(self.table_name) + \
+
+
+
+        WITH matchingrow AS(
+SELECT versionatt
+FROM <join>
+WHERE A = lookupatt.A (osv.)
+)
+
+SELECT max(*)
+FROM matchingRow
+
+
         largest_version = None
         for row in dim.itercolumns(columns_to_get):
 
