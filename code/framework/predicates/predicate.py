@@ -36,8 +36,14 @@ class Predicate:
             table_names = [table_names]
 
         chosen_columns = set()
-        table_names = set(table_names)
-        if column_names:
+        
+        if table_names:
+            table_names = set(table_names)
+        else:
+            raise ValueError('table_names has to be a string or an iterable' \
+                             'with atleast one element')
+        
+        if column_names:       
             column_names = set(column_names)
         else:
             column_names = set()
@@ -50,10 +56,14 @@ class Predicate:
         # If we want to exclude column names
         elif column_names_exclude:
             for table in table_names:
-                chosen_columns.update(set(dw_rep.get_data_representation(table).all) - column_names)
+                chosen_columns.update(
+                    set(dw_rep.get_data_representation(table).all) - column_names)
 
         # If we want to include column names
         else:
-            chosen_columns = column_names
+            for table in table_names:
+                chosen_columns.update([col for col
+                                       in dw_rep.get_data_representation(table).all
+                                       if col in column_names])
 
         return chosen_columns
