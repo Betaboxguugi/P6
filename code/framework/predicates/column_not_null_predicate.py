@@ -49,7 +49,6 @@ class ColumnNotNullPredicate(Predicate):
                    " FROM " + " NATURAL JOIN ".join(self.table_name) + \
                    " WHERE " + " OR ".join(null_condition_sql)
 
-        print(pred_sql)
         cursor.execute(pred_sql)
         query_result = cursor.fetchall()
 

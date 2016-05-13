@@ -19,7 +19,7 @@ class SCDVersionPredicate(Predicate):
         :param version: The asserted maximum version of the entry.
         :return:
         """
-        self. table_name = table_name
+        self.table_name = table_name
         self.entry = entry
         self.version = version
 

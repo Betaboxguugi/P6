@@ -17,7 +17,6 @@ class FunctionalDependencyPredicate(Predicate):
         :ignore_none: Boolean, if true then we don't care
          what None values point at.
         """
-
         self.tables = tables
         self.func_dependencies = func_dependencies
         self.results = []
@@ -30,22 +29,41 @@ class FunctionalDependencyPredicate(Predicate):
         it keeps of pairings of alpha and beta values. If we find several
         beta values for one alpha, we register an error.
         """
-        hts = [{} for fd in self.func_dependencies]
+
+        if len(self.tables) == 1:
+            join_sql = "{} as t1 , {} as t2".format(self.tables[0], self.tables[0])
+        else:
+            joined_sql = " NATURAL JOIN ".join(self.tables)
+            join_sql = "({}) as t1 , ({}) as t2".format(joined_sql, joined_sql)
+
+        alpha = self.func_dependencies[0]
+        beta = self.func_dependencies[1]
+
+        print("{} --> {}".format(alpha, beta))
+
+        alpha_sql_generator = (" t1.{} = t2.{} ".format(alpha[x], alpha[x])
+                               for x in range(0,len(alpha)))
+        if len(alpha) == 1 or isinstance(alpha, str):
+            and_alpha = " t1.{} = t2.{} ".format(alpha, alpha)
+        else:
+            and_alpha = ' AND '.join(alpha_sql_generator)
+
+        beta_sql_generator = (" (t1.{} <> t2.{}) ".format(beta[x], beta[x])
+                               for x in range(0, len(beta)))
+        if len(beta) == 1 or isinstance(beta, str):
+            and_beta = " (t1.{} <> t2.{}) ".format(beta, beta)
+        else:
+            and_beta = ' AND '.join(beta_sql_generator)
+
+        lookup_sql = "SELECT * FROM " + join_sql + " WHERE " + and_alpha #+ " AND " + and_beta
+        print(lookup_sql)
+
+        c = dw_rep.connection.cursor()
+        c.execute(lookup_sql)
+
         elements = []
-
-        for row in dw_rep.iter_join(self.tables):  # Natural join of tables
-            for idx, fd in enumerate(self.func_dependencies):
-                alpha = tuple(row[x] for x in fd[0])
-                beta = tuple(row[y] for y in fd[1])
-
-                if self.ignore_none and any(x is None for x in alpha):
-                    pass
-                # If the FD doesn't hold
-                elif alpha in hts[idx] and hts[idx][alpha] != beta:
-                    elements.append((fd, row))
-                # If we haven't met alpha before
-                elif alpha not in hts[idx]:
-                    hts[idx][alpha] = beta
+        for row in c.fetchall():
+            elements.append(row)
 
         result = not elements
         return Report(result=result,

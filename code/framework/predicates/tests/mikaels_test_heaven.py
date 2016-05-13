@@ -7,7 +7,10 @@ from framework.predicates.no_duplicate_row_predicate import \
     NoDuplicateRowPredicate
 from framework.predicates.row_count_predicate import RowCountPredicate
 from framework.predicates.rule_column_predicate import RuleColumnPredicate
-from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
+from framework.predicates.column_not_null_predicate import \
+    ColumnNotNullPredicate
+from framework.predicates.functional_dependency_predicate import \
+    FunctionalDependencyPredicate
 from framework.case import Case
 from framework.predicates.scd_version_predicate import SCDVersionPredicate
 from framework.reinterpreter.datawarehouse_representation \
@@ -138,19 +141,24 @@ rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constra
 
 scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
 
+func_dependencies1 = ('book', 'bookid')
+fd_tester1 = FunctionalDependencyPredicate(['factTable', 'bookdim'], func_dependencies1)
+
 #print(dup_tester1.run(dw))
 #print(dup_tester2.run(dw))
 #print(dup_tester3.run(dw))
 #print(row_tester1.run(dw))
 #print(row_tester1.run(dw))
 #print(row_tester2.run(dw))
-print(tab_tester1.run(dw))
-print(tab_tester2.run(dw))
-print(tab_tester3.run(dw))
+#print(tab_tester1.run(dw))
+#print(tab_tester2.run(dw))
+#print(tab_tester3.run(dw))
 #print(nn_tester1.run(dw))
 #print(nn_tester2.run(dw))
-print(rrp_tester1.run(dw))
-print(scdv_tester1.run(dw))
+#print(rrp_tester1.run(dw))
+#print(scdv_tester1.run(dw))
+print(fd_tester1.run(dw))
+
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
