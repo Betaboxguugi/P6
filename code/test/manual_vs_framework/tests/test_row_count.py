@@ -9,10 +9,10 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 
 # When you change number, be sure to delete the db so a fresh one is generated.
 number = 1000
-path = 'row_count.db'
-if not os.path.isfile('./'+path):
-    setup(path, number)
+dbname = 'row_count.db'
+if not os.path.isfile('./'+dbname):
+    setup(dbname, number)
 suite = unittest.defaultTestLoader.loadTestsFromModule(TestRowCount)
 suite = unittest.makeSuite(TestRowCount)
 unittest.TextTestRunner(verbosity=2).run(suite)
-framework_row_count_test(path)
+framework_row_count_test(dbname)
