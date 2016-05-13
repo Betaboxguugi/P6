@@ -1,12 +1,11 @@
 __author__ = 'Alexander Brandborg'
-__maintainer__='Alexander Brandborg'
+__maintainer__ = 'Alexander Brandborg'
 
 from .predicate import Predicate
 from ..reinterpreter.datawarehouse_representation import \
     SCDType2DimRepresentation
 from .report import Report
 
-# comment
 class SCDVersionPredicate(Predicate):
     """
      Predicate that can check whether a specific entry in a Type2SCD has an
@@ -48,7 +47,6 @@ class SCDVersionPredicate(Predicate):
         columns_to_get = list(lookupatts)
         columns_to_get.append(versionatt)
 
-
         self.entry.keys()
 
         null_condition_sql = []
@@ -60,19 +58,15 @@ class SCDVersionPredicate(Predicate):
             else:
                 null_condition_sql.append(a + " = " + str(b))
 
-
         lookup_sql = " SELECT max(" + versionatt + ")" \
                     " FROM " + self.table_name + \
                      " WHERE " + " AND ".join(null_condition_sql)
 
-
-        print(lookup_sql)
         cursor = dw_rep.connection.cursor()
         cursor.execute(lookup_sql)
         (query_result,) = cursor.fetchall()
 
-
-        if query_result[0] == None :
+        if query_result[0] is None:
             raise RuntimeError('Table empty or Row not found')
 
         if query_result[0] == self.version:

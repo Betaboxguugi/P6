@@ -9,6 +9,7 @@ from framework.predicates.row_count_predicate import RowCountPredicate
 from framework.predicates.rule_column_predicate import RuleColumnPredicate
 from framework.predicates.column_not_null_predicate import ColumnNotNullPredicate
 from framework.case import Case
+from framework.predicates.scd_version_predicate import SCDVersionPredicate
 from framework.reinterpreter.datawarehouse_representation \
     import DWRepresentation, DimRepresentation, FTRepresentation
 from pygrametl.tables import Dimension, FactTable
@@ -135,6 +136,7 @@ nn_tester2 = ColumnNotNullPredicate('bookdim', ['genre','book'], True)
 
 rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constraint3, constraint_args=[5])
 
+scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
 
 #print(dup_tester1.run(dw))
 #print(dup_tester2.run(dw))
@@ -148,6 +150,7 @@ print(tab_tester3.run(dw))
 #print(nn_tester1.run(dw))
 #print(nn_tester2.run(dw))
 print(rrp_tester1.run(dw))
+print(scdv_tester1.run(dw))
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det
 # viste sig at være forkert at bruge der.
