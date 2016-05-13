@@ -116,7 +116,11 @@ for dim in snow_dw_rep.dims:
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
 
-ref_tester = ReferentialIntegrityPredicate()
+#snow_dw_rep.connection.cursor().execute("DELETE FROM dim1")
+
+snow_dw_rep.connection.cursor().execute("DELETE FROM dim1 WHERE key1 = 1")
+
+ref_tester = ReferentialIntegrityPredicate(refs= {dim1:[dim2, dim3]}, table_one_to_many=True, dim_one_to_many= True)
 
 print(ref_tester.run(snow_dw_rep))
 

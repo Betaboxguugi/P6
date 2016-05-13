@@ -77,3 +77,4 @@ class NoDuplicateRowPredicate(Predicate):
                       predicate=self,
                       elements=query_result,
                       msg=None)
+
