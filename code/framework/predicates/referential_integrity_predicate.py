@@ -28,7 +28,11 @@ class ReferentialIntegrityPredicate(Predicate):
                 key = dim.key
 
                 if self.table_one_to_many:
-                    table_to_dim_sql = self.ref_sql(table, dim, key)
+
+                    table_to_dim_sql = self.outer_join_sql(table, dim, key)
+
+                    print(self.outer_join_sql(table, dim, key))
+
 
                     cursor = dw_rep.connection.cursor()
                     cursor.execute(table_to_dim_sql)
@@ -38,7 +42,7 @@ class ReferentialIntegrityPredicate(Predicate):
                         missing_keys.append(query_result1)
 
                 if self.dim_one_to_many:
-                    dim_to_table_sql = self.ref_sql(dim, table, key)
+                    dim_to_table_sql = self.outer_join_sql(dim, table, key)
 
                     cursor2 = dw_rep.connection.cursor()
                     cursor2.execute(dim_to_table_sql)
@@ -76,7 +80,16 @@ class ReferentialIntegrityPredicate(Predicate):
 
         return sql
 
-    def outer_join_sql(self,table1,table2,key):
-        sql = \
-            " SELECT *"
+    def outer_join_sql(self, table1, table2, key):
 
+        table2_att = set(table2.all).difference(set([key]))
+        print(table2_att)
+        null_condition_sql = (x + " IS NULL" for x in table2_att)
+
+        sql = \
+            " SELECT * " + \
+            " FROM " + table1.name + " LEFT OUTER JOIN " + table2.name + \
+            " ON " + table1.name + "." + key + " = " + table2.name + "." + key + \
+            " WHERE " + " AND ".join(null_condition_sql)
+
+        return sql
