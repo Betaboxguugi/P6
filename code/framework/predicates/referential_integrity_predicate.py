@@ -8,93 +8,75 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 
 
 class ReferentialIntegrityPredicate(Predicate):
-    def __init__(self):
-        self.dw_rep = None
-        self.refs = {}
-        self.missing_keys = []
+    def __init__(self, refs={}, table_one_to_many=True,
+                 dim_one_to_many=True):
+        self.table_one_to_many = table_one_to_many
+        self.dim_one_to_many = dim_one_to_many
+        self.refs = refs
+        if not table_one_to_many and not dim_one_to_many:
+            raise RuntimeError("Both table_one_to_many"
+                               " and dim_one_to_many can not be set to false")
 
     def run(self, dw_rep):
-        self.dw_rep = dw_rep
-        self.missing_keys = []
-        self.__result__ = True
-        self.refs = self._find_refs()
-        for table, key_dic in self.refs.items():
-            for key in key_dic.keys():
-                self._check_ref(table, key)
+        missing_keys = []
 
-        tables = []
+        if not self.refs:
+            self.refs = dw_rep.refs
+
+        for table, dims in self.refs.items():
+            for dim in dims:
+                key = dim.key
+
+                if self.table_one_to_many:
+                    table_to_dim_sql = self.ref_sql(table, dim, key)
+
+                    cursor = dw_rep.connection.cursor()
+                    cursor.execute(table_to_dim_sql)
+
+                    query_result1 = cursor.fetchall()
+                    if query_result1:
+                        missing_keys.append(query_result1)
+
+                if self.dim_one_to_many:
+                    dim_to_table_sql = self.ref_sql(dim, table, key)
+
+                    cursor2 = dw_rep.connection.cursor()
+                    cursor2.execute(dim_to_table_sql)
+
+                    query_result2 = cursor2.fetchall()
+                    if query_result2:
+                        missing_keys.append(query_result2)
+
+        if not missing_keys:
+            self.__result__ = True
+
+        names = []
         for key in self.refs.keys():
-            tables.append(key.name)
-        return Report(self.__result__, self,
-                      tables,
-                      self.missing_keys,
+            names.append(key.name)
+
+        return Report(result=self.__result__,
+                      tables=names,
+                      predicate=self,
+                      elements=missing_keys
                       )
 
-    def _find_refs(self):
-        """
-        This method is used to gather information using the refs dictionary in
-        the dw_rep. The dictionary shows what tables a table has references to,
-        but it holds no information about which foreign key is used to do this.
-        That is the information this method retrieves.
-        :return a Dictionary of dictionaries, with table reps as key for the
-        outer dict, and foreign keys for the inner dictionaries which contain
-        the table reps that are referenced
-        """
-        result_refs = {}
-        for table, dims in self.dw_rep.refs.items():
-            if isinstance(table, FTRepresentation):
-                attributes = table.keyrefs
-            else:
-                attributes = table.attributes
-            ref_dim = {}
-            for attr in attributes:
-                for dim in dims:
-                    # We attempt to find a common attribute/key between the
-                    # tables. Between a facttable and dimension or dimensions
-                    # in snowflaking, there should always be an
-                    # attribute or keyref with the same name as the dimension
-                    # key
-                    if dim.key == attr:
-                        ref_dim[dim.key] = dim
-                        break
-            result_refs[table] = ref_dim
+    def ref_sql(self, table1, table2, key):
 
-        return result_refs
+        sql = \
+            " SELECT * " + \
+            " FROM " + table1.name + \
+            " WHERE NOT EXISTS" \
+            "( " + \
+            "SELECT NULL " + \
+            " FROM " + table2.name + \
+            " WHERE " + table1.name + "." + key + \
+            " = " \
+            + table2.name + "." + key + \
+            " )"
 
-    def _check_ref(self, table, key):
-        """
-        :param table: Table to have its referential integrity checked on a
-        foreign key
-        :param key: foreign key used to check referential integrity
-        """
-        keyref_dic = self.refs[table]
-        dim = keyref_dic[key]
-        for row in table.itercolumns([key]):
-            flag = False
-            for dim_row in dim.itercolumns([key]):
-                if row.get(key) == dim_row.get(key):
-                    flag = True
-                    break
-            if not flag:
-                error_entry = "{} in {} not found in {}".format(row,
-                                                                table.name,
-                                                                dim.name)
-                if error_entry not in self.missing_keys:
-                    self.missing_keys.append(error_entry)
-                    self.__result__ = False
+        return sql
 
-        # We check for referential integrity backwards as the dictionary
-        # does not hold information about this
-        for row in dim.itercolumns([key]):
-            flag = False
-            for table_row in table.itercolumns([key]):
-                if row.get(key) == table_row.get(key):
-                    flag = True
-                    break
-            if not flag:
-                error_entry = "{} in {} not found in {}".format(row,
-                                                                dim.name,
-                                                                table.name)
-                if error_entry not in self.missing_keys:
-                    self.missing_keys.append(error_entry)
-                    self.__result__ = False
+    def outer_join_sql(self,table1,table2,key):
+        sql = \
+            " SELECT *"
+

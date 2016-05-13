@@ -3,6 +3,7 @@ from test.manual_vs_framework import manual_not_null_test
 from test.manual_vs_framework.dw import setup
 from test.manual_vs_framework import framework_not_null_test
 
+
 dbname = 'not_null.db'
 
 number = 100

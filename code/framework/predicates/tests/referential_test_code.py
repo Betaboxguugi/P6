@@ -10,34 +10,6 @@ import os
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
-dw_name = './dw.db'  # The one found in pygrametl_examples
-dw_conn = sqlite3.connect(dw_name)
-
-query1 = "SELECT * FROM bookDim WHERE bookid < 3"
-query2 = "SELECT * FROM timeDim"
-query3 = "SELECT * FROM locationDim"
-query4 = "SELECT * FROM factTable WHERE bookid > 1"
-
-book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
-
-time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
-                             dw_conn)
-
-location_dim = DimRepresentation('locationDim', 'locationid',
-                                 ['city', 'region'], dw_conn, ['city'])
-
-facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
-                             dw_conn, ['sale'])
-
-book_dim.query = query1
-time_dim.query = query2
-location_dim.query = query3
-facttable.query = query4
-
-dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
-
-ref_tester = ReferentialIntegrityPredicate()
-print(ref_tester.run(dw))
 
 #  Snowflaking test
 
@@ -127,14 +99,10 @@ for row in data:
 
 conn.commit()
 
-dim1_rep = DimRepresentation(dim1.name, dim1.key, dim1.attributes, conn,
-                             dim1.lookupatts)
-dim2_rep = DimRepresentation(dim2.name, dim2.key, dim2.attributes, conn,
-                             dim2.lookupatts)
-dim3_rep = DimRepresentation(dim3.name, dim3.key, dim3.attributes, conn,
-                             dim3.lookupatts)
-dim4_rep = DimRepresentation(dim4.name, dim4.key, dim4.attributes, conn,
-                             dim4.lookupatts)
+dim1_rep = DimRepresentation(dim1, conn)
+dim2_rep = DimRepresentation(dim2, conn)
+dim3_rep = DimRepresentation(dim3, conn)
+dim4_rep = DimRepresentation(dim4, conn)
 
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
@@ -147,6 +115,12 @@ for dim in snow_dw_rep.dims:
 
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
+
+#snow_dw_rep.connection.cursor().execute("DELETE FROM dim1")
+
+snow_dw_rep.connection.cursor().execute("DELETE FROM dim1 WHERE key1 = 1")
+
+ref_tester = ReferentialIntegrityPredicate(refs= {dim1:[dim2, dim3]}, table_one_to_many=True, dim_one_to_many= True)
 
 print(ref_tester.run(snow_dw_rep))
 

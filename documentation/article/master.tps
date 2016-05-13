@@ -11,8 +11,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=formalities\acknowledgments.tex
 
@@ -29,8 +29,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=formalities\introduction.tex
 
@@ -47,8 +47,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\reinterpreter.tex
 
@@ -65,8 +65,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\dwrep.tex
 
@@ -83,8 +83,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=content\predicates.tex
 
@@ -101,10 +101,10 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
-Document=content\ExperimentationAndEvaluation.tex
+Document=content\Discussion.tex
 
 [Frame5_View0,0]
 TopLine=0
@@ -119,34 +119,16 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
-Class=LaTeXView
-Document=content\Discussion.tex
-
-[Frame6_View0,0]
-TopLine=0
-Cursor=0
-
-[Frame7]
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-1
-MaxPos.y=-1
-NormalPos.left=4
-NormalPos.top=26
-NormalPos.right=1008
-NormalPos.bottom=581
+NormalPos.right=1242
+NormalPos.bottom=390
 Class=LaTeXView
 Document=master.tex
 
-[Frame7_View0,0]
-TopLine=115
+[Frame6_View0,0]
+TopLine=116
 Cursor=4361
 
 [SessionInfo]
-FrameCount=8
-ActiveFrame=0
+FrameCount=7
+ActiveFrame=6
 

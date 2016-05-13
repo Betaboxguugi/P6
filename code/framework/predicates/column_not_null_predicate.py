@@ -2,7 +2,7 @@
 from .predicate import Predicate
 from .report import Report
 import time
-
+# Comment
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Alexander Brandborg'
 
@@ -23,7 +23,7 @@ class ColumnNotNullPredicate(Predicate):
         """
 
         if isinstance(table_name,str):
-            self.table_name = list(table_name)
+            self.table_name = [table_name]
         else:
             self.table_name = table_name
         self.rows_with_null = []
