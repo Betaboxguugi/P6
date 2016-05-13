@@ -6,7 +6,7 @@ from ..reinterpreter.datawarehouse_representation import \
     SCDType2DimRepresentation
 from .report import Report
 
-
+# comment
 class SCDVersionPredicate(Predicate):
     """
      Predicate that can check whether a specific entry in a Type2SCD has an

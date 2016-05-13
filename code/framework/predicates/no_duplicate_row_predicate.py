@@ -4,7 +4,7 @@ from .report import Report
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
-
+# Comment
 class NoDuplicateRowPredicate(Predicate):
     """
     Predicate for asserting whether duplicated rows appear in a table.

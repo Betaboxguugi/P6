@@ -8,7 +8,7 @@ from pygrametl import  ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
-
+# comment
 # This just ensures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')
 
