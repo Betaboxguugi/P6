@@ -1,2 +1,2 @@
-RowCountPredicate(table_name='familyOf4',
-                  number_of_rows=4)
+RowCountPredicate(table_name='CountryDim',
+                  number_of_rows=200)

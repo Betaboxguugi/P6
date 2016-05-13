@@ -20,7 +20,10 @@ class SCDVersionPredicate(Predicate):
         :param version: The asserted maximum version of the entry.
         :return:
         """
-        self.table = table_name
+        if isinstance(table_name, str):
+            self.table_name = [table_name]
+        else:
+            self.table_name = table_name
         self.entry = entry
         self.version = version
 
@@ -35,7 +38,7 @@ class SCDVersionPredicate(Predicate):
 
         dim = dw_rep.get_data_representation(self.table)
 
-        if not isinstance(dim,SCDType2DimRepresentation):
+        if not isinstance(dim, SCDType2DimRepresentation):
             raise RuntimeError('Given table is not'
                                ' a SCDType2DimRepresentation')
 
@@ -47,6 +50,22 @@ class SCDVersionPredicate(Predicate):
 
         columns_to_get = list(lookupatts)
         columns_to_get.append(versionatt)
+
+
+        self.entry.keys()
+        null_condition_sql = \
+            (x + " = " + self.entry[x] for x in self.entry.keys)
+
+        lookup_sql = " SELECT " + versionatt + \
+                     " NATURAL JOIN ".join(self.table_name) + \
+                     " WHERE " + ",".join(null_condition_sql)
+
+
+        max_sql = "SELECT max(*)"
+
+        cursor = dw_rep.connection.cursor()
+        cursor.execute(lookup_sql)
+        query_result = cursor.fetchall()
 
         largest_version = None
         for row in dim.itercolumns(columns_to_get):
@@ -61,7 +80,7 @@ class SCDVersionPredicate(Predicate):
                 if largest_version is None or largest_version < row_version:
                     largest_version = row_version
 
-        return Report(result= largest_version == self.version,
+        return Report(result=largest_version == self.version,
                       tables=self.table,
                       predicate=self,
                       elements=(),

@@ -13,8 +13,8 @@ __maintainer__ = 'Arash Michael Sami Kjær'
 # If you're willing to wait that long for just the framework part of the test,
 # be my guest. The manual test seems to be faster at least.
 number = 100
-path = 'compare.db'
-if not os.path.isfile('./'+path):
-    setup(path, number)
-framework_compare_test(path, number)
-manual_compare_test(path, number)
+dbname = 'compare.db'
+if not os.path.isfile('./'+dbname):
+    setup(dbname, number)
+framework_compare_test(dbname, number)
+manual_compare_test(dbname, number)

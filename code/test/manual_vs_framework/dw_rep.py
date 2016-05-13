@@ -1,14 +1,15 @@
 import sqlite3
 import pygrametl
-from pygrametl.tables import Dimension, FactTable
+from pygrametl.tables import Dimension, FactTable, SlowlyChangingDimension
 from framework.reinterpreter.datawarehouse_representation import \
-    DimRepresentation, FTRepresentation, DWRepresentation
+    DimRepresentation, FTRepresentation, DWRepresentation, \
+    SCDType2DimRepresentation
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
-def make_dw_rep(path):
-    conn = sqlite3.connect(path)
+def make_dw_rep(dbname):
+    conn = sqlite3.connect(dbname)
     wrapper = pygrametl.ConnectionWrapper(connection=conn)
 
     dim1 = Dimension(
@@ -33,5 +34,25 @@ def make_dw_rep(path):
     dim2rep = DimRepresentation(dim2, conn)
     ft1rep = FTRepresentation(ft1, conn)
     dw_rep = DWRepresentation([dim1rep, dim2rep], conn, [ft1rep])
+
+    return dw_rep
+
+
+def make_scd_rep(dbname):
+    conn = sqlite3.connect(dbname)
+    wrapper = pygrametl.ConnectionWrapper(connection=conn)
+
+    output_wrapper = pygrametl.ConnectionWrapper(connection=conn)
+
+    scd = SlowlyChangingDimension(
+        name='scd',
+        key='key',
+        attributes=['attr1', 'attr2', 'version'],
+        lookupatts=['attr2'],
+        versionatt='version'
+    )
+
+    scd_rep = SCDType2DimRepresentation(scd, conn)
+    dw_rep = DWRepresentation([scd_rep], conn)
 
     return dw_rep

@@ -1,4 +1,4 @@
-CompareTablePredicate(actual_name='table1',
-                      expected_table=[{'attr1': 1}],
-                      ignore_atts=['attr0', 'attr2'],
+CompareTablePredicate(actual_name='BookDim',
+                      expected_table=[{'title': 'The Hobbit','Version':2}],
+                      ignore_atts=['bid'],
                       subset=True)

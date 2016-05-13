@@ -1,12 +1,14 @@
-from test.manual_vs_framework import manual__no_duplicates
+import os
+from test.manual_vs_framework import manual_no_duplicates_test
 from test.manual_vs_framework.dw import setup
-from test.manual_vs_framework import framework_not_null
+from test.manual_vs_framework import framework_dup_test
 
 
-path = 'row_count.db'
+dbname = 'dup.db'
+number = 1000
+if not os.path.isfile('./'+dbname):
+    setup(dbname, number)
 
-setup(path, 1000)
+manual_no_duplicates_test(dbname, 'ft1', ['key1', 'key2'])
 
-manual__no_duplicates(path, 'ft1', ['key1', 'key2'])
-
-framework_not_null(path)
+framework_dup_test(dbname)

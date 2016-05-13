@@ -1,5 +1,5 @@
-NoDuplicateRowPredicate(table_name='logins',
+NoDuplicateRowPredicate(table_name='AuhtorDim',
                         column_names=
-                            ['userid', 'usernames'],
+                            ['aid'],
                         column_names_exclude=False,
                         )

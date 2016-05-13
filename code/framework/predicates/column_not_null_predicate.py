@@ -4,7 +4,7 @@ from .report import Report
 import time
 
 __author__ = 'Mikael Vind Mikkelsen'
-__maintainer__ = 'Mikael Vind Mikkelsen'
+__maintainer__ = 'Alexander Brandborg'
 
 
 class ColumnNotNullPredicate(Predicate):
@@ -21,7 +21,11 @@ class ColumnNotNullPredicate(Predicate):
         tested within the table
         :type column_names: list or str
         """
-        self.table_name = table_name
+
+        if isinstance(table_name,str):
+            self.table_name = [table_name]
+        else:
+            self.table_name = table_name
         self.rows_with_null = []
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
@@ -37,17 +41,23 @@ class ColumnNotNullPredicate(Predicate):
                                             self.column_names,
                                             self.column_names_exclude)
 
-        # Iterates over the table and checks for nulls in chosen columns
-        table = dw_rep.get_data_representation(self.table_name)
-        for row in table.itercolumns(chosen_columns):
-            if None in row.values():
-                self.rows_with_null.append(row)
+        cursor = dw_rep.connection.cursor()
 
-        if not self.rows_with_null:
+        null_condition_sql = (x + " IS NULL" for x in chosen_columns)
+
+        pred_sql = " SELECT * " + \
+                   " FROM " + " NATURAL JOIN ".join(self.table_name) + \
+                   " WHERE " + " OR ".join(null_condition_sql)
+
+        print(pred_sql)
+        cursor.execute(pred_sql)
+        query_result = cursor.fetchall()
+
+        if not query_result:
             self.__result__ = True
 
         return Report(result=self.__result__,
                       predicate=self,
                       tables=self.table_name,
-                      elements=self.rows_with_null,
+                      elements=query_result,
                       msg=None)

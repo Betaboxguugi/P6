@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import pygrametl
-from pygrametl.tables import Dimension, FactTable
+from pygrametl.tables import Dimension, FactTable, SlowlyChangingDimension
 import time
 
 __author__ = 'Arash Michael Sami Kjær'
@@ -112,5 +112,50 @@ def setup(dbname, number):
 
     print('DW populated')
     print('Total time: {}{}\n'.format(round(total_elapsed, 3), 's'))
+    output_conn.commit()
 
+
+def setup_scd(dbname, number):
+    open(os.path.expanduser(dbname), 'w')
+
+    output_conn = sqlite3.connect(dbname)
+    output_cur = output_conn.cursor()
+
+    output_cur.execute("CREATE TABLE scd "
+                       "(key INTEGER PRIMARY KEY, attr1 INTEGER, "
+                       "attr2 INTEGER, version INTEGER)")
+
+    output_conn.commit()
+    output_wrapper = pygrametl.ConnectionWrapper(connection=output_conn)
+
+    scd = SlowlyChangingDimension(
+        name='scd',
+        key='key',
+        attributes=['attr1', 'attr2', 'version'],
+        lookupatts=['attr2'],
+        versionatt='version'
+    )
+
+    data = []
+    total_elapsed = 0.
+    print('Generating scd data')
+    start = time.monotonic()
+    for i in range(1, number + 1):
+        data.append({'attr1': i, 'attr2': number + 1 - i})
+    end = time.monotonic()
+    elapsed = end - start
+    print('Generated: {}{}'.format(round(elapsed, 3), 's'))
+    total_elapsed += elapsed
+
+    print('Inserting data into scd')
+    start = time.monotonic()
+    for row in data:
+        scd.scdensure(row)
+    end = time.monotonic()
+    elapsed = end - start
+    print('Inserted: {}{}'.format(round(elapsed, 3), 's'))
+    total_elapsed += elapsed
+
+    print('DW populated')
+    print('Total time: {}{}\n'.format(round(total_elapsed, 3), 's'))
     output_conn.commit()

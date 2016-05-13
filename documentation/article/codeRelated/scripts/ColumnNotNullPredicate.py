@@ -1,3 +1,3 @@
-ColumnNotNullPredicate(table_name='company',
-                       column_names=['sales', 'age'],
+ColumnNotNullPredicate(table_name='BookDim',
+                       column_names=['bid'],
                        column_names_exclude=False)

@@ -1,25 +1,57 @@
+import sqlite3
+import os
+from framework.predicates import RowCountPredicate
+from framework.reinterpreter.datawarehouse_representation import \
+    DWRepresentation, DimRepresentation
+from pygrametl.tables import Dimension
+from pygrametl import  ConnectionWrapper
+
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
 
-import sqlite3
-from framework.predicates import RowCountPredicate
-from framework.reinterpreter.datawarehouse_representation import \
-    DWRepresentation, DimRepresentation, FTRepresentation
+# This just ensures we have a fresh database to work with.
+open(os.path.expanduser('test.db'), 'w')
 
-dw_name = '.\dw.db'  # The one found in pygrametl_examples
-dw_conn = sqlite3.connect(dw_name)
+conn = sqlite3.connect('test.db')
 
-book_dim = DimRepresentation('bookDim', 'bookid', ['book', 'genre'], dw_conn)
-time_dim = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'],
-                             dw_conn)
-location_dim = DimRepresentation('locationDim', 'locationid',
-                                 ['city', 'region'], dw_conn, ['city'])
-facttable = FTRepresentation('factTable', ['bookid', 'locationid', 'timeid'],
-                             dw_conn, ['sale'])
-dw = DWRepresentation([book_dim, time_dim, location_dim],  dw_conn,
-                      [facttable])
+c = conn.cursor()
 
-RowTest = RowCountPredicate('factTable', 5)
+# Making table to test on...
+c.execute('''CREATE TABLE COMPANY
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
+    NAME           TEXT   NOT NULL,
+    AGE            INT    NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL);''')
 
-print(RowTest.run(dw))
+company_info = [('Anders', 43, 'Denmark', 21000.00),
+                ('Charles', 50, 'Texas', 25000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Hannibal', 45, 'America', 65000.00),
+                ('Buggy', 67, 'America', 2000),
+                ('Buggy', 67, 'America', 2000),
+                ('Buggy', 67, 'America', 2000),
+                ('Buggy', 67, 'America', 2000),
+                ('Buggy', 67, 'America', 2000),
+                ('Buggy', 67, 'America', 2000)
+                ]
 
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
+              company_info)
+conn.commit()
+columns = ['NAME', 'AGE', 'ADDRESS', 'SALARY']
+
+wrapper = ConnectionWrapper(conn)
+dim = Dimension( name='COMPANY',
+           key='ID',
+           attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
+           lookupatts=['NAME'])
+
+dim_rep = DimRepresentation(dim,conn)
+dw = DWRepresentation([dim_rep], conn)
+
+dup_predicate = RowCountPredicate('company', 1)
+print(dup_predicate.run(dw))
+
+conn.close()

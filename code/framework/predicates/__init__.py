@@ -7,4 +7,3 @@ from .row_count_predicate import RowCountPredicate
 from .rule_column_predicate import RuleColumnPredicate
 from .rule_row_predicate import RuleRowPredicate
 from .scd_version_predicate import SCDVersionPredicate
-
