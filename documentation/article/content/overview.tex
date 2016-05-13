@@ -15,7 +15,7 @@ The purpose of the DWPopulator is to execute the pygrametl program under test an
 
 After executing the program, the DWPopulator builds a DWRepresentation object corresponding to the populated DW. DWRepresentation is a class made to contain structural information about a DW. It also allows for easy access of the DW tables and their metadata.
 
-The Predicates are a family of classes used to make assertions about the properties of a populated DW. All of them inherit from the Predicate class. Testers assert by instantiating a predicate class with the tables of interest, along with some additional arguments depending on the predicate type. Once instantiated, a predicate can be executed to check, whether the defined assertion holds or not. After execution, it creates a Report object that indicates the result of the check. If the assertion did not hold, the report may contain a special message along with data that caused the assertion to break.
+The Predicates are a family of classes used to make assertions about the properties of a populated DW. All of them inherit from the Predicate class. Testers assert by instantiating a predicate class with the tables of interest, along with some additional arguments depending on the predicate type. Once instantiated, a predicate can be executed to check, whether the defined assertion holds or not. After execution, it creates a Report object that indicates the result of the check.
 
 Case is a class representing a test case. It serves as the tester’s primary way of interacting with \FW{}. The class is rather simple, executing a set of predicates on a DW through a DWRepresentation. After a predicate is executed, Case displays the contents of the Report object made by the predicate to the user.  Note that since Case takes a DWRepresentation as input, the user does not have to run DWPopulator to perform testing. Testers may construct a DWRepresentation themselves. 
 
@@ -28,7 +28,7 @@ Case is a class representing a test case. It serves as the tester’s primary wa
 \label{fig:exdw}
 \end{figure}
 
-This subsection will be used to describe an example scenario, in which \FW{} is used to conduct tests. For this example, we imagine that we have already written a pygrametl program. This program performs the necessary ETL operations to populate the BookAndAuthor test DW using two databases as test sources. All three use sqlite3. The DW schema of BookAndAuthor can be seen in \cref{fig:exdw}. By example, we wish to test that our program correctly populates the DW, so that the fact table has exactly 99 rows. We also assert that there is referential integrity. This test is performed through the python script in \cref{Case.py}. We explain the code below.
+This subsection will be used to describe an example scenario, in which \FW{} is used to conduct tests. For this example, we imagine that we have already written a pygrametl program. This pygrametl program performs the necessary ETL operations to populate the BookAndAuthor test DW using two databases as sources. All three use sqlite3 (We do however support any mix of PEP249 APIs). The DW schema of BookAndAuthor can be seen in \cref{fig:exdw}. By example, we wish to test that our program correctly populates the DW, so that the fact table has exactly 99 rows. We also assert that there is referential integrity. This test is performed through the python script in \cref{Case.py}. We explain the code below, with more indepth description of each module used in later sections.
 
 \insertcodefile{Case.py}{Example of a \FW{} program}
 
