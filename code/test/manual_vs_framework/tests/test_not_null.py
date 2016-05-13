@@ -1,6 +1,6 @@
-from manual_not_null import column_not_null
-from framework_not_null import framework_not_null
-from dw import setup
+from test.manual_vs_framework.manual_not_null import column_not_null
+from test.manual_vs_framework.framework_not_null import framework_not_null
+from test.manual_vs_framework.dw import setup
 
 path = 'row_count.db'
 
