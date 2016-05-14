@@ -3,6 +3,8 @@ import os
 from framework.predicates import CompareTablePredicate
 from framework.reinterpreter.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
+from pygrametl.tables import Dimension
+from pygrametl import ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -33,9 +35,13 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
               company_info)
 conn.commit()
-dim = DimRepresentation('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'],
-                       conn, ['NAME'])
-dw = DWRepresentation([dim], conn)
+
+ConnectionWrapper(conn)
+
+dim = Dimension('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'], ['NAME'])
+dim_rep = DimRepresentation(dim, conn)
+
+dw = DWRepresentation([dim_rep], conn)
 
 expected_list1 = [
     {'NAME': 'Anders', 'AGE': 43, 'SALARY': 21000.0, 'ADDRESS': 'Denmark',
