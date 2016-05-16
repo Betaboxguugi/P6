@@ -189,14 +189,14 @@ class CompareTablePredicate(Predicate):
     """
 
     def __init__(self, actual_table, expected_table,
-                 column_names=None, column_names_exclude=False,
-                 sorted=(), distinct=True, subset=False):
+                 column_names=None, column_names_exclude=False, sort = True,
+                 sort_keys=(), distinct=True, subset=False):
         """
         :param actual_table: Actual table in DW
         :param expected_table: User defined table to compare with
         :param column_names: Columns to use for comparison
         :param column_names_exclude: To get complement of column_names
-        :param sorted: Set of attributes to sort on.
+        :param sort_keys: Set of attributes to sort on.
         :param distinct: If tables should be treated as having no duplicates
         :param subset: If we should check that expected_table is only a subset
 
@@ -245,7 +245,8 @@ class CompareTablePredicate(Predicate):
 
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
-        self.sorted = set(sorted)
+        self.sort = sort
+        self.sort_keys = set(sort_keys)
         self.distinct = distinct
         self.subset = subset
 
@@ -268,7 +269,7 @@ class CompareTablePredicate(Predicate):
         # something for the sort. This can be done if all sortable keys
         # from each table is present in the join.
         # If we find some keys not intact we will not sort.
-        if not self.sorted:
+        if self.sort and not self.sort_keys:
 
             for table_name in self.actual_table:
                 table = dw_rep.get_data_representation(table_name)
@@ -277,30 +278,30 @@ class CompareTablePredicate(Predicate):
                 if isinstance(table, DimRepresentation):
                     # We can either sort on key or lookupatts
                     if set([table.key]).issubset(set(chosen_columns)):
-                        self.sorted = self.sorted.union(set([table.key]))
+                        self.sort_keys = self.sort_keys.union(set([table.key]))
 
                     elif set(table.lookupatts).issubset(set(chosen_columns)):
-                        self.sorted = self.sorted.union(set(table.lookupatts))
+                        self.sort_keys = self.sort_keys.union(set(table.lookupatts))
 
                     else:  # In the case that sort key of table is not present
-                        self.sorted.clear()
+                        self.sort_keys.clear()
                         break
 
                 # For fact tables
                 elif isinstance(table, FTRepresentation):
                     # Can sort on keyrefs
                     if set(table.keyrefs).issubset(set(chosen_columns)):
-                        self.sorted.union = self.sorted(set(table.keyrefs))
+                        self.sort_keys.union = self.sort_keys(set(table.keyrefs))
 
                     else:  # In the case that sort key of table is not present
-                        self.sorted.clear()
+                        self.sort_keys.clear()
                         break
 
         # In the case that data from expected table lies in same DB as the DW
         if self.expected_in_db:
 
             # If we have a set to sort on.
-            if self.sorted:
+            if self.sort:
                 if self.distinct:
                     select_sql = " SELECT DISTINCT "
                 else:  # not distinct
@@ -310,7 +311,7 @@ class CompareTablePredicate(Predicate):
                 actual_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
                     " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    " ORDER BY " + ",".join(self.sorted)
+                    " ORDER BY " + ",".join(self.sort_keys)
 
                 actual_cursor = dw_rep.connection.cursor()
                 actual_cursor.execute(actual_table_sql)
@@ -320,7 +321,7 @@ class CompareTablePredicate(Predicate):
                     select_sql + ",".join(chosen_columns) + \
                     " FROM " + " NATURAL JOIN ".join(
                         self.expected_table) + \
-                    " ORDER BY " + ",".join(self.sorted)
+                    " ORDER BY " + ",".join(self.sort_keys)
 
                 expected_cursor = dw_rep.connection.cursor()
                 expected_cursor.execute(expected_table_sql)
@@ -338,7 +339,7 @@ class CompareTablePredicate(Predicate):
                     only_in_expected = \
                         sorted_subset_compare(actual_cursor,
                                               expected_cursor,
-                                              self.sorted)
+                                              self.sort_keys)
 
             # If we cannot sort. For when expected is a table.
             else:
@@ -349,7 +350,7 @@ class CompareTablePredicate(Predicate):
                 # The SQL makes sure to group all identical rows, and find
                 # their count.
                 if self.distinct:
-                    actual__sql = \
+                    actual_sql = \
                         " ( " + \
                         "SELECT " + ",".join(chosen_columns) + ", COUNT(*)" + \
                         " FROM " + ",".join(self.actual_table) + \
@@ -386,39 +387,45 @@ class CompareTablePredicate(Predicate):
                     "( " + \
                     "SELECT NULL " + \
                     " FROM " + actual_sql + \
-                    + " AS actual " + \
-                    " WHERE " + ",".join(where_sql) + \
+                    " AS actual " + \
+                    " WHERE " + " AND ".join(where_sql) + \
                     " )"
-
-                cursor = dw_rep.conncection.cursor()
+                cursor = dw_rep.connection.cursor()
                 cursor.execute(sql)
-                only_in_expected.append(cursor.fetchall())
+                query_result = cursor.fetchall()
+                if query_result:
+                    only_in_expected.extend(query_result)
 
                 if not self.subset:
                     # Returns all in actual but not in expected
                     sql = \
                         " SELECT DISTINCT * " + \
-                        " FROM " + actual__sql + \
+                        " FROM " + actual_sql + \
                         " AS actual " + \
                         " WHERE NOT EXISTS" \
                         "( " + \
                         "SELECT NULL " + \
-                        " FROM " + expected_sql \
-                        + " AS expected " + \
-                        " WHERE " + ",".join(where_sql) + \
+                        " FROM " + expected_sql + \
+                        " AS expected " + \
+                        " WHERE " + " AND ".join(where_sql) + \
                         " )"
 
-                    cursor = dw_rep.conncection.cursor()
+                    cursor = dw_rep.connection.cursor()
                     cursor.execute(sql)
-                    only_in_actual.append(cursor.fetchall())
+                    query_result = cursor.fetchall()
+                    if query_result:
+                        only_in_actual.extend(query_result)
 
         else:  # expected table as dicts
 
             # Cuts off all columns not used in comparison
-            for row in self.expected_table:
-                row = {k: row[k] for k in chosen_columns}.values()
 
-            if self.sorted:
+            self.expected_table = \
+                [{k: v for k, v in d.items() if k in chosen_columns}
+                 for d in self.expected_table]
+
+
+            if self.sort:
                 if self.distinct:
                     select_sql = " SELECT DISTINCT "
 
@@ -435,7 +442,7 @@ class CompareTablePredicate(Predicate):
                 actual_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
                     " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    " ORDER BY " + ",".join(self.sorted)
+                    " ORDER BY " + ",".join(self.sort_keys)
 
                 actual_cursor = dw_rep.connection.cursor()
                 actual_cursor.execute(actual_table_sql)
@@ -454,7 +461,7 @@ class CompareTablePredicate(Predicate):
                 # Sorts expected table
                 expected_dict = \
                     sorted(expected_dict,
-                           key=itemgetter(*self.sorted))
+                           key=itemgetter(*self.sort_keys))
 
                 if not self.subset:
                     only_in_actual, only_in_expected = \
@@ -464,20 +471,24 @@ class CompareTablePredicate(Predicate):
                     only_in_expected = \
                         sorted_subset_compare(actual_cursor,
                                               expected_dict,
-                                              self.sorted)
+                                              self.sort_keys)
 
             else:
 
                 # Get actual as list of rows
-
                 actual_table_sql = \
                     " SELECT " + ",".join(chosen_columns) + \
                     " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    " ORDER BY " + ",".join(self.sorted)
+                    " ORDER BY " + ",".join(self.sort_keys)
 
                 cursor = dw_rep.conncection.cursor()
                 cursor.execute(actual_table_sql)
                 actual_dict_with_nulls = cursor.fetchall()
+
+                names = [t[0] for t in cursor.description]
+                self.expected_table = []
+                for row in actual_dict_with_nulls:
+                    self.expected_table.append(dict(zip(names, row)))
 
                 # Fetch and remove nulls from actual
                 actual_dict = []

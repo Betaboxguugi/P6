@@ -27,7 +27,6 @@ c.execute('''CREATE TABLE COMPANY
 
 company_info = [
                 ('Wolf', 28, 'Sweden', 19000.00),
-                ('Wolf', 28, 'Sweden', 19000.00),
                 ('Anders', 43, 'Denmark', 21000.00),
                 ('Charles', 50, 'Texas', 25000.00),
                 ('Buggy', 67, 'America', 2000)
@@ -85,7 +84,7 @@ start = time.monotonic()
 
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
-compare1 = CompareTablePredicate(['company'], c, ['ID'],True,(),False)
+compare1 = CompareTablePredicate(['company'], ['bompany'], ['ID'],True,False,(),False)
 
 
 
