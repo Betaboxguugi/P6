@@ -7,8 +7,9 @@ FunctionalDependencyPredicate asserts that a table, or natural join of tables, h
 \item [tables] a list of table names, that will get a natural join between them. Of which the result is what the predicate runs on. 
 \item [fds] a list of tuples, where each tuple describes a functional dependency. For example \texttt{('a', 'b')} means that \texttt{b} is functional dependent on \texttt{a}, i.e. $a \rightarrow b$.
 \item [ignore\_None] a boolean, if true then we ignore $None \rightarrow value$ dependencies. This may be useful, for example in the case where we have a functional dependency between cities and countries, i.e. $city \rightarrow country$. Here it would be possible to imagine a scenario where we have two people in different countries, that both have the city None. And as such we can not have a functional dependency for None values here.
-  
 \end{description}
+
+\insertcodefileSQL{SQLExample.sql}{SQL Example}
 
 In our instatiation above, we use the predicate to assert that there is a functional dependecy between a book's title and its author. If this assertion holds, it means that no book is written by more than one author. 
 

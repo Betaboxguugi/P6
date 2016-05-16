@@ -11,6 +11,8 @@ from framework.predicates.column_not_null_predicate import \
     ColumnNotNullPredicate
 from framework.predicates.functional_dependency_predicate import \
     FunctionalDependencyPredicate
+from framework.predicates.referential_integrity_predicate import \
+    ReferentialIntegrityPredicate
 from framework.case import Case
 from framework.predicates.scd_version_predicate import SCDVersionPredicate
 from framework.reinterpreter.datawarehouse_representation \
@@ -141,7 +143,7 @@ rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constra
 
 scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
 
-func_dependencies1 = (('book','bookid'), ('book', 'genre'))
+func_dependencies1 = (('book', 'bookid'), ('book', 'genre'))
 func_dependencies2 = (('genre'), 'book')
 fd_tester1 = FunctionalDependencyPredicate(['bookdim'], func_dependencies2)
 
@@ -159,6 +161,7 @@ fd_tester1 = FunctionalDependencyPredicate(['bookdim'], func_dependencies2)
 #print(rrp_tester1.run(dw))
 #print(scdv_tester1.run(dw))
 print(fd_tester1.run(dw))
+
 
 
 # Eksempel på brug af itercolumns taget fra ColumnNotNullPredicate før det

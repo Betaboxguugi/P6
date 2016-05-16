@@ -80,7 +80,7 @@ class FunctionalDependencyPredicate(Predicate):
         # Final setup of the entire SQL command
         lookup_sql = "SELECT " + select_sql + " FROM " + join_sql +\
                      " WHERE " + and_alpha + " AND " + "( {} )".format(or_beta)
-
+        
         func_dep = "{} --> {}".format(alpha, beta)
         c = dw_rep.connection.cursor()
         c.execute(lookup_sql)
