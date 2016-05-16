@@ -141,8 +141,9 @@ rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constra
 
 scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
 
-func_dependencies1 = ('bookid', ('book', 'genre'))
-fd_tester1 = FunctionalDependencyPredicate(['bookdim'], func_dependencies1)
+func_dependencies1 = (('book','bookid'), ('book', 'genre'))
+func_dependencies2 = (('genre'), 'book')
+fd_tester1 = FunctionalDependencyPredicate(['bookdim'], func_dependencies2)
 
 #print(dup_tester1.run(dw))
 #print(dup_tester2.run(dw))

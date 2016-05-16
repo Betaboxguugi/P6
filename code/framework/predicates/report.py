@@ -51,6 +51,7 @@ class Report(object):
                     i += 1
                 elif i == MAX_ELEMENTS:
                     s += ' |\t\t...\n'
+                    return s
             return s
         else:
             return s + ' |\t' + self.msg + '\n'
