@@ -5,6 +5,7 @@ from framework.reinterpreter.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
 from pygrametl.tables import Dimension
 from pygrametl import ConnectionWrapper
+import time
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -24,16 +25,38 @@ c.execute('''CREATE TABLE COMPANY
     ADDRESS        CHAR(50),
     SALARY         REAL);''')
 
-company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('Charles', 50, 'Texas', 25000.00),
+company_info = [
                 ('Wolf', 28, 'Sweden', 19000.00),
-                ('Hannibal', 45, 'America', 65000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Anders', 43, 'Denmark', 21000.00),
+                ('Charles', 50, 'Texas', 25000.00),
                 ('Buggy', 67, 'America', 2000)
                 ]
 
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
               company_info)
+
+
+# Making table to test on...
+c.execute('''CREATE TABLE BOMPANY
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
+    NAME           TEXT   NOT NULL,
+    AGE            INT    NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL);''')
+
+company_info = [('Anders', 43, 'Denmark', 21000.00),
+                ('Charles', 50, 'Texas', 25000.00),
+                ('Wolf', 28, 'Sweden', 19000.00),
+                ('Buggy', 67, 'America', 2000)
+                ]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
+              company_info)
+
+
 conn.commit()
 
 ConnectionWrapper(conn)
@@ -58,15 +81,17 @@ expected_list1 = [
 
 expected_list2 = expected_list1.copy()
 expected_list2.__delitem__(0)
+start = time.monotonic()
 
-compare1 = CompareTablePredicate('company', expected_list1)
-compare2 = CompareTablePredicate('company', expected_list2, subset=True)
-compare3 = CompareTablePredicate('company', expected_list2)
-compare4 = CompareTablePredicate('company', expected_list1, ['SALARY'])
+c = conn.cursor()
+c.execute("SELECT * FROM bompany")
+compare1 = CompareTablePredicate(['company'], c, ['ID'],True,(),False)
+
+
 
 print(compare1.run(dw))
-print(compare2.run(dw))
-print(compare3.run(dw))
-print(compare4.run(dw))
-
+end = time.monotonic()
+elapsed = end - start
+print('{}{}'.format(round(elapsed, 3), 's'))
 conn.close()
+

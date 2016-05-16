@@ -18,20 +18,27 @@ def difference(a, b):
     return list(filterfalse(lambda x: x in b, a))
 
 
-def get_next_row(table):
+def get_next_row(table, names):
     """
     Used to get next row of either list of dicts or cursor
     :param table: Table to get next row from
     :return: Next row
     """
 
-    if isinstance(table.list):
-        return table.pop(0)
+    if isinstance(table, list):
+        if not  table:
+            return None, True
+        else:
+            return table.pop(0), False
     else:
-        return table.fetchone()
+        row = table.fetchone()
+        if row is None:
+            return None, True
+        else:
+            return dict(zip(names, row)), False
 
 
-def get_rest_of_table(table):
+def get_rest_of_table(table,names):
     """
     Fetches the rest of a table that's either list of dicts or a cursor
     :param table: table to fetch from
@@ -40,7 +47,11 @@ def get_rest_of_table(table):
     if isinstance(table, list):
         return table
     else:
-        return table.fetchall()
+        result = []
+        for row in table.fetchall():
+            result.append(dict(zip(names, row)))
+
+        return result
 
 
 def table_is_empty(table, row):
@@ -64,43 +75,48 @@ def sorted_compare(actual, expected):
     :param expected: Table given by user
     :return: two lists containing exclusive rows to each table
     """
+    names = [t[0] for t in actual.description]
+    actual_list = []
+    expected_list = []
+
     while True:
-
-        a_row = actual.fetchone()
-        e_row = get_next_row(expected)
-
-        actual_list = []
-        expected_list = []
+        a_row, actual_empty = get_next_row(actual, names)
+        e_row, expected_empty = get_next_row(expected, names)
 
         # Does not compare any that include nulls
         # This is done to mimic results of comparing with nulls in sql
-        while a_row is not None and (None in a_row.values()):
+        while not actual_empty and (None in a_row.values()):
             actual_list.append(a_row)
-            a_row = actual.fetchone()
+            a_row,actual_empty = get_next_row(actual, names)
 
-        while not table_is_empty(expected, e_row) and None in e_row.values():
+        while not expected_empty and None in e_row.values():
             expected_list.append(e_row)
-            e_row = get_next_row(expected)
+            e_row, expected_empty = get_next_row(expected, names)
 
-        # When the two tables are of equal length
-        if a_row is None and table_is_empty(expected, e_row):
-            break
-
-        # When there's more in expected table
-        elif a_row is None and not table_is_empty(expected, e_row):
-            expected.append(get_rest_of_table(expected))
-            break
-
-        # When there's more in actual table
-        elif a_row is not None and table_is_empty(expected, e_row):
-            actual_list.append(actual.fetchall())
-            break
-        else:
+        if not expected_empty and not actual_empty:
             if a_row != e_row:
                 actual_list.append(a_row)
                 expected_list.append(e_row)
 
-        return actual_list, expected_list
+        # When the two tables are of equal length
+        if actual_empty and expected_empty:
+            break
+
+        # When there's more in expected table
+        elif actual_empty and not expected_empty:
+            rest_list = [e_row]
+            rest_list.extend(get_rest_of_table(expected,names))
+            expected_list.extend(rest_list)
+            break
+
+        # When there's more in actual table
+        elif not actual_empty and expected_empty:
+            rest_list = [a_row]
+            rest_list.extend(get_rest_of_table(actual,names))
+            actual_list.extend(rest_list)
+            break
+
+    return actual_list, expected_list
 
 
 def sorted_subset_compare(actual, expected, sort_columns):
@@ -111,28 +127,29 @@ def sorted_subset_compare(actual, expected, sort_columns):
     :param compare_columns: The columns that were sorted on
     :return: List of all rows exclusive to expected
     """
+    names = [t[0] for t in actual.description]
 
-    e_row = get_next_row(expected)
+    e_row = get_next_row(expected, names)
     expected_list = []
 
     while True:
-        a_row = actual.fetchone()
+        a_row = get_next_row(actual, names)
 
         # Does not compare any that include nulls
         # This is done to mimic results of comparing with nulls in sql
-        while (a_row is not None) and (None in a_row.values()):
-            a_row = actual.fetchone()
+        while not (table_is_empty(actual,a_row)) and (None in a_row.values()):
+            a_row = get_next_row(actual, names)
 
         while not table_is_empty(expected, e_row) and None in e_row.values():
             expected_list.append(e_row)
-            e_row = get_next_row(expected)
+            e_row = get_next_row(expected,names)
 
         # When expected is empty
         if table_is_empty(expected, e_row):
             break
 
         # When actual is empty we store the rest of the non-matching rows
-        elif a_row is None and not table_is_empty(expected, e_row):
+        elif table_is_empty(actual,a_row) and not table_is_empty(expected, e_row):
             expected_list.append(get_rest_of_table(expected))
 
         else:
@@ -154,13 +171,13 @@ def sorted_subset_compare(actual, expected, sort_columns):
                 if e_values < a_values:
                     expected_list.append(e_row)
                     if not table_is_empty(expected):
-                        e_row = get_next_row(expected)
+                        e_row = get_next_row(expected, names)
 
                         # Quick check to see if the new expected row matches
                         # the actual row, before the next actual row is fetched
                         if a_row == e_row:
                             if not table_is_empty(expected):
-                                e_row = get_next_row(expected)
+                                e_row = get_next_row(expected, names)
 
     return expected_list
 
@@ -216,7 +233,11 @@ class CompareTablePredicate(Predicate):
         else:
             # If expected table is given as a cursor, we fetch from it
             try:
-                self.expected_table = expected_table.expected_table.fetchall()
+                tuples = expected_table.fetchall()
+                names = [t[0] for t in expected_table.description]
+                self.expected_table = []
+                for row in tuples:
+                    self.expected_table.append(dict(zip(names, row)))
                 self.expected_in_db = False
             except Exception:
                 raise RuntimeError('Expected table neither given as a name,' +
@@ -255,11 +276,11 @@ class CompareTablePredicate(Predicate):
                 # For dimensions
                 if isinstance(table, DimRepresentation):
                     # We can either sort on key or lookupatts
-                    if set(table.key).issubset(set(chosen_columns)):
-                        self.sorted.add(set(table.key))
+                    if set([table.key]).issubset(set(chosen_columns)):
+                        self.sorted = self.sorted.union(set([table.key]))
 
                     elif set(table.lookupatts).issubset(set(chosen_columns)):
-                        self.sorted.add(set(table.lookupatts))
+                        self.sorted = self.sorted.union(set(table.lookupatts))
 
                     else:  # In the case that sort key of table is not present
                         self.sorted.clear()
@@ -269,7 +290,7 @@ class CompareTablePredicate(Predicate):
                 elif isinstance(table, FTRepresentation):
                     # Can sort on keyrefs
                     if set(table.keyrefs).issubset(set(chosen_columns)):
-                        self.sorted.add(set(table.keyrefs))
+                        self.sorted.union = self.sorted(set(table.keyrefs))
 
                     else:  # In the case that sort key of table is not present
                         self.sorted.clear()
@@ -288,8 +309,8 @@ class CompareTablePredicate(Predicate):
                 # Query for getting actual table sorted on keys
                 actual_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
-                    "FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    "ORDER BY " + ",".join(self.sorted)
+                    " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
+                    " ORDER BY " + ",".join(self.sorted)
 
                 actual_cursor = dw_rep.connection.cursor()
                 actual_cursor.execute(actual_table_sql)
@@ -297,11 +318,11 @@ class CompareTablePredicate(Predicate):
                 # Query for getting expected table sorted on keys
                 expected_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
-                    "FROM " + " NATURAL JOIN ".join(
+                    " FROM " + " NATURAL JOIN ".join(
                         self.expected_table) + \
-                    "ORDER BY " + ",".join(self.sorted)
+                    " ORDER BY " + ",".join(self.sorted)
 
-                expected_cursor = dw_rep.conncection.cursor()
+                expected_cursor = dw_rep.connection.cursor()
                 expected_cursor.execute(expected_table_sql)
 
                 if not self.subset:
@@ -413,8 +434,8 @@ class CompareTablePredicate(Predicate):
                 # Use SQL to create a cursor to the actual table
                 actual_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
-                    "FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    "ORDER BY " + ",".join(self.sorted)
+                    " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
+                    " ORDER BY " + ",".join(self.sorted)
 
                 actual_cursor = dw_rep.connection.cursor()
                 actual_cursor.execute(actual_table_sql)
