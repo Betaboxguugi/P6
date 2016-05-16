@@ -350,6 +350,11 @@ class CompareTablePredicate(Predicate):
                 # The SQL makes sure to group all identical rows, and find
                 # their count.
                 if self.distinct:
+                    actual_sql = ",".join(self.actual_table)
+                    expected_sql = ",".join(self.expected_table)
+
+                # If we have to handle duplicates
+                else:
                     actual_sql = \
                         " ( " + \
                         "SELECT " + ",".join(chosen_columns) + ", COUNT(*)" + \
@@ -366,10 +371,6 @@ class CompareTablePredicate(Predicate):
 
                     where_set.update('count')
 
-                # If we have to handle duplicates
-                else:
-                    actual_sql = ",".join(self.actual_table)
-                    expected_sql = ",".join(self.expected_table)
 
                 # For the where clause, where we check that two rows are equal.
                 where_sql = []
@@ -478,17 +479,16 @@ class CompareTablePredicate(Predicate):
                 # Get actual as list of rows
                 actual_table_sql = \
                     " SELECT " + ",".join(chosen_columns) + \
-                    " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
-                    " ORDER BY " + ",".join(self.sort_keys)
-
-                cursor = dw_rep.conncection.cursor()
+                    " FROM " + " NATURAL JOIN ".join(self.actual_table)
+                print(actual_table_sql)
+                cursor = dw_rep.connection.cursor()
                 cursor.execute(actual_table_sql)
-                actual_dict_with_nulls = cursor.fetchall()
+                query_result = cursor.fetchall()
 
+                actual_dict_with_nulls = []
                 names = [t[0] for t in cursor.description]
-                self.expected_table = []
-                for row in actual_dict_with_nulls:
-                    self.expected_table.append(dict(zip(names, row)))
+                for row in query_result:
+                    actual_dict_with_nulls.append(dict(zip(names, row)))
 
                 # Fetch and remove nulls from actual
                 actual_dict = []
@@ -510,26 +510,24 @@ class CompareTablePredicate(Predicate):
                     # Find all rows in expected that are not in actual
                     only_in_expected = difference(expected_dict, actual_dict)
 
-                    if self.subset:
+                    if not self.subset:
                         # Find all rows in actual that are not in expected
                         only_in_actual = difference(actual_dict, expected_dict)
 
                 else:  # not distinct
                     # For each row in expected we see if the number of
                     # duplicates is the same in actual.
-                    only_in_expected = \
-                        list(filterfalse(True if expected_dict.count(item)
-                                                 == actual_dict.count(item)
-                                         else False for item in expected_dict))
+                    for row in expected_dict:
+                        if expected_dict.count(row) != actual_dict.count(row):
+                            only_in_expected.append(row)
 
-                    if self.subset:
+
+                    if not self.subset:
                         # For each row in actual we see if the number of
                         # duplicates is the same in actual.
-                        only_in_actual = \
-                            list(filterfalse(True if expected_dict.count(item)
-                                                     == actual_dict.count(item)
-                                             else False for item in
-                                             actual_dict))
+                        for row in actual_dict:
+                            if expected_dict.count(row) != actual_dict.count(row):
+                                only_in_actual.append(row)
 
         # If no non-matching rows found, the assertion held.
         all_unmatched = only_in_expected + only_in_actual
