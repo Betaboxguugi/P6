@@ -19,7 +19,7 @@ class FunctionalDependencyPredicate(Predicate):
         """
         self.tables = tables
         self.func_dependencies = func_dependencies
-        self.results = []
+        self.results = True
         self.ignore_none = ignore_none
 
     def run(self, dw_rep):
@@ -39,8 +39,6 @@ class FunctionalDependencyPredicate(Predicate):
         alpha = self.func_dependencies[0]
         beta = self.func_dependencies[1]
 
-        print("{} --> {}".format(alpha, beta))
-
         alpha_sql_generator = (" t1.{} = t2.{} ".format(alpha[x], alpha[x])
                                for x in range(0,len(alpha)))
         if len(alpha) == 1 or isinstance(alpha, str):
@@ -55,20 +53,16 @@ class FunctionalDependencyPredicate(Predicate):
         else:
             and_beta = ' AND '.join(beta_sql_generator)
 
-        lookup_sql = "SELECT * FROM " + join_sql + " WHERE " + and_alpha #+ " AND " + and_beta
-        print(lookup_sql)
+        lookup_sql = "SELECT * FROM " + join_sql + " WHERE " + and_alpha + " AND " + and_beta
 
         c = dw_rep.connection.cursor()
         c.execute(lookup_sql)
+        if c.fetchall():
+            self.results = False
 
-        elements = []
-        for row in c.fetchall():
-            elements.append(row)
+        func_dep = "{} --> {}".format(alpha, beta)
 
-        result = not elements
-        return Report(result=result,
+        return Report(result=self.results,
                       tables=self.tables,
                       predicate=self,
-                      elements=elements,
-                      msg='The predicate failed for the following rows,'
-                          ' given as (predicate, row) tuples')
+                      msg='The predicate failed for the functional dependencie: {}'.format(func_dep))
