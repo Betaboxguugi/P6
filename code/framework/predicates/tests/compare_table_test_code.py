@@ -2,10 +2,11 @@ import sqlite3
 import os
 from framework.predicates import CompareTablePredicate
 from framework.reinterpreter.datawarehouse_representation import \
-    DWRepresentation, DimRepresentation
-from pygrametl.tables import Dimension
+    DWRepresentation, DimRepresentation,FTRepresentation
+from pygrametl.tables import Dimension, FactTable
 from pygrametl import ConnectionWrapper
 import time
+from operator import itemgetter
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -25,11 +26,12 @@ c.execute('''CREATE TABLE COMPANY
     ADDRESS        CHAR(50),
     SALARY         REAL);''')
 
-company_info = [
-                ('Anders', 43, 'Denmark', 21000.00),
+company_info = [('Anders', 43, 'Denmark', 21000.00),
+                ('Sauron', 1000000, 'Mordor', 42),
+                ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
-                ('Buggy', 67, 'America', 2000),
-                ('Buggy', 67, 'America', 2000)
+                ('Bharles', 50, 'Texas', 25000.00),
+                ('Bharles', 50, 'Texas', 25000.00)
                 ]
 
 # ... and inserting the necessary data.
@@ -45,17 +47,31 @@ c.execute('''CREATE TABLE BOMPANY
     ADDRESS        CHAR(50),
     SALARY         REAL);''')
 
-company_info = [('Anders', 43, 'Denmark', 21000.00),
+company_info = [
+                ('Anders', 43, None, 21000.00),
+                ('Anders', 43, 'Denmark', 21000.00),
+                ('Sauron', 1000000, 'Mordor', 42),
+                ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
-                ('Buggy', 67, 'America', 2000),
-                ('Buggy', 67, 'America', 2000),
-                ('Buggy', 67, 'America', 2000)
+                ('Bharles', 50, 'Texas', 25000.00)
                 ]
 
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
               company_info)
 
+
+c = conn.cursor()
+
+# Making table to test on...
+c.execute('''CREATE TABLE FACTTABLE
+    (Book           TEXT   NOT NULL,
+    Issue            INT    )''')
+
+company_info = [('The Hobbit', 1), ('The Bobbit', 5)]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO FACTTABLE (BOOK,ISSUE) VALUES (?,?)", company_info)
 
 conn.commit()
 
@@ -64,7 +80,10 @@ ConnectionWrapper(conn)
 dim = Dimension('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'], ['NAME'])
 dim_rep = DimRepresentation(dim, conn)
 
-dw = DWRepresentation([dim_rep], conn)
+ft = FactTable('FACTTABLE', ['Book'], ['Issue'])
+ft_rep = FTRepresentation(ft, conn)
+
+dw = DWRepresentation([dim_rep,ft_rep], conn)
 
 expected_list1 = [
     {'NAME': 'Anders', 'AGE': 43, 'SALARY': 21000.0, 'ADDRESS': 'Denmark',
@@ -85,13 +104,41 @@ start = time.monotonic()
 
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
-compare1 = CompareTablePredicate(['company'], ['bompany'], ['ID'], True, False, (), False, True)
+compare1 = CompareTablePredicate(['FACTTABLE'], ['FACTTABLE'], ['Issue'], False, True, (), True)
 
 
 
 print(compare1.run(dw))
+"""
+a = conn.cursor()
+sql = "SELECT actual.COUNT FROM (SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM company  GROUP BY AGE,NAME,ADDRESS,SALARY) as actual"
+a.execute(sql)
+print(a.fetchall())
+"""
+"""
+a = conn.cursor()
+sql = "SELECT * FROM bompany ORDER BY AGE,NAME,ADDRESS,SALARY"
+a.execute(sql)
+print(a.fetchall())
+"""
+c = conn.cursor()
+c.execute("SELECT * FROM FACTTABLE")
+names = [t[0] for t in c.description]
+
+result = []
+for row in c.fetchall():
+        result.append(dict(zip(names, row)))
+
+print(result)
+
+
+"""
+a = conn.cursor()
+sql = " SELECT  *  FROM  ( SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM company GROUP BY AGE,NAME,ADDRESS,SALARY )  AS actual  WHERE NOT EXISTS (  SELECT NULL  FROM  ( SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM bompany GROUP BY AGE,NAME,ADDRESS,SALARY )  AS  expected  WHERE  actual.AGE = expected.AGE AND actual.NAME = expected.NAME AND actual.ADDRESS = expected.ADDRESS AND actual.SALARY = expected.SALARY AND actual.COUNT = expected.COUNT) "
+a.execute(sql)
+print(a.fetchall())
+"""
 end = time.monotonic()
 elapsed = end - start
 print('{}{}'.format(round(elapsed, 3), 's'))
 conn.close()
-
