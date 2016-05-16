@@ -63,7 +63,7 @@ class FunctionalDependencyPredicate(Predicate):
 
         # SQL setup for the left side of the dependency
         alpha_sql_generator = (" t1.{} = t2.{} ".format(alpha[x], alpha[x])
-                               for x in range(0,len(alpha)))
+                               for x in range(0, len(alpha)))
         if len(alpha) == 1 or isinstance(alpha, str):
             and_alpha = " t1.{} = t2.{} ".format(alpha, alpha)
         else:
@@ -80,7 +80,7 @@ class FunctionalDependencyPredicate(Predicate):
         # Final setup of the entire SQL command
         lookup_sql = "SELECT " + select_sql + " FROM " + join_sql +\
                      " WHERE " + and_alpha + " AND " + "( {} )".format(or_beta)
-        
+
         func_dep = "{} --> {}".format(alpha, beta)
         c = dw_rep.connection.cursor()
         c.execute(lookup_sql)

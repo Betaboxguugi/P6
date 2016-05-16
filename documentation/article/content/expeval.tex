@@ -1,2 +1,52 @@
-\section{Evalutation}\label{sect:eval}
-In this section...
+\section{Evaluation}\label{sect:eval}
+In the following section we will evaluate and determine whether we have fulfilled the goals which we set out to accomplish for \FW{}. At first we will describe on what criteria we based the evaluation on. In the following section we will then elaborate on the setup of our actual evaluation. Then finally discuss and show the result from our evaluation.
+
+\subsection{Criteria of Evaluation}\label{subsect:CoE}
+%Framework vs. Manuel
+%Focus on what the programmers need to do.
+%Number of  statements
+%Performance testing will not be a focus but mentioned, so it becomes clear execution time is non issue problem. 
+As of writing this article, there exist no other test framework made to work in conjunction with pygrametl. Existing tools for testing ETL processes such QuerySurge and AnyDBTest, are not good to evaluate against. Such tools are simply to dissimilar to evaluate against, as they have use of an user interface and lack coding as the primary tool to set up the DBMS. We will therefore only evaluate \FW{} against manuals testing. For our evaluation, we would like conclude with some certainty which, of \FW{} or manual testing, is the best for testing ETL processes. To do so we set up the following criteria:
+
+\begin{description}
+\item[Time needed in setting up a test] Best solution is the one with shortest time used, as because of the time saved in a development or maintenance of a product. This leaves more time for other endeavours, which can be used elsewhere, often improving the quality of the product.
+\item[Number of statements used] Best solution is the one with with fewest amount of statements used, as its reduces complexity. Reducing complexity often help with readability, which in turn makes it easier find the various bugs that might be in ones product.
+\end{description}
+
+Beside this, we will also note the execution time between \FW{} and manual testing. We not evaluate anything based on this, as execution time is not largely relevant when performing tests. But we still note if our framework is noticeable slower.
+
+\subsection{Setup of Evaluation}
+Bassed on the criteria discussed in \cref{subsect:CoE}, we will now describe the actual evaluation which we devised. 
+
+\missingfigure{Pygrametl program example, with various detectable errors, preferably one we will run our test on}
+
+%Pygrametl program with errors.
+%Same program tested for framework versus manual
+%Timed
+%Number of statements counted
+
+\subsection{Results}
+As seen below we can clearly see that our solution is the best! :D
+
+\todo[inline]{Do the evaluation then write this section and fill table with the results}
+
+\begin{table}[h]
+\centering
+\caption{Result of Evaluation}
+\label{table:result}
+\begin{tabular}{|p{0.10\textwidth}|p{0.18\textwidth}|p{0.12\textwidth}|}
+\hline
+                       & \FW{}	 & Manual				  \\ \hline
+Time spent on solution &         &                \\ \hline
+Number of statements   &         &                \\ \hline
+Execution Time         &         &                \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+
+
