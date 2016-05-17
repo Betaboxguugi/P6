@@ -537,10 +537,10 @@ class CompareTablePredicate(Predicate):
             if self.expected_in_db:
                 table_names = ",".join(self.expected_table)
             else:
-                table_name = "User table"
+                table_names = "User table"
 
             expected = Report(result=self.__result__,
-                              tables= table_name,
+                              tables= table_names,
                               predicate=self,
                               elements=only_in_expected,
                               msg="Elements found only in expected")
