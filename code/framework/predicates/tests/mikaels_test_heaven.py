@@ -142,7 +142,7 @@ scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid
 
 func_dependencies1 = (('book', 'bookid'), ('book', 'genre'))
 func_dependencies2 = (('genre'), 'book')
-fd_tester1 = FunctionalDependencyPredicate(['bookdim'], func_dependencies2)
+fd_tester1 = FunctionalDependencyPredicate(['bookdim'], ('genre'), ('book'))
 
 #print(dup_tester1.run(dw))
 #print(dup_tester2.run(dw))

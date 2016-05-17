@@ -55,16 +55,13 @@ class NoDuplicateRowPredicate(Predicate):
             join_column_list.append(all_columns)
 
         join_attributes = set.intersection(*join_column_list)
-        print(join_attributes)
 
-        print(self.table_name)
         pred_sql = \
             " SELECT " + ",".join(join_attributes) + " ,COUNT(*)" + \
             " FROM " + " NATURAL JOIN ".join(self.table_name) + \
             " GROUP BY " + ",".join(chosen_columns) + \
             " HAVING COUNT(*) > 1 "
 
-        print(pred_sql)
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
         query_result = cursor.fetchall()

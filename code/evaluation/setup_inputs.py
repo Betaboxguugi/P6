@@ -30,7 +30,7 @@ def mk_author_db(db_path="author.db", pops=500):
                    (1, 'Mathias', 'Jensen', 'Hadsten', 4),
                    (2, 'Alexander', 'Danger', 'Skanderborg', 0),
                    (3, 'Alexander', 'Danger', 'Skanderborg', 4),
-                   (6, 'Alexander', 'Danger', 'Aalborg', 4)
+                   (6, 'Alexander', 'Danger', 'Hadsten', 4),
                    (4, 'Arash', 'Kjær', 'København', 1),
                    (5, 'Michael', 'Med K', None, 2)]
 
