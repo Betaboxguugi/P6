@@ -31,12 +31,25 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('Sauron', 1000000, 'Mordor', 42),
                 ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
-                ('Bharles', 50, 'Texas', 25000.00),
                 ('Bharles', 50, 'Texas', 25000.00)
                 ]
 
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
+              company_info)
+
+
+# Making table to test on...
+c.execute('''CREATE TABLE LASTNAME
+    (
+    NAME           TEXT   NOT NULL,
+    LAST            TEXT    NOT NULL);''')
+
+company_info = [('Anders', 'Andersen'),
+                ('Sauron', 'Bob')]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO LASTNAME (NAME,LAST) VALUES (?,?)",
               company_info)
 
 
@@ -49,11 +62,11 @@ c.execute('''CREATE TABLE BOMPANY
     SALARY         REAL);''')
 
 company_info = [
-                ('Anders', 43, None, 21000.00),
                 ('Anders', 43, 'Denmark', 21000.00),
                 ('Sauron', 1000000, 'Mordor', 42),
                 ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
+                ('Bharles', 50, 'Texas', 25000.00),
                 ('Bharles', 50, 'Texas', 25000.00)
                 ]
 
@@ -81,10 +94,13 @@ ConnectionWrapper(conn)
 dim = Dimension('COMPANY', 'ID', ['NAME', 'AGE', 'ADDRESS', 'SALARY'], ['NAME'])
 dim_rep = DimRepresentation(dim, conn)
 
+dim2 = Dimension('LASTNAME', 'NAME', ['LAST'])
+dim_rep2 = DimRepresentation(dim2, conn)
+
 ft = FactTable('FACTTABLE', ['Book'], ['Issue'])
 ft_rep = FTRepresentation(ft, conn)
 
-dw = DWRepresentation([dim_rep,ft_rep], conn)
+dw = DWRepresentation([dim_rep,ft_rep,dim_rep2], conn)
 
 expected_list1 = [
     {'NAME': 'Anders', 'AGE': 43, 'SALARY': 21000.0, 'ADDRESS': 'Denmark',
@@ -105,14 +121,39 @@ start = time.monotonic()
 
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
-compare1 = CompareTablePredicate(['FACTTABLE'], ['FACTTABLE'], ['Issue'], False, True, (), True)
+compare1 = CompareTablePredicate(['company'], c, ['ID'], True, True, ())
 
-
-
-print(compare1.run(dw))
+p = compare1.run(dw)
+for x in p:
+    print(x)
 """
 a = conn.cursor()
-sql = "SELECT actual.COUNT FROM (SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM company  GROUP BY AGE,NAME,ADDRESS,SALARY) as actual"
+sql = """
+"""
+WITH table1 AS (
+		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
+		FROM bompany
+		GROUP BY NAME,AGE,ADDRESS,SALARY
+		),
+		table2 AS (
+		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
+		FROM company
+		GROUP BY NAME,AGE,ADDRESS,SALARY
+		)
+
+SELECT  *
+FROM table1
+WHERE NOT EXISTS (
+					SELECT NULL
+					FROM table2
+					WHERE table1.NAME = table2.NAME AND
+					table1.AGE = table2.AGE AND
+					table1.ADDRESS = table2.ADDRESS AND
+					table1.SALARY = table2.SALARY AND
+					table1.COUNT =  table2.COUNT
+					)
+"""
+"""
 a.execute(sql)
 print(a.fetchall())
 """
@@ -121,6 +162,7 @@ a = conn.cursor()
 sql = "SELECT * FROM bompany ORDER BY AGE,NAME,ADDRESS,SALARY"
 a.execute(sql)
 print(a.fetchall())
+"""
 """
 c = conn.cursor()
 c.execute("SELECT * FROM FACTTABLE")
@@ -131,7 +173,7 @@ for row in c.fetchall():
         result.append(dict(zip(names, row)))
 
 print(result)
-
+"""
 
 """
 a = conn.cursor()

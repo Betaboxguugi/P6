@@ -23,7 +23,7 @@ def get_next_row(table, names):
     """
     Used to get next row of either list of dicts or cursor
     :param table: Table to get next row from
-    :return: Next row
+    :return: Next row, and a bool saying whether list is empty
     """
 
     if isinstance(table, list):
@@ -54,7 +54,15 @@ def get_rest_of_table(table, names):
 
         return result
 
-def grouped_sql(table,columns):
+
+def grouped_sql(table, columns):
+    """
+    Used to group together all rows in a table
+    :param table: Table to group
+    :param columns: Columns to group on
+    :return: sql code for creating a grouped table
+    """
+
     sql = \
         " ( " + \
         "SELECT " + ",".join(columns) + ", COUNT(*) " + \
@@ -66,21 +74,43 @@ def grouped_sql(table,columns):
 
 
 def unsorted_not_distinct(table1, table2, subset=False):
+    """
+    Used to find all rows in one table but not in another,
+    not treating rows as distinct.
+    :param table1: List of dicts for one table
+    :param table2: List of dicts for another table
+    :param subset: Indicates whether we are looking for a subset.
+    :return:
+    """
+
     only_in_table1 = []
     if subset:
+        # When subset, a row in table1 is not subset,
+        # if its contains more instances of a row than table2
         for row in table1:
-            if table1.count(row) > table2.count(row):
-                only_in_table1.append(row)
+            count1 = table1.count(row)
+            count2 = table2.count(row)
+            if count1 > count2:
+                only_in_table1.append((row, count1))
 
-    else:
+    else:  # not Subset
         for row in table1:
-            if table1.count(row) != table2.count(row):
-                only_in_table1.append(row)
+            count1 = table1.count(row)
+            count2 = table2.count(row)
+            if count1 != count2:
+                only_in_table1.append((row, count1))
 
     return only_in_table1
 
 
 def tab_unsorted(table1, table2, where_conditions, dw_rep):
+    """
+    :param table1:
+    :param table2:
+    :param where_conditions:
+    :param dw_rep:
+    :return:
+    """
     sql = \
         " SELECT  * " + \
         " FROM " + table1 + \
@@ -93,6 +123,7 @@ def tab_unsorted(table1, table2, where_conditions, dw_rep):
         " WHERE " + " AND ".join(where_conditions) + \
         " ) "
 
+    print(sql)
     cursor = dw_rep.connection.cursor()
     cursor.execute(sql)
     return cursor.fetchall()
@@ -105,7 +136,11 @@ def sorted_compare(actual, expected):
     :param expected: Table given by user
     :return: two lists containing exclusive rows to each table
     """
+
+    # Get names of attributes
     names = [t[0] for t in actual.description]
+
+    # Lists to contain erroneous rows
     actual_list = []
     expected_list = []
 
@@ -132,14 +167,14 @@ def sorted_compare(actual, expected):
         if actual_empty and expected_empty:
             break
 
-        # When there's more in expected table
+        # When there are more rows in expected table
         elif actual_empty and not expected_empty:
             rest_list = [e_row]
             rest_list.extend(get_rest_of_table(expected, names))
             expected_list.extend(rest_list)
             break
 
-        # When there's more in actual table
+        # When there are more rows in actual table
         elif not actual_empty and expected_empty:
             rest_list = [a_row]
             rest_list.extend(get_rest_of_table(actual, names))
@@ -203,11 +238,13 @@ class CompareTablePredicate(Predicate):
                 tuples = expected_table.fetchall()
                 names = [t[0] for t in expected_table.description]
                 self.expected_table = []
+
+                # Create dit, so that attributes have names
                 for row in tuples:
                     self.expected_table.append(dict(zip(names, row)))
                 self.expected_in_db = False
             except Exception:
-                raise RuntimeError('Expected table neither given as a name,' +
+                raise RuntimeError('Expected table not given as a name,' +
                                    'list of names, dicts nor cursor')
 
         self.column_names = column_names
@@ -239,10 +276,12 @@ class CompareTablePredicate(Predicate):
 
                 # For dimensions
                 if isinstance(table, DimRepresentation):
-                    # We can either sort on key or lookupatts
+
+                    # We can either sort on key
                     if set([table.key]).issubset(set(chosen_columns)):
                         self.sort_keys = self.sort_keys.union(set([table.key]))
 
+                    # ... or lookupatts
                     elif set(table.lookupatts).issubset(set(chosen_columns)):
                         self.sort_keys = self.sort_keys.union(
                             set(table.lookupatts))
@@ -264,7 +303,7 @@ class CompareTablePredicate(Predicate):
 
         if self.expected_in_db:  # When expected is in DW
 
-            if self.sort_keys and self.sort: # Sorted comparison
+            if self.sort_keys and self.sort:  # Sorted comparison
                 if self.distinct:
                     select_sql = " SELECT DISTINCT "
                 else:  # not distinct
@@ -276,7 +315,6 @@ class CompareTablePredicate(Predicate):
                     " FROM " + " NATURAL JOIN ".join(self.actual_table) + \
                     " ORDER BY " + ",".join(self.sort_keys)
 
-                print(actual_table_sql)
                 actual_cursor = dw_rep.connection.cursor()
                 actual_cursor.execute(actual_table_sql)
 
@@ -287,7 +325,6 @@ class CompareTablePredicate(Predicate):
                         self.expected_table) + \
                     " ORDER BY " + ",".join(self.sort_keys)
 
-                print(expected_table_sql)
                 expected_cursor = dw_rep.connection.cursor()
                 expected_cursor.execute(expected_table_sql)
 
@@ -299,27 +336,36 @@ class CompareTablePredicate(Predicate):
                         sorted_compare(actual_cursor, expected_cursor)
 
             else:  # Unsorted comparison
-                where_set = set(chosen_columns)
+
+                # Constructs conditions for the where clause
                 where_conditions = []
-                for name in where_set:
+                for name in chosen_columns:
                     equal_sql = "table1." + name + " = " + "table2." + name
                     where_conditions.append(equal_sql)
-
 
                 if self.distinct:
                     actual_sql = ",".join(self.actual_table)
                     expected_sql = ",".join(self.expected_table)
 
-                else:  # not distinct
+                else:  # Not distinct
+                    # We group together instances of the same row.
+                    # For each group we calculate count, the number of
+                    # Instances of a given row.
+
                     actual_sql = grouped_sql(self.actual_table,
                                              chosen_columns)
 
-                    expected_sql = grouped_sql(self.expected_tablee,
+                    expected_sql = grouped_sql(self.expected_table,
                                                chosen_columns)
+
+                    # Sizes of groups differently,
+                    # depending on if a subset compare is being made
                     if self.subset:
                         sql_count = " table1.COUNT <= table2.COUNT "
                     else:
                         sql_count = " table1.COUNT =  table2.COUNT"
+
+                    # Added as an extra condition to the where clause
                     where_conditions.append(sql_count)
 
                 if not self.subset:
@@ -346,25 +392,26 @@ class CompareTablePredicate(Predicate):
                         only_in_expected = expected_query
 
         else:  # Expected table as dicts
-            # Extracts only columns to compare from expected
+            # From expected, extract only columns used for comparison
             self.expected_table = \
                 [{k: v for k, v in d.items() if k in chosen_columns}
                  for d in self.expected_table]
 
+            if self.distinct:
+                select_sql = " SELECT DISTINCT "
+
+                # Remove duplicates from expected
+                expected_rows_set = \
+                    set(tuple(item.items()) for item in
+                        self.expected_table)
+
+                self.expected_table = \
+                    [dict(tupleized) for tupleized in expected_rows_set]
+
+            else:  # not distinct
+                select_sql = " SELECT "
+
             if self.sort:  # Sorted compare
-                if self.distinct:
-                    select_sql = " SELECT DISTINCT "
-
-                    # Remove duplicates from expected
-                    expected_rows_set = \
-                        set(tuple(item.items()) for item in
-                            self.expected_table)
-                    self.expected_table = \
-                        [dict(tupleized) for tupleized in expected_rows_set]
-
-                else:  # not distinct
-                    select_sql = " SELECT "
-
                 # Sort actual table in SQL and fetch
                 actual_table_sql = \
                     select_sql + ",".join(chosen_columns) + \
@@ -396,59 +443,117 @@ class CompareTablePredicate(Predicate):
                 query_result = cursor.fetchall()
 
                 # Create dictionary from fetched tuples and attribute names
-                actual_dict_with_nulls = []
+                actual_dict = []
                 names = [t[0] for t in cursor.description]
                 for row in query_result:
-                    actual_dict_with_nulls.append(dict(zip(names, row)))
+                    actual_dict.append(dict(zip(names, row)))
 
                 # Fetch and remove nulls from actual
-                actual_dict = []
-                for row in actual_dict_with_nulls:
-                    if None in row.values():
-                        only_in_actual.append(row)
-                    else:
-                        actual_dict.append(row)
+                only_in_actual = \
+                    [x for x in actual_dict if None in x.values()]
+                actual_dict = \
+                    [x for x in actual_dict if None not in x.values()]
 
                 # Fetch and remove nulls from expected
-                expected_dict = []
-                for row in self.expected_table:
-                    if None in row.values():
-                        only_in_expected.append(row)
-                    else:
-                        expected_dict.append(row)
+                only_in_expected = \
+                    [x for x in self.expected_table if None in x.values()]
+                expected_dict = \
+                    [x for x in self.expected_table if None not in x.values()]
 
                 if self.distinct:
                     # Find all rows in expected that are not in actual
-                    only_in_expected = difference(expected_dict, actual_dict)
+                    only_in_expected.extend(difference(expected_dict,
+                                                       actual_dict))
 
                     if not self.subset:
                         # Find all rows in actual that are not in expected
-                        only_in_actual = difference(actual_dict, expected_dict)
+                        only_in_expected.extend(difference(actual_dict,
+                                                           expected_dict))
 
                 else:  # not distinct
                     # For each row in expected we see if the number of
                     # duplicates is the same in actual.
 
                     if not self.subset:
-                        only_in_expected = unsorted_not_distinct(
+                        # Expected
+                        expected = unsorted_not_distinct(
                             expected_dict, actual_dict)
 
-                        only_in_actual = unsorted_not_distinct(
+                        # Making elements unique
+                        unique_expected = []
+                        [unique_expected.append(x) for x in expected
+                         if not unique_expected.count(x)]
+
+                        only_in_expected.extend(unique_expected)
+
+                        # Actual
+                        actual = unsorted_not_distinct(
                             actual_dict, expected_dict)
 
+                        # Making elements unique
+                        unique_actual = []
+                        [unique_actual.append(x) for x in actual
+                         if not unique_actual.count(x)]
+
+                        only_in_actual.extend(unique_actual)
+
                     else:
-                        only_in_expected = unsorted_not_distinct(
-                                expected_dict,
-                                actual_dict,
-                                True)
+                        # Expected
+                        expected = unsorted_not_distinct(
+                            expected_dict,
+                            actual_dict,
+                            True)
+                        unique_expected = []
+                        [unique_expected.append(x) for x in expected
+                         if not unique_expected.count(x)]
+
+                        only_in_expected.extend(unique_expected)
 
         # If no non-matching rows found, the assertion held.
         all_unmatched = only_in_expected + only_in_actual
-        if not all_unmatched:
+        if not only_in_expected and not only_in_actual:
             self.__result__ = True
 
-        return Report(result=self.__result__,
-                      tables="Many tables Yes",
-                      predicate=self,
-                      elements=all_unmatched,
-                      msg=None)
+        report_list = []
+
+        if self.sort:
+            if self.expected_in_db:
+                table_names = \
+                 " Expected: " + ",".join(self.expected_table) + \
+                 " AND  Actual: " + ",".join(self.actual_table)
+            else:
+                table_names = \
+                 " Expected: User table " + \
+                 "  Actual: " + ",".join(self.actual_table)
+
+            sort = Report(result=self.__result__,
+                              tables= table_names,
+                              predicate=self,
+                              elements=[],
+                              msg="Comparison failed during sort compare")
+            report_list.append(sort)
+
+        else:
+            if self.expected_in_db:
+                table_names = ",".join(self.expected_table)
+            else:
+                table_name = "User table"
+
+            expected = Report(result=self.__result__,
+                              tables= table_name,
+                              predicate=self,
+                              elements=only_in_expected,
+                              msg="Elements found only in expected")
+
+            report_list.append(expected)
+
+            if only_in_actual:
+                actual = Report(result=self.__result__,
+                                  tables= ",".join(self.actual_table),
+                                  predicate=self,
+                                  elements=only_in_actual,
+                                  msg="Elements found only in actual")
+
+                report_list.append(actual)
+
+        return report_list
