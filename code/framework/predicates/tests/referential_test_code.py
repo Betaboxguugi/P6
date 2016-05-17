@@ -1,11 +1,13 @@
+import os
 import sqlite3
+
+import pygrametl
+from pygrametl.tables import Dimension, SnowflakedDimension
+
+from framework.datawarehouse_representation \
+    import DWRepresentation, DimRepresentation
 from framework.predicates.referential_integrity_predicate \
     import ReferentialIntegrityPredicate
-from framework.reinterpreter.datawarehouse_representation \
-    import DWRepresentation, DimRepresentation, FTRepresentation
-from pygrametl.tables import Dimension, SnowflakedDimension
-import pygrametl
-import os
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
@@ -120,9 +122,9 @@ for dim in snow_dw_rep.dims:
 
 snow_dw_rep.connection.cursor().execute("DELETE FROM dim1 WHERE key1 = 1")
 
-ref_tester = ReferentialIntegrityPredicate(refs= {dim1:[dim2, dim3]},
+ref_tester = ReferentialIntegrityPredicate(refs={dim1:[dim2, dim3]},
                                            table_one_to_many=False,
-                                           dim_one_to_many= True)
+                                           dim_one_to_many=True)
 
 print(ref_tester.run(snow_dw_rep))
 

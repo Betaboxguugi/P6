@@ -1,10 +1,12 @@
-from pygrametl.tables import Dimension, SnowflakedDimension
-import pygrametl
 import os
 import sqlite3
-from framework.predicates import FunctionalDependencyPredicate
-from framework.reinterpreter.datawarehouse_representation import \
+
+import pygrametl
+from pygrametl.tables import Dimension, SnowflakedDimension
+
+from framework.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
+from framework.predicates import FunctionalDependencyPredicate
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'

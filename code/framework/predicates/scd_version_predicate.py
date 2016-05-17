@@ -1,10 +1,11 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 
-from .predicate import Predicate
-from ..reinterpreter.datawarehouse_representation import \
+from framework.datawarehouse_representation import \
     SCDType2DimRepresentation
+from .predicate import Predicate
 from .report import Report
+
 
 class SCDVersionPredicate(Predicate):
     """

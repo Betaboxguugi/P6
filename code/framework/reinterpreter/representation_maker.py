@@ -1,10 +1,11 @@
-from .datawarehouse_representation import DWRepresentation,\
-    DimRepresentation, FTRepresentation, SCDType1DimRepresentation, \
-    SCDType2DimRepresentation
 from pygrametl.tables import Dimension, FactTable, \
     TypeOneSlowlyChangingDimension, CachedDimension, SlowlyChangingDimension, \
     SCDimension, BulkDimension, CachedBulkDimension, BatchFactTable, \
     BulkFactTable, SnowflakedDimension
+
+from framework.datawarehouse_representation import DWRepresentation,\
+    DimRepresentation, FTRepresentation, SCDType1DimRepresentation, \
+    SCDType2DimRepresentation
 
 __author__ = 'Alexander, Arash'
 __Maintainer__ = 'Alexander, Arash'

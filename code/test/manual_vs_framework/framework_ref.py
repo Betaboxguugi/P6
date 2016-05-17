@@ -1,11 +1,13 @@
 import sqlite3
+import time
+
 import pygrametl
 from pygrametl.tables import Dimension, FactTable
-from framework.reinterpreter.datawarehouse_representation import \
-    DimRepresentation, FTRepresentation, DWRepresentation
+
 from framework.case import Case
+from framework.datawarehouse_representation import \
+    DimRepresentation, FTRepresentation, DWRepresentation
 from framework.predicates import ReferentialIntegrityPredicate
-import time
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Mikael Vind Mikkelsen'

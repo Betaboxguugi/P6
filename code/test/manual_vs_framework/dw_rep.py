@@ -1,7 +1,9 @@
 import sqlite3
+
 import pygrametl
 from pygrametl.tables import Dimension, FactTable, SlowlyChangingDimension
-from framework.reinterpreter.datawarehouse_representation import \
+
+from framework.datawarehouse_representation import \
     DimRepresentation, FTRepresentation, DWRepresentation, \
     SCDType2DimRepresentation
 

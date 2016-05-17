@@ -1,10 +1,12 @@
-import sqlite3
 import os
-from framework.reinterpreter.datawarehouse_representation import \
+import sqlite3
+
+from pygrametl import  ConnectionWrapper
+from pygrametl.tables import SlowlyChangingDimension
+
+from framework.datawarehouse_representation import \
     DWRepresentation, SCDType2DimRepresentation
 from framework.predicates import SCDVersionPredicate
-from pygrametl.tables import SlowlyChangingDimension
-from pygrametl import  ConnectionWrapper
 
 __author__ = 'Arash Michael Sami Kjr'
 __maintainer__ = 'Arash Michael Sami Kjr'

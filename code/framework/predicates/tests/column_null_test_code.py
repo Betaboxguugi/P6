@@ -1,12 +1,13 @@
-from framework.reinterpreter.datawarehouse_representation \
-    import DWRepresentation, DimRepresentation, FTRepresentation
-from framework.predicates.column_not_null_predicate import \
-    ColumnNotNullPredicate
-import sqlite3
 import os
+import sqlite3
+
 import pygrametl
 from pygrametl.tables import Dimension
-from pygrametl import  ConnectionWrapper
+
+from framework.datawarehouse_representation \
+    import DWRepresentation, DimRepresentation
+from framework.predicates.column_not_null_predicate import \
+    ColumnNotNullPredicate
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'

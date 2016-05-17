@@ -1,12 +1,13 @@
-import sqlite3
 import os
-from framework.predicates import CompareTablePredicate
-from framework.reinterpreter.datawarehouse_representation import \
-    DWRepresentation, DimRepresentation,FTRepresentation
-from pygrametl.tables import Dimension, FactTable
-from pygrametl import ConnectionWrapper
+import sqlite3
 import time
-from operator import itemgetter
+
+from pygrametl import ConnectionWrapper
+from pygrametl.tables import Dimension, FactTable
+
+from framework.datawarehouse_representation import \
+    DWRepresentation, DimRepresentation,FTRepresentation
+from framework.predicates import CompareTablePredicate
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
