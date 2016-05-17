@@ -36,6 +36,7 @@ class RuleRowPredicate(Predicate):
 
     def run(self, dw_rep):
         """
+        :param dw_rep: DWRepresentation
         Runs the constraint function on the specified columns of each row.
         Stores rows asserted faulty by the function for reporting.
         """

@@ -2,9 +2,9 @@ from .predicate import Predicate
 from .report import Report
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'  # I have no memory of this place
 
-# Comment
+
 class NoDuplicateRowPredicate(Predicate):
     """
     Predicate for asserting whether duplicated rows appear in a table.
@@ -74,4 +74,3 @@ class NoDuplicateRowPredicate(Predicate):
                       predicate=self,
                       elements=query_result,
                       msg=None)
-
