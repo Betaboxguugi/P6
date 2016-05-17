@@ -10,7 +10,7 @@ from framework.datawarehouse_representation import \
 from framework.predicates import CompareTablePredicate
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'  # Are you sure this is mine?
 
 # This just ensures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')
@@ -28,7 +28,7 @@ c.execute('''CREATE TABLE COMPANY
     SALARY         REAL);''')
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('Sauron', 1000000, 'Mordor', 42),
+                ('Sauron', 10000, 'Mordor', 42),
                 ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
                 ('Bharles', 50, 'Texas', 25000.00)
