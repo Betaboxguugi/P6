@@ -85,19 +85,18 @@ class FunctionalDependencyPredicate(Predicate):
             or_beta = ' OR '.join(beta_sql_generator)
 
         # Final setup of the entire SQL command
-        lookup_sql = "SELECT " + select_sql + " FROM " + join_sql +\
+        lookup_sql = "SELECT DISTINCT " + select_sql + " FROM " + join_sql +\
                      " WHERE " + and_alpha + " AND " + "( {} )".format(or_beta)
 
         func_dep = "{} --> {}".format(alpha, beta)
-        print(lookup_sql)
         c = dw_rep.connection.cursor()
         c.execute(lookup_sql)
-        elements = set()
+        elements = []
 
         # If the SQL command returns rows that fail against the dependency if
         # any.
         for row in c.fetchall():
-            elements.add(row)
+            elements.append(row)
             self.results = False
 
         return Report(result=self.results,
