@@ -4,7 +4,10 @@ For a set of specified columns within a table, ColumnNotNullPredicate lets teste
 \insertcodefile{ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
 
 For instantiation, we assert that no entry to the column bid in the BookDim is null. This is important to check, as bid is a primary key to the dimension. 
+ColumnNotNullPredicate functions in this case by issuing the following SQL query:
 
-ColumnNotNullPredicate functions by iterating over every row in the specified table. For each row it checks, whether any of its specified column attributes have the value null. If this is the case, the assertion is broken. As we iterate, we store all offending rows, so that they may be reported to the tester. 
+\insertcodefileSQL{SQLColumnNotNullPredicate.sql}{}
+
+This query will show all rows which contain null in the column bid. If any rows are found, the assertion fails and all found rows are reported to the user. Otherwise it succeeds.
 
 
