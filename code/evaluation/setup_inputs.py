@@ -2,16 +2,7 @@ __author__ = "Mathias Claus Jensen"
 
 import os
 import sqlite3
-import names
-import random
 
-
-ENTRIES_BOOK = 1000
-ENTRIES_AUTHOR = 1000
-ENTRiES_COUNTRIES = 20
-CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'København']
-COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
-COUNTRY_MAP['København'] = 'SWE'
 
 def get_conn_cur(path):
     if os.path.exists(path):
@@ -35,17 +26,12 @@ def mk_author_db(db_path="author.db", pops=500):
                 "city TEXT, " \
                 "bid INTEGER)")
 
-
-    author_list = []
-    for x in range(ENTRIES_AUTHOR):
-        author_list.append((x, names.get_first_name(), names.get_last_name(), choice(CITIES), x))
-    
-    #author_list = [(0, 'Mathias', 'Jensen', 'Hadsten', 3),
-    #               (1, 'Mathias', 'Jensen', 'Hadsten', 4),
-    #               (2, 'Alexander', 'Danger', 'Skanderborg', 0),
-    #               (3, 'Alexander', 'Danger', 'Skanderborg', 4),
-    #               (4, 'Arash', 'Kjær', 'København', 1),
-    #               (5, 'Michael', 'Med K', None, 2)]
+    author_list = [(0, 'Mathias', 'Jensen', 'Hadsten', 3),
+                   (1, 'Mathias', 'Jensen', 'Hadsten', 4),
+                   (2, 'Alexander', 'Danger', 'Skanderborg', 0),
+                   (3, 'Alexander', 'Danger', 'Skanderborg', 4),
+                   (4, 'Arash', 'Kjær', 'København', 1),
+                   (5, 'Michael', 'Med K', None, 2)]
 
     cur.executemany("INSERT INTO author VALUES(?, ?, ?, ?, ?)", author_list)
 
@@ -59,17 +45,12 @@ def mk_book_db(db_path="book.db"):
                 "bid INTEGER PRIMARY KEY, " \
                 "title TEXT, " \
                 "year INTEGER)")
-
-    book_list = []
-    for x in range(ENTRIES_BOOK):
-        book_list.append((x, names.get_first_name(), random.randrange(2000)))
-
-    
-    #book_list = [(0, "Checkm8 en Fortælling", 1994),
-    #             (3, "EZ PZ ETL", 2000),
-    #             (2, "Mit Navn Staves Med K", 2015),
-    #             (1, "Svensk-Dansk Ordbog", 1995),
-    #             (4, "EZ PZ ETL", 2004)]
+   
+    book_list = [(0, "Checkm8 en Fortælling", 1994),
+                 (3, "EZ PZ ETL", 2000),
+                 (2, "Mit Navn Staves Med K", 2015),
+                 (1, "Svensk-Dansk Ordbog", 1995),
+                 (4, "EZ PZ ETL", 2004)]
 
     cur.executemany("INSERT INTO book VALUES(?, ?, ?)", book_list)
     
