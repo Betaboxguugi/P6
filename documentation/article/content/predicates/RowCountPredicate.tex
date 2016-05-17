@@ -8,6 +8,9 @@ RowCountPredicate asserts if a table has the specified number of rows. This can 
 \end{description}
 
 In our instantiation above, we assert that CountryDim has 200 entries.  
+RowCountPredicate would then in this instance issue the following SQL query, which counts how many rows are in a given table.
 
-RowCountPredicate iterates over each row in a table, counting them and adding them to a list. The length of the list is then compared to number provided by number\_of\_rows. If equal, the test is successful, if not equal, the test return false and reports, how many rows are actually in the table.
+\insertcodefileSQL{SQLRowCountPredicate.sql}{}
+
+RowCountPredicate will then compare the result from this query to the specified number of rows we are looking for, in this case 200. If equal, the test is successful, if not equal, the test return false and reports how many rows are actually in the table.
 
