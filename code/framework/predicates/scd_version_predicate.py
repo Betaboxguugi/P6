@@ -60,7 +60,7 @@ class SCDVersionPredicate(Predicate):
                 null_condition_sql.append(a + " = " + str(b))
 
         lookup_sql = " SELECT max(" + versionatt + ")" \
-                    " FROM " + self.table_name + \
+                     " FROM " + self.table_name + \
                      " WHERE " + " AND ".join(null_condition_sql)
 
         cursor = dw_rep.connection.cursor()

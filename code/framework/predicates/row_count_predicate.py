@@ -29,7 +29,7 @@ class RowCountPredicate(Predicate):
 
         pred_sql = \
             " SELECT COUNT(*) " + \
-            " FROM " +  "NATURAL JOIN ".join(self.table_name)
+            " FROM " + "NATURAL JOIN ".join(self.table_name)
 
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
@@ -37,7 +37,6 @@ class RowCountPredicate(Predicate):
 
         if query_result[0] == self.number_of_rows:
             self.__result__ = True
-
 
         return Report(result=self.__result__,
                       tables=self.table_name,
