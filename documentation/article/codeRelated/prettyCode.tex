@@ -9,7 +9,7 @@
 \definecolor{Gray}{RGB}{153, 153, 153} % line numbers
 \definecolor{PineGlade}{RGB}{204, 204, 153}
 
-%Our style
+%Our style for python
 \lstdefinestyle{Python1}{ 
 language=Python,
 frame=single,
@@ -25,7 +25,25 @@ numberstyle=\tiny, % Style used for line numbers \color{Gray}
 commentstyle=\usefont{T1}{pcr}{m}{sl}\color{color1}
 } 
 
+%Our style for SQL
+\lstdefinestyle{SQL1}{ 
+language=SQL,
+frame=single,
+basicstyle=\scriptsize\ttfamily,
+backgroundcolor=\color{color3},
+keywordstyle=\color{color1}\bf,
+captionpos=b,
+breakatwhitespace=false,
+breaklines=true,
+numbers=left, % Location of line numbers, can take the values of: none, left, right
+numbersep=6pt, % Distance of line numbers from the code box
+numberstyle=\tiny, % Style used for line numbers \color{Gray}
+commentstyle=\usefont{T1}{pcr}{m}{sl}\color{color1}
+} 
+
 \newcommand{\insertcodefile}[2]{\lstinputlisting[caption=#2,label=#1,style=Python1,float=h,belowskip=-0.8\baselineskip]{codeRelated/scripts/#1}} % The first argument is the script location/filename and the second is a caption for the code
+
+\newcommand{\insertcodefileSQL}[2]{\lstinputlisting[caption=#2,label=#1,style=SQL1,float=h,belowskip=-0.8\baselineskip]{codeRelated/scripts/#1}} 
 
 \newcommand{\insertcodefileline}[4]{\begin{itemize}\item[]\lstinputlisting[firstnumber=#3,firstline=#3,lastline=#4,caption=#2,label=#1,style=Python1]{codeRelated/scripts/#1}\end{itemize}}
 

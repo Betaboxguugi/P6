@@ -120,7 +120,9 @@ for dim in snow_dw_rep.dims:
 
 snow_dw_rep.connection.cursor().execute("DELETE FROM dim1 WHERE key1 = 1")
 
-ref_tester = ReferentialIntegrityPredicate(refs= {dim1:[dim2, dim3]}, table_one_to_many=True, dim_one_to_many= True)
+ref_tester = ReferentialIntegrityPredicate(refs= {dim1:[dim2, dim3]},
+                                           table_one_to_many=False,
+                                           dim_one_to_many= True)
 
 print(ref_tester.run(snow_dw_rep))
 
