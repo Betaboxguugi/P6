@@ -1,43 +1,50 @@
-__author__ = 'Alexander Brandborg'
-__maintainer__ = 'Mikael Vind Mikkelsen'
 from .predicate import Predicate
 from .report import Report
 
+__author__ = 'Alexander Brandborg'
+__maintainer__ = 'Mikael Vind Mikkelsen'
+
 
 class FunctionalDependencyPredicate(Predicate):
-    """ Predicate that can check if a table or a join of tables holds certain
-    functional dependencies.
+    """ Predicate that can check if a table or a join of tables holds a certain
+    functional dependency.
     """
-    def __init__(self, tables, func_dependencies):
+    def __init__(self, tables, attributes, dependent_attributes):
         """
         :param tables: tables from the database, which we wish to join
-        :param func_dependencies: functional dependencies between attributes,
-        given as a list of tuples.
-         E.g. [(('a'), ('b')), (('a','b'), ('c'))], i.e. a -> b and a,b -> c
+        :param attributes: attributes which are depended upon by other
+        attributes. Given as either a single attribute name, or a tuple of
+        attribute names.
+        :param dependent_attributes: attributes which are functionally
+        dependent on the former attributes. Given as either a single attribute
+        name, or a tuple of attribute names.
+        Example:
+        attributes = ('a','b') and dependent_attributes = 'c'
+        corresponds to the functional dependency: a, b -> c
         """
         self.tables = tables
-        self.func_dependencies = func_dependencies
+        self.attributes = attributes
+        self.dependent_attributes = dependent_attributes
         self.results = True
 
     def run(self, dw_rep):
         """
+        :param dw_rep: a DWRepresentation object
         Checks whether each function dependency holds.
-        Uses a dictionary as a hash table. For each functional dependency,
-        it keeps of pairings of alpha and beta values. If we find several
-        beta values for one alpha, we register an error.
         """
 
         # SQL setup for the tables specified
         if len(self.tables) == 1 or isinstance(self.tables, str):
-            join_sql = "{} as t1 , {} as t2".format(self.tables[0], self.tables[0])
+            join_sql = "{} as t1 , {} as t2".format(self.tables[0],
+                                                    self.tables[0])
         else:
             joined_sql = " NATURAL JOIN ".join(self.tables)
             join_sql = "({}) as t1 , ({}) as t2".format(joined_sql, joined_sql)
 
         # Determining our dependencies, where alpha is the left side and beta
         # the right side of the dependency (alpha --> beta)
-        alpha = self.func_dependencies[0]
-        beta = self.func_dependencies[1]
+        alpha = self.attributes
+        beta = self.dependent_attributes
 
         # SQL setup for first part of SELECT, which are the left side of
         # the dependencies
@@ -71,7 +78,7 @@ class FunctionalDependencyPredicate(Predicate):
 
         # SQL setup for the right side of the dependency
         beta_sql_generator = (" (t1.{} <> t2.{}) ".format(beta[x], beta[x])
-                               for x in range(0, len(beta)))
+                              for x in range(0, len(beta)))
         if len(beta) == 1 or isinstance(beta, str):
             or_beta = " (t1.{} <> t2.{}) ".format(beta, beta)
         else:
@@ -82,11 +89,12 @@ class FunctionalDependencyPredicate(Predicate):
                      " WHERE " + and_alpha + " AND " + "( {} )".format(or_beta)
 
         func_dep = "{} --> {}".format(alpha, beta)
+        print(lookup_sql)
         c = dw_rep.connection.cursor()
         c.execute(lookup_sql)
         elements = set()
 
-        # If the SQL command returns rows that fail against the dependencies if
+        # If the SQL command returns rows that fail against the dependency if
         # any.
         for row in c.fetchall():
             elements.add(row)
@@ -96,5 +104,7 @@ class FunctionalDependencyPredicate(Predicate):
                       elements=elements,
                       tables=self.tables,
                       predicate=self,
-                      msg='The predicate failed for the functional dependencie "{}" \n' \
-                     ' |  It did not hold on the following elements:'.format(func_dep))
+                      msg='The predicate failed for the functional '
+                          'dependency "{}" \n'
+                          ' |  It did not hold on the following elements:'.
+                      format(func_dep))

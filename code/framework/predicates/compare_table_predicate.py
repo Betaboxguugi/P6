@@ -1,11 +1,12 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
 from itertools import filterfalse
+from operator import itemgetter
+
+from framework.datawarehouse_representation import DimRepresentation, \
+    FTRepresentation
 from .predicate import Predicate
 from .report import Report
-from ..reinterpreter.datawarehouse_representation import DimRepresentation, \
-    FTRepresentation
-from operator import itemgetter
 
 
 def difference(a, b):

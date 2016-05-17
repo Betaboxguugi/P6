@@ -1,24 +1,21 @@
 # Imports
 import sqlite3
-from framework.predicates.column_not_null_predicate import \
-    ColumnNotNullPredicate
-from framework.predicates.rule_row_predicate import RuleRowPredicate
-from framework.predicates.no_duplicate_row_predicate import \
-    NoDuplicateRowPredicate
-from framework.predicates.row_count_predicate import RowCountPredicate
-from framework.predicates.rule_column_predicate import RuleColumnPredicate
+
+from pygrametl import ConnectionWrapper
+from pygrametl.tables import Dimension, FactTable
+
+from framework.datawarehouse_representation \
+    import DWRepresentation, DimRepresentation, FTRepresentation
 from framework.predicates.column_not_null_predicate import \
     ColumnNotNullPredicate
 from framework.predicates.functional_dependency_predicate import \
     FunctionalDependencyPredicate
-from framework.predicates.referential_integrity_predicate import \
-    ReferentialIntegrityPredicate
-from framework.case import Case
+from framework.predicates.no_duplicate_row_predicate import \
+    NoDuplicateRowPredicate
+from framework.predicates.row_count_predicate import RowCountPredicate
+from framework.predicates.rule_column_predicate import RuleColumnPredicate
+from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.scd_version_predicate import SCDVersionPredicate
-from framework.reinterpreter.datawarehouse_representation \
-    import DWRepresentation, DimRepresentation, FTRepresentation
-from pygrametl.tables import Dimension, FactTable
-from pygrametl import ConnectionWrapper
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'

@@ -1,10 +1,12 @@
-import sqlite3
 import os
-from framework.predicates import NoDuplicateRowPredicate as DuplicatePredicate
-from framework.reinterpreter.datawarehouse_representation import \
-    DWRepresentation, DimRepresentation
-from pygrametl.tables import Dimension
+import sqlite3
+
 from pygrametl import  ConnectionWrapper
+from pygrametl.tables import Dimension
+
+from framework.datawarehouse_representation import \
+    DWRepresentation, DimRepresentation
+from framework.predicates import NoDuplicateRowPredicate as DuplicatePredicate
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'

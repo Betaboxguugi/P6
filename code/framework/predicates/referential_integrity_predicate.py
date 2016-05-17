@@ -1,7 +1,5 @@
 from .predicate import Predicate
 from .report import Report
-from framework.reinterpreter.datawarehouse_representation \
-    import FTRepresentation
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Alexander Brandborg'

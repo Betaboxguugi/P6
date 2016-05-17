@@ -1,30 +1,19 @@
 \subsection{FunctionalDependencyPredicate}
-FunctionalDependencyPredicate asserts that a table, or natural join of tables, holds certain functional dependencies. This can prove useful to check if a DW holds certain hierarchical properties i.a. FunctionalDependencyPredicate is instantiate as follows, with a description of its parameters below.
+FunctionalDependencyPredicate asserts that a table, or natural join of tables, holds a certain functional dependency. This can prove useful to check if a DW holds certain hierarchical properties i.a. FunctionalDependencyPredicate is instantiated as follows, with a description of its parameters below.
 
 \insertcodefile{FunctionalDependencyPredicate.py}{Instantiation of FunctionalDependencyPredicate}
 
 \begin{description}
 \item [tables] a list of table names, that will get a natural join between them. Of which the result is what the predicate runs on. 
-\item [fds] a list of tuples, where each tuple describes a functional dependency. For example \texttt{('a', 'b')} means that \texttt{b} is functional dependent on \texttt{a}, i.e. $a \rightarrow b$.
-\item [ignore\_None] a boolean, if true then we ignore $None \rightarrow value$ dependencies. This may be useful, for example in the case where we have a functional dependency between cities and countries, i.e. $city \rightarrow country$. Here it would be possible to imagine a scenario where we have two people in different countries, that both have the city None. And as such we can not have a functional dependency for None values here.
+\item [attributes] attributes which are depended upon by other attributes. Given as either a single attribute name, or a tuple of attribute names.
+\item [dependent\_attributes] attributes which are functionally dependent on the former attributes. Given as either a single attribute name, or a tuple of attribute names.
+
+For example with the attributes \texttt{('a', 'b')} and the dependent attribute \texttt{'c'} we get the functional dependency: $a,\ b \rightarrow c$.
 \end{description}
 
+In our instantiation above, we use the predicate to assert that there is a functional dependency between a book's title and its author. If this assertion holds, it means that no book is written by more than one author. 
+
+Below in \cref{SQLExample.sql} is an example of the query used in the Predicate to find rows that are not in compliance with the functional dependency. Given the instantiation above, the FunctionalDependencyPredicate will create this query. 
 \insertcodefileSQL{SQLExample.sql}{SQL Example}
 
-In our instatiation above, we use the predicate to assert that there is a functional dependecy between a book's title and its author. If this assertion holds, it means that no book is written by more than one author. 
-
-Below in \cref{FunctionalDependencyPredicate_code.py} is the main functionality of FunctionalDependencyPredicate written in Python.
-
-\insertcodefile{FunctionalDependencyPredicate_code.py}{Main functionality of FunctionalDependencyPredicate} 
-
-\begin{description}
-\item [line 1] We create a hash table for each functional dependency given
-\item [line 4] We iterate the joined table
-\item [line 5] For each row we iterate over each functional dependency
-\item [line 6-7] We get the value of the attributes in the functional dependency for this row.
-\item [line 9-10] If we should ignore None and if \texttt{x} is None we do not do anything.
-\item [line 11-12] If \texttt{x} is a key of the functional dependencies hash table, and if \texttt{y} is not the same value as the hash of \texttt{x}.  Then we treat this row as erroneous and append \texttt{elements} with it.
-\item [line 13-14] If \texttt{x} is a key of the hash table and if the hash of \texttt{x} has the same value as \texttt{y}. This means that the functional dependency holds and that we do nothing.
-\item [line 15-16] If \texttt{x} is not a key of the hash table, then we add it to the table and we let it hash to the value of \texttt{y}.  
-\end{description}
-
+%\insertcodefile{FunctionalDependencyPredicate_code.py}{Main functionality of FunctionalDependencyPredicate} 

@@ -1,13 +1,15 @@
-import sqlite3
 import os
-from framework.reinterpreter.datawarehouse_representation import \
+import sqlite3
+
+from pygrametl import ConnectionWrapper
+from pygrametl.tables import SlowlyChangingDimension
+
+from framework.datawarehouse_representation import \
     DWRepresentation, SCDType2DimRepresentation
 from framework.predicates import SCDVersionPredicate
-from pygrametl.tables import SlowlyChangingDimension
-from pygrametl import  ConnectionWrapper
 
-__author__ = 'Arash Michael Sami Kjr'
-__maintainer__ = 'Arash Michael Sami Kjr'
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'
 
 # This just ensures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')
@@ -46,7 +48,7 @@ dim = SCDType2DimRepresentation(s, conn)
 
 dw = DWRepresentation([dim], conn)
 
-a =SCDVersionPredicate('COMPANY', {'NAME': 'Anders', 'AGE': 43}, 2)
+a = SCDVersionPredicate('COMPANY', {'NAME': 'Anders', 'AGE': 43}, 2)
 print(a.run(dw))
 
 conn.close()
