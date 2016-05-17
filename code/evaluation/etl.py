@@ -33,8 +33,7 @@ country_src = CSVSource(f=country_handle, delimiter=',')
 author_dim = Dimension(
     name='authordim',
     key='aid',
-    attributes=['name', 'city', 'cid'],
-    lookupatts=['name'])
+    attributes=['name', 'city', 'cid'])
 
 book_dim = SlowlyChangingDimension(
     name='bookdim',

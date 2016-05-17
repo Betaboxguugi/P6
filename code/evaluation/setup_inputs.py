@@ -46,7 +46,7 @@ def mk_book_db(db_path="book.db"):
                 "bid INTEGER PRIMARY KEY, " \
                 "title TEXT, " \
                 "year INTEGER)")
-   
+
     book_list = [(0, "Checkm8 en Fortælling", 1994),
                  (3, "EZ PZ ETL", 2000),
                  (2, "Mit Navn Staves Med K", 2015),
