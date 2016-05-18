@@ -1,14 +1,17 @@
 \subsection{SCDVersionPredicate}\label{SCD}
+This predicate allows testers to check, if a given entry in a table has an asserted largest version. This predicate only works on SCDType2Representation objects, which represent type 2 slowly changing dimensions. SCDVersionPredicate is instantiated with parameters as depicted below.
 
-This predicate allows testers to check if a given entry in a table has an asserted largest version. This predicate only works on SCDType2Representation objects, which represent type 2 slowly changing dimensions. SCDVersionPredicate is instantiated with parameters as depicted below.
-
-\insertcodefile{SCDVersionPredicate.py}{Instantiation of RuleColumnPredicate}
+\insertcodefile{SCDVersionPredicate.py}{Instantiation of RuleColumnPredicate \label{code:SCDVersionPredicate}}
 
 \begin{description}
-\item [entry] A dictionary that pairs lookup-attribute names with values. A set of lookup-attributes being a key on the table, it is used to fetch all instances of the row under test.  
-\item [version] The asserted largest version number of the test entry.
+\item [entry] A dictionary that pairs lookup-attribute names with values. A set of lookup-attributes being a key on the table, it is used to fetch all instances of unique row under assertion. 
+\item [version] The asserted largest version value of the test entry.
 \end{description}
 
 In the instantiation, we use the predicate to assert that The Hobbit's highest version number in BookDim is 10.
 
-When checking the assertion, we look up all rows from \textit{table_name} that match \textit{entry} in their lookup-attributes. This produces a table containing all instances of the entry given by the tester. Each row has its own unique version value. From this, we extract the maximum version value present. This is then compared to the value asserted by the tester. If these two values are equal, the assertion holds. Otherwise it fails.
+The predicate works through the query below. Here it uses \textit{entry} to fetch all instances of the entry in \textit{table\_name}. Each instance having a different version number. The query then extracts the maximum value of the version attribute.  The name of version-attribute is fetched from the  metadata in the table's corresponding DimRepresentation object. In this case the name is simply 'version'.
+
+\insertcodefileSQL{SQLSCDVersion.sql}{SQL query produced in the case of \cref{SCDVersionPredicate.py}}
+
+After having fetched the actual maximum value, it is compared to the one asserted by the tester. If  the two values are equal, the assertion holds. Otherwise it fails.
