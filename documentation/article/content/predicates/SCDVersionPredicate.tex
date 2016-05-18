@@ -11,4 +11,4 @@ This predicate allows testers to check if a given entry in a table has an assert
 
 In the instantiation, we use the predicate to assert that The Hobbit's highest version number in BookDim is 10.
 
-When checking the assertion, we look up all rows from \textit{table_name} that match \textit{entry} in their lookup-attributes. This produces a table containing all instances of the entry given by the tester. Each row has its own unique version value. From this, we extract the maximum version value present. This is then compared to the value asserted by the tester. If these two values are equal, the assertion holds. Otherwise it fails.
+When checking the assertion, we look up all rows from \textit{table\_name} that match \textit{entry} in their lookup-attributes. This produces a table containing all instances of the entry given by the tester. Each row has its own unique version value. From this, we extract the maximum version value present. This is then compared to the value asserted by the tester. If these two values are equal, the assertion holds. Otherwise it fails.

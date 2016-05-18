@@ -1,9 +1,7 @@
 import os
 import sqlite3
-
 from pygrametl import ConnectionWrapper
 from pygrametl.tables import SlowlyChangingDimension
-
 from framework.datawarehouse_representation import \
     DWRepresentation, SCDType2DimRepresentation
 from framework.predicates import SCDVersionPredicate
