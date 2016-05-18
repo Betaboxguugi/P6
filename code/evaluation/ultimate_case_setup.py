@@ -2,7 +2,14 @@ from framework.case import Case
 from framework.dw_populator import DWPopulator
 from framework.predicates import *
 import sqlite3
+import time
 
+start = time.monotonic()
+
+def time_passed(start):
+    end = time.monotonic()
+    elapsed = end - start
+    return '{}{}'.format(round(elapsed, 3), 's')
 
 def constraint_row(a):
     if a > 2012:
@@ -39,7 +46,10 @@ pred_list = [cnnp_test, ctp_test, fdp_test, ndrp_test, rip_test, rocp_test, rucp
 dw_path = './dw.db'
 pygrametl_program_path = './etl.py'
 dwp = DWPopulator(pygrametl_program_path, sqlite3, True, database=dw_path)
+
 dw_rep = dwp.run()
 
 case = Case(dw_rep, pred_list)
+
 case.run()
+print(time_passed(start))

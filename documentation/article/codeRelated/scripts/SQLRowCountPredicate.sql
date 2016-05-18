@@ -1,1 +1,2 @@
-SELECT COUNT(*) FROM CountryDim
+SELECT COUNT(*)
+FROM CountryDim

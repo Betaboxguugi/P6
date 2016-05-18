@@ -2,7 +2,7 @@ from .predicate import Predicate
 from .report import Report
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'  # I have no memory of this place
+__maintainer__ = 'Alexander Brandborg'
 
 
 class NoDuplicateRowPredicate(Predicate):
@@ -61,7 +61,6 @@ class NoDuplicateRowPredicate(Predicate):
             " FROM " + " NATURAL JOIN ".join(self.table_name) + \
             " GROUP BY " + ",".join(chosen_columns) + \
             " HAVING COUNT(*) > 1 "
-
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
         query_result = cursor.fetchall()

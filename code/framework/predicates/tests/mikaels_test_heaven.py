@@ -10,12 +10,11 @@ from framework.predicates.column_not_null_predicate import \
     ColumnNotNullPredicate
 from framework.predicates.functional_dependency_predicate import \
     FunctionalDependencyPredicate
-from framework.predicates.no_duplicate_row_predicate import \
-    NoDuplicateRowPredicate
 from framework.predicates.row_count_predicate import RowCountPredicate
 from framework.predicates.rule_column_predicate import RuleColumnPredicate
 from framework.predicates.rule_row_predicate import RuleRowPredicate
 from framework.predicates.scd_version_predicate import SCDVersionPredicate
+from framework.predicates.no_duplicate_row_predicate import NoDuplicateRowPredicate
 
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Mikael Vind Mikkelsen'
@@ -104,7 +103,7 @@ facttable.query = query4
 dw = DWRepresentation([book_dim, time_dim, location_dim], dw_conn, [facttable])
 
 dup_tester1 = NoDuplicateRowPredicate('bookdim', ['book', 'genre'])
-dup_tester2 = NoDuplicateRowPredicate('bookdim', ['genre', 'book'])
+dup_tester2 = NoDuplicateRowPredicate('bookdim', ['genre'])
 dup_tester3 = NoDuplicateRowPredicate('bookdim', ['bookid', 'book'], True)
 row_tester1 = RowCountPredicate('bookdim', 4)
 row_tester2 = RowCountPredicate('bookdim', 5)
@@ -144,8 +143,8 @@ func_dependencies1 = (('book', 'bookid'), ('book', 'genre'))
 func_dependencies2 = (('genre'), 'book')
 fd_tester1 = FunctionalDependencyPredicate(['bookdim'], ('genre'), ('book'))
 
-#print(dup_tester1.run(dw))
-#print(dup_tester2.run(dw))
+print(dup_tester1.run(dw))
+print(dup_tester2.run(dw))
 #print(dup_tester3.run(dw))
 #print(row_tester1.run(dw))
 #print(row_tester1.run(dw))
@@ -157,7 +156,7 @@ fd_tester1 = FunctionalDependencyPredicate(['bookdim'], ('genre'), ('book'))
 #print(nn_tester2.run(dw))
 #print(rrp_tester1.run(dw))
 #print(scdv_tester1.run(dw))
-print(fd_tester1.run(dw))
+#print(fd_tester1.run(dw))
 
 
 

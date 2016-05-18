@@ -4,6 +4,7 @@ from .report import Report
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Mikael Vind Mikkelsen'
 
+
 class RowCountPredicate(Predicate):
 
     def __init__(self, table_name, number_of_rows):

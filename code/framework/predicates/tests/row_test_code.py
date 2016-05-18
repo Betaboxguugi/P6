@@ -1,9 +1,7 @@
 import os
 import sqlite3
-
-from pygrametl import  ConnectionWrapper
+from pygrametl import ConnectionWrapper
 from pygrametl.tables import Dimension
-
 from framework.datawarehouse_representation import \
     DWRepresentation, DimRepresentation
 from framework.predicates import RowCountPredicate
@@ -46,11 +44,11 @@ columns = ['NAME', 'AGE', 'ADDRESS', 'SALARY']
 
 wrapper = ConnectionWrapper(conn)
 dim = Dimension( name='COMPANY',
-           key='ID',
-           attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
-           lookupatts=['NAME'])
+                 key='ID',
+                 attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
+                 lookupatts=['NAME'])
 
-dim_rep = DimRepresentation(dim,conn)
+dim_rep = DimRepresentation(dim, conn)
 dw = DWRepresentation([dim_rep], conn)
 
 dup_predicate = RowCountPredicate('company', 1)

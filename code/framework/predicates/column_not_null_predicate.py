@@ -1,8 +1,6 @@
-# IMPORTS
 from .predicate import Predicate
 from .report import Report
-import time
-# Comment
+
 __author__ = 'Mikael Vind Mikkelsen'
 __maintainer__ = 'Alexander Brandborg'
 
@@ -22,7 +20,7 @@ class ColumnNotNullPredicate(Predicate):
         :type column_names: list or str
         """
 
-        if isinstance(table_name,str):
+        if isinstance(table_name, str):
             self.table_name = [table_name]
         else:
             self.table_name = table_name
@@ -37,7 +35,7 @@ class ColumnNotNullPredicate(Predicate):
         """
 
         # Gets the columns to iterate over
-        chosen_columns = self.setup_columns(dw_rep,self.table_name,
+        chosen_columns = self.setup_columns(dw_rep, self.table_name,
                                             self.column_names,
                                             self.column_names_exclude)
 
