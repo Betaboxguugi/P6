@@ -26,7 +26,6 @@ def ref_sql(table1, table2, key):
             " = " \
             + table2.name + "." + key + \
             " )"
-
         return sql
 
 

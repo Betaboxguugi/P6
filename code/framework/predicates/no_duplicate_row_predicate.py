@@ -61,7 +61,6 @@ class NoDuplicateRowPredicate(Predicate):
             " FROM " + " NATURAL JOIN ".join(self.table_name) + \
             " GROUP BY " + ",".join(chosen_columns) + \
             " HAVING COUNT(*) > 1 "
-
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
         query_result = cursor.fetchall()
@@ -73,4 +72,4 @@ class NoDuplicateRowPredicate(Predicate):
                       tables=self.table_name,
                       predicate=self,
                       elements=query_result,
-                      msg=None)
+                          msg=None)
