@@ -66,6 +66,7 @@ class SCDVersionPredicate(Predicate):
         cursor = dw_rep.connection.cursor()
         cursor.execute(lookup_sql)
         (query_result,) = cursor.fetchall()
+        print(lookup_sql)
 
         if query_result[0] is None:
             raise RuntimeError('Table empty or Row not found')
