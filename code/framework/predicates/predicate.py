@@ -13,7 +13,8 @@ class Predicate:
         """ Runs the actual test. Stores result in __result__"""
         self.__result__ = True
 
-    def setup_columns(self, dw_rep, table_names,
+    @staticmethod
+    def setup_columns(dw_rep, table_names,
                       column_names=None, column_names_exclude=False):
         """
         Produces a list of columns, which we want to iterate over.
@@ -33,14 +34,14 @@ class Predicate:
             table_names = [table_names]
 
         chosen_columns = set()
-        
+
         if table_names:
             table_names = set(table_names)
         else:
             raise ValueError('table_names has to be a string or an iterable'
                              ' with at least one element')
-        
-        if column_names:       
+
+        if column_names:
             column_names = set(column_names)
         else:
             column_names = set()
