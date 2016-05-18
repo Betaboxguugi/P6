@@ -90,21 +90,23 @@ class ReferentialIntegrityPredicate(Predicate):
 
                 # Check that each entry in main table has match
                 if self.table_one_to_many:
-                    query_result = referential_check(table, dim,
-                                                     key, dw_rep)
+                    query_result = referential_check(table, dim, key, dw_rep)
 
                     if query_result:
                         for row in query_result:
-                            missing_keys.append((dim.name, key, row[0]))
+                            msg = '{}: {} in {} not found in {}' \
+                                  .format(key, row[0], table.name, dim.name)
+                            missing_keys.append(msg)
 
                 # Check that each entry in foreign key table has match
                 if self.dim_one_to_many:
-                    query_result = referential_check(dim, table,
-                                                     key, dw_rep)
+                    query_result = referential_check(dim, table, key, dw_rep)
 
                     if query_result:
                         for row in query_result:
-                            missing_keys.append((dim.name, key, row[0]))
+                            msg = '{}: {} in {} not found in {}'\
+                                .format(key, row[0], dim.name, table.name)
+                            missing_keys.append(msg)
 
         if not missing_keys:
             self.__result__ = True
