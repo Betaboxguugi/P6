@@ -2,7 +2,7 @@ from .predicate import Predicate
 from .report import Report
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'  # I have no memory of this place
+__maintainer__ = 'Alexander Brandborg'
 
 
 class NoDuplicateRowPredicate(Predicate):
@@ -72,4 +72,4 @@ class NoDuplicateRowPredicate(Predicate):
                       tables=self.table_name,
                       predicate=self,
                       elements=query_result,
-                          msg=None)
+                      msg=None)
