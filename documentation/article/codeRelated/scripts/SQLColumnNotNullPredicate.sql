@@ -1,1 +1,3 @@
-SELECT * FROM Bookdim WHERE bid IS NULL
+SELECT *
+FROM Bookdim
+WHERE bid IS NULL

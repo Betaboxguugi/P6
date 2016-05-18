@@ -1,7 +1,5 @@
 __author__ = 'Alexander Brandborg'
 __maintainer__ = 'Alexander Brandborg'
-from pygrametl.datasources import *
-from csv import DictReader
 
 
 class Predicate:
@@ -27,7 +25,6 @@ class Predicate:
         :return chosen_columns: columns we want to iterate over
         """
 
-
         # If a single column is given as string, we place it in a list.
         if isinstance(column_names, str):
             column_names = [column_names]
@@ -40,8 +37,8 @@ class Predicate:
         if table_names:
             table_names = set(table_names)
         else:
-            raise ValueError('table_names has to be a string or an iterable' \
-                             'with atleast one element')
+            raise ValueError('table_names has to be a string or an iterable'
+                             ' with at least one element')
         
         if column_names:       
             column_names = set(column_names)
@@ -51,19 +48,23 @@ class Predicate:
         # If no columns are given we add all columns
         if not column_names:
             for table in table_names:
-                chosen_columns.update(dw_rep.get_data_representation(table).all)
+                chosen_columns.update(
+                    dw_rep.get_data_representation(table).all
+                )
 
         # If we want to exclude column names
         elif column_names_exclude:
             for table in table_names:
                 chosen_columns.update(
-                    set(dw_rep.get_data_representation(table).all) - column_names)
+                    set(dw_rep.get_data_representation(
+                        table).all) - column_names)
 
         # If we want to include column names
         else:
             for table in table_names:
                 chosen_columns.update([col for col
-                                       in dw_rep.get_data_representation(table).all
+                                       in dw_rep.
+                                      get_data_representation(table).all
                                        if col in column_names])
 
         return chosen_columns
