@@ -28,7 +28,7 @@ c.execute('''CREATE TABLE COMPANY
     SALARY         REAL);''')
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
-                ('Sauron', 1000000, 'Mordor', 42),
+                  ('Sauron', 1000000, 'Mordor', 42),
                 ('ChaDrles', 50, 'Texas', 25000.00),
                 ('Charles', 50, 'Texas', 25000.00),
                 ('Bharles', 50, 'Texas', 25000.00)
@@ -129,7 +129,6 @@ for x in p:
 
 a = conn.cursor()
 sql = """
-
 WITH table1 AS (
 		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
 		FROM bompany
@@ -143,8 +142,8 @@ WITH table1 AS (
 
 SELECT  *
 FROM table1
-WHERE NOT EXISTS (
-					SELECT NULL
+WHERE EXISTS (
+					SELECT *
 					FROM table2
 					WHERE table1.NAME = table2.NAME AND
 					table1.AGE = table2.AGE AND
