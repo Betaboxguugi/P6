@@ -7,9 +7,10 @@ dw_path = './dw.db'
 conn = sqlite3.connect(dw_path)
 c = conn.cursor()
 
-def time_passed(start):
+
+def time_passed(start_time):
     end = time.monotonic()
-    elapsed = end - start
+    elapsed = end - start_time
     return '{}{}'.format(round(elapsed, 3), 's')
 
 # Not Null
@@ -27,7 +28,7 @@ if not_null_list:
 else:
     print('Not Null Test - Success')
 
-# Compare Table - *shrug* Wait til its done i quess.
+# Compare Table - *shrug* Wait til its done iGuess.
 c.execute("""""")
 some_list = c.fetchall()
 if some_list:

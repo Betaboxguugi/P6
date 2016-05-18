@@ -6,9 +6,10 @@ import time
 
 start = time.monotonic()
 
-def time_passed(start):
+
+def time_passed(start_time):
     end = time.monotonic()
-    elapsed = end - start
+    elapsed = end - start_time
     return '{}{}'.format(round(elapsed, 3), 's')
 
 table1 = 'authordim'

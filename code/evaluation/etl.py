@@ -3,7 +3,8 @@ from setup_inputs import mk_author_db, mk_book_db, mk_country_csv
 import sqlite3
 import pygrametl
 from pygrametl.datasources import SQLSource, CSVSource
-from pygrametl.tables import FactTable, Dimension, SlowlyChangingDimension, SnowflakedDimension
+from pygrametl.tables import FactTable, Dimension, SlowlyChangingDimension, \
+    SnowflakedDimension
 
 dw_path = './dw.db'
 author_path = './author.db'
