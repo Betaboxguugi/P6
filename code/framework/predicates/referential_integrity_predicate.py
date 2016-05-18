@@ -82,7 +82,6 @@ class ReferentialIntegrityPredicate(Predicate):
         # If references not given. We check refs between all tables.
         if not self.refs:
             self.refs = dw_rep.refs
-
         # Performs check for each pair of main table and foreign key table.
         for table, dims in self.refs.items():
             for dim in dims:
@@ -90,19 +89,23 @@ class ReferentialIntegrityPredicate(Predicate):
 
                 # Check that each entry in main table has match
                 if self.table_one_to_many:
-                    query_result = referential_check(table, dim,
-                                                     key, dw_rep)
+                    query_result = referential_check(table, dim, key, dw_rep)
 
                     if query_result:
-                        missing_keys.append(query_result)
+                        for row in query_result:
+                            msg = '{}: {} in {} not found in {}' \
+                                  .format(key, row[0], table.name, dim.name)
+                            missing_keys.append(msg)
 
                 # Check that each entry in foreign key table has match
                 if self.dim_one_to_many:
-                    query_result = referential_check(dim, table,
-                                                     key, dw_rep)
+                    query_result = referential_check(dim, table, key, dw_rep)
 
                     if query_result:
-                        missing_keys.append(query_result)
+                        for row in query_result:
+                            msg = '{}: {} in {} not found in {}'\
+                                .format(key, row[0], dim.name, table.name)
+                            missing_keys.append(msg)
 
         if not missing_keys:
             self.__result__ = True

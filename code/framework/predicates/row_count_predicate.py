@@ -1,9 +1,8 @@
-__author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Mikael Vind Mikkelsen'
-
 from .predicate import Predicate
 from .report import Report
 
+__author__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Mikael Vind Mikkelsen'
 
 class RowCountPredicate(Predicate):
 

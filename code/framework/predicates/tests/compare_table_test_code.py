@@ -10,7 +10,7 @@ from framework.datawarehouse_representation import \
 from framework.predicates import CompareTablePredicate
 
 __author__ = 'Arash Michael Sami Kjær'
-__maintainer__ = 'Arash Michael Sami Kjær'
+__maintainer__ = 'Arash Michael Sami Kjær'  # Are you sure this is mine?
 
 # This just ensures we have a fresh database to work with.
 open(os.path.expanduser('test.db'), 'w')
@@ -126,10 +126,10 @@ compare1 = CompareTablePredicate(['company'], c, ['ID'], True, True, ())
 p = compare1.run(dw)
 for x in p:
     print(x)
-"""
+
 a = conn.cursor()
 sql = """
-"""
+
 WITH table1 AS (
 		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
 		FROM bompany
@@ -153,11 +153,11 @@ WHERE NOT EXISTS (
 					table1.COUNT =  table2.COUNT
 					)
 """
-"""
+
 a.execute(sql)
 print(a.fetchall())
 """
-"""
+
 a = conn.cursor()
 sql = "SELECT * FROM bompany ORDER BY AGE,NAME,ADDRESS,SALARY"
 a.execute(sql)

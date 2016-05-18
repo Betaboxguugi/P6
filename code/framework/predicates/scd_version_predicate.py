@@ -16,8 +16,9 @@ class SCDVersionPredicate(Predicate):
     def __init__(self, table_name, entry, version):
         """
         :param table_name: Name of Type2SCD table
-        :param entry: Row giving lookupsatts with values
-        :param version: The asserted maximum version of the entry.
+        :param entry: Dict pairing lookupsatts with values. Describes an
+        entry in the table, which may have several versions.
+        :param version: The asserted maximum version value of entry
         :return:
         """
         self.table_name = table_name
@@ -26,9 +27,6 @@ class SCDVersionPredicate(Predicate):
 
     def run(self, dw_rep):
         """
-        For each entry in the table, it checks whether it corresponds,
-        to the test entry. If it does we check whether we need to update
-        the currently largest discovered version for that entry.
         :param dw_rep: A DWRepresentation object
         :return report object describing results of the predicate
         """
@@ -42,24 +40,21 @@ class SCDVersionPredicate(Predicate):
         if not set(dim.lookupatts) == set(self.entry.keys()):
             raise RuntimeError('Correct lookupatts not given')
 
-        lookupatts = dim.lookupatts
         versionatt = dim.versionatt
 
-        columns_to_get = list(lookupatts)
-        columns_to_get.append(versionatt)
-
-        self.entry.keys()
-
+        # Creates conditions for the where-clause
+        # These are meant to find all instances of row
         null_condition_sql = []
         for a,b in self.entry.items():
-            if isinstance(b,str):
+            if isinstance(b, str):
                 new = "\'" + b + "\'"
                 null_condition_sql.append(a + " = " + new)
 
             else:
                 null_condition_sql.append(a + " = " + str(b))
 
-        lookup_sql = " SELECT max(" + versionatt + ")" \
+        # Find all instances of row and selects the maximum version
+        lookup_sql = " SELECT max(" + versionatt + ")" + \
                      " FROM " + self.table_name + \
                      " WHERE " + " AND ".join(null_condition_sql)
 
@@ -69,7 +64,7 @@ class SCDVersionPredicate(Predicate):
         print(lookup_sql)
 
         if query_result[0] is None:
-            raise RuntimeError('Table empty or Row not found')
+            raise RuntimeError('Table empty or entry not present in table')
 
         if query_result[0] == self.version:
             self.__result__ = True
@@ -81,4 +76,3 @@ class SCDVersionPredicate(Predicate):
                       msg='Version number not as asserted. ' +
                           'Was asserted to be ' + str(self.version) +
                           ',but was instead ' + str(query_result[0]))
-

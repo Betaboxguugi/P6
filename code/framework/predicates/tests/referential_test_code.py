@@ -1,9 +1,7 @@
 import os
 import sqlite3
-
 import pygrametl
 from pygrametl.tables import Dimension, SnowflakedDimension
-
 from framework.datawarehouse_representation \
     import DWRepresentation, DimRepresentation
 from framework.predicates.referential_integrity_predicate \
@@ -11,7 +9,6 @@ from framework.predicates.referential_integrity_predicate \
 
 __author__ = 'Arash Michael Sami Kjær'
 __maintainer__ = 'Arash Michael Sami Kjær'
-
 
 #  Snowflaking test
 
@@ -109,20 +106,23 @@ dim4_rep = DimRepresentation(dim4, conn)
 snow_dw_rep = DWRepresentation([dim1_rep, dim2_rep, dim3_rep, dim4_rep],
                                conn, snowflakeddims=(special_snowflake, ))
 
-snow_dw_rep.connection.cursor().execute("DELETE FROM dim1 WHERE key1 = 1")
 
+snow_dw_rep.connection.cursor().execute("DELETE FROM dim2 WHERE key2 > 3")
+
+# quick overview of the keys we have left
 for dim in snow_dw_rep.dims:
     allatts = dim.all.copy()
     lookupatts = dim.lookupatts.copy()
-    #for attr in lookupatts:
-        #allatts.remove(attr)
+    for attr in lookupatts:
+        allatts.remove(attr)
 
     for row in dim.itercolumns(allatts):
         print(dim.name, row)
 
-ref_tester = ReferentialIntegrityPredicate(refs={dim1: [dim2, dim3]},
-                                           table_one_to_many=False,
-                                           dim_one_to_many=True)
+ref_tester = ReferentialIntegrityPredicate(
+    refs={dim1_rep: [dim2_rep, dim3], dim2: [dim4]},
+    table_one_to_many=True,
+    dim_one_to_many=True)
 
 print(ref_tester.run(snow_dw_rep))
 

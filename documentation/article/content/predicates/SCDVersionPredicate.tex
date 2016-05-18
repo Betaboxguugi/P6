@@ -5,10 +5,10 @@ This predicate allows testers to check if a given entry in a table has an assert
 \insertcodefile{SCDVersionPredicate.py}{Instantiation of RuleColumnPredicate}
 
 \begin{description}
-\item [entry] A dictionary pairing lookup attributes from the table with values. This indicates a unique entry in the table, which may have several different versions. 
-\item [version] A number indicating the largest version that the entry is asserted to have.
+\item [entry] A dictionary that pairs lookup-attribute names with values. A set of lookup-attributes being a key on the table, it is used to fetch all instances of the row under test.  
+\item [version] The asserted largest version number of the test entry.
 \end{description}
 
 In the instantiation, we use the predicate to assert that The Hobbit's highest version number in BookDim is 10.
 
-The predicate works by iterating over each row of the table. Once we find a row that matches the test entry, we check whether its version is bigger than any found before. If yes, we update the value of our largest version. After processing the table, we try to equate the largest version with the one asserted by the tester. If they are equal, the predicate succeeds, and it fails otherwise.   
+When checking the assertion, we look up all rows from \textit{table_name} that match \textit{entry} in their lookup-attributes. This produces a table containing all instances of the entry given by the tester. Each row has its own unique version value. From this, we extract the maximum version value present. This is then compared to the value asserted by the tester. If these two values are equal, the assertion holds. Otherwise it fails.
