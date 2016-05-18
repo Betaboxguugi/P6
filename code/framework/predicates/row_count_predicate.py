@@ -31,6 +31,7 @@ class RowCountPredicate(Predicate):
             " SELECT COUNT(*) " + \
             " FROM " + "NATURAL JOIN ".join(self.table_name)
 
+        print(pred_sql)
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
         (query_result,) = cursor.fetchall()

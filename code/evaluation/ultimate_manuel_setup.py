@@ -111,18 +111,26 @@ if some_list:
 else:
     print('Referential Integrity Test - Success')
 
-# Row Count - Erhm yeah... About that O_o
-
-# Rule Column - Erhm yeah... About that O_o
+# Row Count
+c.execute("""SELECT COUNT(*)
+             FROM bookdim """)
+row_count = c.fetchall()[0]
+if row_count == 6:
+    print('Row Count Test - Success')
+else:
+    print('Row count did not hold\nThere are {} rows when there should be 6')
 
 # SCD Version
 c.execute("""SELECT max(version)
              FROM bookdim
              WHERE title = 'EZ PZ ETL'""")
-some_list = c.fetchall()
+scdv_list = c.fetchall()
 if some_list:
-    print('Failed')
-    for row in some_list:
+    print('SCD Version did not hold one the following elements')
+    for row in scdv_list:
         print(row)
 else:
-    print('Success')
+    print('SCD Version Test - Success')
+
+# Checking how long it took.
+print(time_passed(start))
