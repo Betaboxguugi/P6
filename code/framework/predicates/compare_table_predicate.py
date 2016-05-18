@@ -169,16 +169,15 @@ def sorted_compare(actual, expected):
 
         # When there are more rows in expected table
         elif actual_empty and not expected_empty:
-            rest_list = [e_row]
-            rest_list.extend(get_rest_of_table(expected, names))
-            expected_list.extend(rest_list)
+            expected_list = [e_row]
             break
 
         # When there are more rows in actual table
         elif not actual_empty and expected_empty:
-            rest_list = [a_row]
-            rest_list.extend(get_rest_of_table(actual, names))
-            actual_list.extend(rest_list)
+            actual_list = [a_row]
+            break
+
+        if actual_list or expected_list:
             break
 
     return actual_list, expected_list

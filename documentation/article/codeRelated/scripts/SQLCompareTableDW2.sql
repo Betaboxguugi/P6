@@ -8,5 +8,5 @@ FROM (SELECT title,version,COUNT(*)
 	  FROM BookDim
 	  GROUP BY title,version
 WHERE expected.title = BookDim.title AND
-expected.version = BookDim.version
+expected.version <= BookDim.version
 ) 
