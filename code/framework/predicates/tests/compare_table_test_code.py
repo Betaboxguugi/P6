@@ -121,7 +121,7 @@ start = time.monotonic()
 
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
-compare1 = CompareTablePredicate(['company'], c, ['ID'], True, True, ())
+compare1 = CompareTablePredicate(['company'], ['bompany'], ['ID'], True, False, (),False,False)
 
 p = compare1.run(dw)
 for x in p:

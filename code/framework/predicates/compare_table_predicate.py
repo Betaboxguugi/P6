@@ -105,11 +105,12 @@ def unsorted_not_distinct(table1, table2, subset=False):
 
 def tab_unsorted(table1, table2, where_conditions, dw_rep):
     """
-    :param table1:
-    :param table2:
-    :param where_conditions:
-    :param dw_rep:
-    :return:
+    Used to find all rows in one table but not in another.
+    :param table1: SQL code giving one table
+    :param table2:SQL code giving another table
+    :param where_conditions: Conditions to be met for two rows to be equal
+    :param dw_rep: DWRepresentation object
+    :return: List of tuples of rows in table1 but not table2
     """
     sql = \
         " SELECT  * " + \
@@ -123,7 +124,6 @@ def tab_unsorted(table1, table2, where_conditions, dw_rep):
         " WHERE " + " AND ".join(where_conditions) + \
         " ) "
 
-    print(sql)
     cursor = dw_rep.connection.cursor()
     cursor.execute(sql)
     return cursor.fetchall()
@@ -177,7 +177,7 @@ def sorted_compare(actual, expected):
             actual_list = [a_row]
             break
 
-        if actual_list or expected_list:
+        elif actual_list or expected_list:
             break
 
     return actual_list, expected_list
@@ -357,8 +357,7 @@ class CompareTablePredicate(Predicate):
                     expected_sql = grouped_sql(self.expected_table,
                                                chosen_columns)
 
-                    # Sizes of groups differently,
-                    # depending on if a subset compare is being made
+                    # Comparison of count changes based on, how to compare
                     if self.subset:
                         sql_count = " table1.COUNT <= table2.COUNT "
                     else:
