@@ -37,5 +37,5 @@ case = Case(dw_rep, pred_list)
 
 case.run()
 
-#
+# Checking how long it took.
 print(time_passed(start))

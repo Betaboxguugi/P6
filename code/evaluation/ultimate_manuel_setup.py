@@ -2,6 +2,7 @@ import sqlite3
 import time
 
 start = time.monotonic()
+
 dw_path = './dw.db'
 conn = sqlite3.connect(dw_path)
 c = conn.cursor()

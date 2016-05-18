@@ -2,6 +2,16 @@ __author__ = "Mathias Claus Jensen"
 
 import os
 import sqlite3
+import names # What are you... O_-
+import random
+
+
+ENTRIES_BOOK = 1000
+ENTRIES_AUTHOR = 1000
+ENTRiES_COUNTRIES = 20
+CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'København']
+COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
+COUNTRY_MAP['København'] = 'SWE'
 
 def get_conn_cur(path):
     if os.path.exists(path):
@@ -18,12 +28,19 @@ def mk_author_db(db_path="author.db", pops=500):
 
     conn, cur = get_conn_cur(db_path)
 
-    cur.execute("CREATE TABLE author ("
-                "aid INTEGER PRIMARY KEY, "
-                "firstname TEXT, " 
-                "lastname TEXT, "
-                "city TEXT, "
-                "bid INTEGER)")
+    cur.execute("""CREATE TABLE author (
+                    aid INTEGER PRIMARY KEY,
+                    firstname TEXT,
+                    lastname TEXT,
+                    city TEXT,
+                    bid INTEGER)""")
+
+    #Get This working....
+    author_list = []
+    for x in range(ENTRIES_AUTHOR):
+        author_list.append((x, names.get_first_name(), names.get_last_name(),
+                            choice(CITIES), x))
+
 
     author_list = [(0, 'Mathias', 'Jensen', 'Hadsten', 3),
                    (1, 'Mathias', 'Jensen', 'Hadsten', 4),
@@ -46,6 +63,11 @@ def mk_book_db(db_path="book.db"):
                 "title TEXT, "
                 "year INTEGER)")
 
+    book_list = []
+    for x in range(ENTRIES_BOOK):
+        book_list.append((x, names.get_first_name(), random.randrange(2000)))
+
+
     book_list = [(0, "Checkm8 en Fortælling", 1994),
                  (3, "EZ PZ ETL", 2000),
                  (2, "Mit Navn Staves Med K", 2015),
@@ -64,9 +86,9 @@ def mk_country_csv(file_path="country.csv"):
 
     with open(file_path, "+w") as f:
         s = \
-"""city,country
-Hadsten,DK
-Skanderborg,DK
-København,SWE
-"""
+        """city,country
+        Hadsten,DK
+        Skanderborg,DK
+        København,SWE
+        """
         f.write(s)
