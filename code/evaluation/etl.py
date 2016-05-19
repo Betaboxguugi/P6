@@ -60,11 +60,8 @@ for row in country_src:
     cid = (country_dim.ensure(row))
     cid_map[row['city']] = cid
 
-print(cid_map)
-
 for row in author_src:
     if row['city'] in ['Hadsten','Skanderborg','Kobenhavn']:
-        print(row['city'])
         row['cid'] = cid_map[row['city']]
     else:
         row['cid'] = None
@@ -78,9 +75,6 @@ for row in author_src:
 for row in book_src:
     book_dim.scdensure(row)
 
-
-
-    
 wrapper.commit()
 wrapper.close()
 
