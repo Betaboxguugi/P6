@@ -47,6 +47,8 @@ dim = SCDType2DimRepresentation(s, conn)
 dw = DWRepresentation([dim], conn)
 
 a = SCDVersionPredicate('COMPANY', {'NAME': 'Anders', 'AGE': 43}, 2)
+b = SCDVersionPredicate('COMPANY', {'NAME': 'Anders', 'AGE': 43}, 3)
 print(a.run(dw))
+print(b.run(dw))
 
 conn.close()

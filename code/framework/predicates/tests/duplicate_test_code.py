@@ -30,6 +30,7 @@ company_info = [('Anders', 43, 'Denmark', 21000.00),
                 ('Charles', 50, 'Texas', 25000.00),
                 ('Wolf', 28, 'Sweden', 19000.00),
                 ('Hannibal', 45, 'America', 65000.00),
+                ('Hannibal', 45, 'America', 65000.00),
                 ('Buggy', 67, 'America', 2000),
                 ('Buggy', 67, 'America', 2000),
                 ('Buggy', 67, 'America', 2000),
@@ -46,14 +47,14 @@ columns = ['NAME', 'AGE', 'ADDRESS', 'SALARY']
 
 wrapper = ConnectionWrapper(conn)
 dim = Dimension( name='COMPANY',
-           key='ID',
-           attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
-           lookupatts=['NAME'])
+                 key='ID',
+                 attributes=['NAME', 'AGE', 'ADDRESS', 'SALARY'],
+                 lookupatts=['NAME'])
 
 dim_rep = DimRepresentation(dim,conn)
 dw = DWRepresentation([dim_rep], conn)
 
-dup_predicate = DuplicatePredicate('company',['ID'], True)
+dup_predicate = DuplicatePredicate('company', ['ID'], True)
 print(dup_predicate.run(dw))
 
 conn.close()

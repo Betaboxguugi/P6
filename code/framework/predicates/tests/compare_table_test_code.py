@@ -100,7 +100,7 @@ dim_rep2 = DimRepresentation(dim2, conn)
 ft = FactTable('FACTTABLE', ['Book'], ['Issue'])
 ft_rep = FTRepresentation(ft, conn)
 
-dw = DWRepresentation([dim_rep,ft_rep,dim_rep2], conn)
+dw = DWRepresentation([dim_rep, ft_rep, dim_rep2], conn)
 
 expected_list1 = [
     {'NAME': 'Anders', 'AGE': 43, 'SALARY': 21000.0, 'ADDRESS': 'Denmark',
@@ -121,7 +121,14 @@ start = time.monotonic()
 
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
-compare1 = CompareTablePredicate(['company'], c, ['ID'], True, True, ())
+compare1 = CompareTablePredicate(actual_table=['company'],
+                                 expected_table=c,
+                                 column_names=['ID'],
+                                 column_names_exclude=True,
+                                 sort=True,
+                                 sort_keys=(),
+                                 distinct=True,
+                                 subset=False)
 
 p = compare1.run(dw)
 for x in p:
@@ -154,7 +161,7 @@ WHERE EXISTS (
 """
 
 a.execute(sql)
-print(a.fetchall())
+#print(a.fetchall())
 """
 
 a = conn.cursor()

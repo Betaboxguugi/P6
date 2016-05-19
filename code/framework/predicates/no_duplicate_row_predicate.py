@@ -63,7 +63,16 @@ class NoDuplicateRowPredicate(Predicate):
             " HAVING COUNT(*) > 1 "
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
-        query_result = cursor.fetchall()
+        tuples = cursor.fetchall()
+        names = [t[0] for t in cursor.description]
+        query_result = []
+        extended_chosen_columns = chosen_columns.union(('COUNT(*)',))
+
+        for row in tuples:
+            q = dict(zip(names, row))
+            q = \
+                [{k: v for k, v in q.items() if k in extended_chosen_columns}]
+            query_result.append(q)
 
         if not query_result:
             self.__result__ = True

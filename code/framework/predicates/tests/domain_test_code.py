@@ -24,7 +24,7 @@ def constraint2(a=''):
 dw_name = '.\dw.db'  # The one found in pygrametl_examples
 dw_conn = sqlite3.connect(dw_name)
 
-f =  FTRepresentation('factTable', ['bookid','locationid','timeid'],['sale'], dw_conn)
+f = FTRepresentation('factTable', ['bookid','locationid','timeid'],['sale'], dw_conn)
 b = DimRepresentation('bookDim', 'bookid', ['genre'], ['book'], dw_conn)
 l = DimRepresentation('locationDim', 'locationid', ['region'], ['city'], dw_conn)
 t = DimRepresentation('timeDim', 'timeid', ['day', 'month', 'year'], [], dw_conn)

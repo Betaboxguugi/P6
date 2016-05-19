@@ -60,38 +60,38 @@ query4 = "SELECT * FROM factTable WHERE bookid > 1"
 
 cw = ConnectionWrapper(dw_conn)
 
-dim1 =  Dimension(
-    name = 'bookdim',
+dim1 = Dimension(
+    name='bookdim',
     key='bookid',
     attributes=['book', 'genre'],
 )
 
 book_dim = DimRepresentation(dim1,dw_conn)
 
-dim2 =  Dimension(
-    name = 'timedim',
+dim2 = Dimension(
+    name='timedim',
     key='timeid',
     attributes=['day', 'month', 'year'],
 )
 
 time_dim = DimRepresentation(dim2,dw_conn)
 
-dim3 =  Dimension(
-    name = 'locationDim',
+dim3 = Dimension(
+    name='locationDim',
     key='locationid',
-    attributes= ['city', 'region'],
-    lookupatts= ['city', 'region']
+    attributes=['city', 'region'],
+    lookupatts=['city', 'region']
 )
 
 location_dim = DimRepresentation(dim3,dw_conn)
 
 ft = FactTable(
     name='factTable',
-    keyrefs= ['bookid', 'locationid', 'timeid'],
+    keyrefs=['bookid', 'locationid', 'timeid'],
     measures=['sale']
 )
 
-facttable =  FTRepresentation(ft, dw_conn)
+facttable = FTRepresentation(ft, dw_conn)
 
 """
 book_dim.query = query1
@@ -126,8 +126,10 @@ def constraint3(bookid, book, genre, constant):
     print(constant)
     return True
 
-tab_tester1 = RuleColumnPredicate(table_name='bookdim', constraint_function=constraint1,
-                                column_names=['book', 'genre'], constraint_args=[5])
+tab_tester1 = RuleColumnPredicate(table_name='bookdim',
+                                  constraint_function=constraint1,
+                                  column_names=['book', 'genre'],
+                                  constraint_args=[5])
 tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'])
 tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'timeid'], [6], True)
 
@@ -135,9 +137,11 @@ nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
 
 nn_tester2 = ColumnNotNullPredicate('bookdim', ['genre','book'], True)
 
-rrp_tester1 = RuleRowPredicate(table_name='bookdim', constraint_function=constraint3, constraint_args=[5])
+rrp_tester1 = RuleRowPredicate(table_name='bookdim',
+                               constraint_function=constraint3,
+                               constraint_args=[5])
 
-scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
+#scdv_tester1 = SCDVersionPredicate('factTable', ['bookid', 'locationid', 'timeid', 'sales'], 10)
 
 func_dependencies1 = (('book', 'bookid'), ('book', 'genre'))
 func_dependencies2 = (('genre'), 'book')
@@ -145,18 +149,18 @@ fd_tester1 = FunctionalDependencyPredicate(['bookdim'], ('genre'), ('book'))
 
 print(dup_tester1.run(dw))
 print(dup_tester2.run(dw))
-#print(dup_tester3.run(dw))
-#print(row_tester1.run(dw))
-#print(row_tester1.run(dw))
-#print(row_tester2.run(dw))
-#print(tab_tester1.run(dw))
-#print(tab_tester2.run(dw))
-#print(tab_tester3.run(dw))
-#print(nn_tester1.run(dw))
-#print(nn_tester2.run(dw))
-#print(rrp_tester1.run(dw))
+print(dup_tester3.run(dw))
+print(row_tester1.run(dw))
+print(row_tester1.run(dw))
+print(row_tester2.run(dw))
+print(tab_tester1.run(dw))
+print(tab_tester2.run(dw))
+print(tab_tester3.run(dw))
+print(nn_tester1.run(dw))
+print(nn_tester2.run(dw))
+print(rrp_tester1.run(dw))
 #print(scdv_tester1.run(dw))
-#print(fd_tester1.run(dw))
+print(fd_tester1.run(dw))
 
 
 

@@ -48,7 +48,13 @@ class ColumnNotNullPredicate(Predicate):
                    " WHERE " + " OR ".join(null_condition_sql)
 
         cursor.execute(pred_sql)
-        query_result = cursor.fetchall()
+        tuples = cursor.fetchall()
+        names = [t[0] for t in cursor.description]
+        query_result = []
+
+        # Create dict, so that attributes have names
+        for row in tuples:
+            query_result.append(dict(zip(names, row)))
 
         if not query_result:
             self.__result__ = True

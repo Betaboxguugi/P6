@@ -88,14 +88,15 @@ class FunctionalDependencyPredicate(Predicate):
         lookup_sql = "SELECT DISTINCT " + select_sql + " FROM " + join_sql +\
                      " WHERE " + and_alpha + " AND " + "( {} )".format(or_beta)
         func_dep = "{} --> {}".format(alpha, beta)
-        c = dw_rep.connection.cursor()
-        c.execute(lookup_sql)
+        cursor = dw_rep.connection.cursor()
+        cursor.execute(lookup_sql)
+        tuples = cursor.fetchall()
+        names = [t[0] for t in cursor.description]
         elements = []
-
         # If the SQL command returns rows that fail against the dependency if
         # any.
-        for row in c.fetchall():
-            elements.append(row)
+        for row in tuples:
+            elements.append(dict(zip(names, row)))
             self.results = False
 
         return Report(result=self.results,

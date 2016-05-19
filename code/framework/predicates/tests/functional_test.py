@@ -107,14 +107,12 @@ for dim in snow_dw_rep.dims:
         print(dim.name, row)
 print('\n')
 
-# writing functional dependencies is an annoying chore
 a = 'key3'
 b = 'key1'
 c = 'key4'
 d = 'attr2'
 e = 'key2'
 f = 'attr1'
-
 
 # key3 -> key1 | dim1
 func_dep1 = FunctionalDependencyPredicate([dim1_rep.name], a, b)
@@ -129,10 +127,9 @@ func_dep5 = FunctionalDependencyPredicate([dim1_rep.name], (f, b), (e, a))
 # key1 -> key3 and key2, attr2 -> attr4 | dim1, dim2
 # multiple dependencies is not possible at this time, however it is easier to
 # write one dependency now rather than as before
-#func_dep6 = FunctionalDependencyPredicate([dim1_rep.name, dim2_rep.name], [
-#    (('key1'), ('key3')), (('key2', 'attr2'), ('attr4'))
-#])
-
+# func_dep6 = FunctionalDependencyPredicate([dim1_rep.name, dim2_rep.name], [
+#     (('key1'), ('key3')), (('key2', 'attr2'), ('attr4'))
+# ])
 
 print(func_dep1.run(snow_dw_rep))
 print(func_dep2.run(snow_dw_rep))

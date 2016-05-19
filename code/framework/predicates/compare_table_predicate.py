@@ -239,7 +239,7 @@ class CompareTablePredicate(Predicate):
                 names = [t[0] for t in expected_table.description]
                 self.expected_table = []
 
-                # Create dit, so that attributes have names
+                # Create dict, so that attributes have names
                 for row in tuples:
                     self.expected_table.append(dict(zip(names, row)))
                 self.expected_in_db = False
@@ -527,10 +527,10 @@ class CompareTablePredicate(Predicate):
                  "  Actual: " + ",".join(self.actual_table)
 
             sort = Report(result=self.__result__,
-                              tables= table_names,
-                              predicate=self,
-                              elements=[],
-                              msg="Comparison failed during sort compare")
+                          tables=table_names,
+                          predicate=self,
+                          elements=[],
+                          msg="Comparison failed during sort compare")
             report_list.append(sort)
 
         else:
@@ -540,7 +540,7 @@ class CompareTablePredicate(Predicate):
                 table_names = "User table"
 
             expected = Report(result=self.__result__,
-                              tables= table_names,
+                              tables=table_names,
                               predicate=self,
                               elements=only_in_expected,
                               msg="Elements found only in expected")
@@ -549,10 +549,10 @@ class CompareTablePredicate(Predicate):
 
             if only_in_actual:
                 actual = Report(result=self.__result__,
-                                  tables= ",".join(self.actual_table),
-                                  predicate=self,
-                                  elements=only_in_actual,
-                                  msg="Elements found only in actual")
+                                tables=",".join(self.actual_table),
+                                predicate=self,
+                                elements=only_in_actual,
+                                msg="Elements found only in actual")
 
                 report_list.append(actual)
 
