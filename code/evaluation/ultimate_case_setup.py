@@ -6,7 +6,6 @@ import time
 
 start = time.monotonic()
 
-
 def time_passed(start_time):
     end = time.monotonic()
     elapsed = end - start_time

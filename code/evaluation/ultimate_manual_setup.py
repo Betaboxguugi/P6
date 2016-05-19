@@ -7,7 +7,6 @@ dw_path = './dw.db'
 conn = sqlite3.connect(dw_path)
 c = conn.cursor()
 
-
 def time_passed(start_time):
     end = time.monotonic()
     elapsed = end - start_time
@@ -28,15 +27,19 @@ if not_null_list:
 else:
     print('Not Null Test - Success')
 
-# Compare Table - *shrug* Wait til its done iGuess.
-c.execute("""""")
+# Compare Table
+c.execute("""SELECT *
+             FROM bookdim
+             EXCEPT
+                SELECT *
+                FROM bookdim """)
 some_list = c.fetchall()
 if some_list:
-    print('Failed')
+    print('Failed to compare tables')
     for row in some_list:
         print(row)
 else:
-    print('Success')
+    print('Successfully compared tables')
 
 # Functional Dependency
 c.execute("""SELECT DISTINCT t1.cid ,t1.city
@@ -127,12 +130,11 @@ c.execute("""SELECT max(version)
              FROM bookdim
              WHERE title = 'EZ PZ ETL'""")
 scdv_list = c.fetchall()
-if some_list:
-    print('SCD Version did not hold one the following elements')
-    for row in scdv_list:
-        print(row)
-else:
+if scdv_list[0] == 4:
     print('SCD Version Test - Success')
+else:
+    print('SCD Version did not hold. Should have been 4 but was ' +
+          str(scdv_list[0][0]))
 
 # Checking how long it took.
 print(time_passed(start))
