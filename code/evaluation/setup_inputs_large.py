@@ -2,13 +2,12 @@ __author__ = "Mathias Claus Jensen"
 
 import os
 import sqlite3
-import names # What are you... O_-
+import names
 import random
-import choice
 
 
-ENTRIES_BOOK = 100000
-ENTRIES_AUTHOR = 100000
+ENTRIES_BOOK = 1000000
+ENTRIES_AUTHOR = 1000000
 ENTRiES_COUNTRIES = 20
 CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'Kobenhavn']
 COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
