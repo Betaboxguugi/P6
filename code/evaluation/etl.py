@@ -62,7 +62,6 @@ for row in country_src:
 
 for row in author_src:
     if row['city'] in ['Hadsten','Skanderborg','Kobenhavn']:
-        print(row['city'])
         row['cid'] = cid_map[row['city']]
     else:
         row['cid'] = None
