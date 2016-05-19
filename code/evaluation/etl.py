@@ -1,5 +1,5 @@
 from setup_dw import mk_dw
-from setup_inputs import mk_author_db, mk_book_db, mk_country_csv
+from setup_inputs_large import mk_author_db, mk_book_db, mk_country_csv
 import sqlite3
 import pygrametl
 from pygrametl.datasources import SQLSource, CSVSource
@@ -59,9 +59,12 @@ cid_map = {}
 for row in country_src:
     cid = (country_dim.ensure(row))
     cid_map[row['city']] = cid
-    
+
+print(cid_map)
+
 for row in author_src:
-    if row['city']:
+    if row['city'] in ['Hadsten','Skanderborg','Kobenhavn']:
+        print(row['city'])
         row['cid'] = cid_map[row['city']]
     else:
         row['cid'] = None

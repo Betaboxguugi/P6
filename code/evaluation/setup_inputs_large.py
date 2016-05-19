@@ -4,14 +4,15 @@ import os
 import sqlite3
 import names # What are you... O_-
 import random
+import choice
 
 
-ENTRIES_BOOK = 1000
-ENTRIES_AUTHOR = 1000
+ENTRIES_BOOK = 100000
+ENTRIES_AUTHOR = 100000
 ENTRiES_COUNTRIES = 20
-CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'København']
+CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'Kobenhavn']
 COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
-COUNTRY_MAP['København'] = 'SWE'
+COUNTRY_MAP['Kobenhavn'] = 'SWE'
 
 def get_conn_cur(path):
     if os.path.exists(path):
@@ -29,7 +30,7 @@ def mk_author_db(db_path="author.db", pops=500):
     conn, cur = get_conn_cur(db_path)
 
     cur.execute("""CREATE TABLE author (
-                    aid INTEGER PRIMARY KEY,
+                    aid INTEGER ,
                     firstname TEXT,
                     lastname TEXT,
                     city TEXT,
@@ -37,18 +38,18 @@ def mk_author_db(db_path="author.db", pops=500):
 
     #Get This working....
     author_list = []
-    for x in range(ENTRIES_AUTHOR):
-        author_list.append((x, names.get_first_name(), names.get_last_name(),
-                            choice(CITIES), x))
-
-
-    author_list = [(0, 'Mathias', 'Jensen', 'Hadsten', 3),
+    author_list.extend ( [(0, 'Mathias', 'Jensen', 'Hadsten', 3),
                    (1, 'Mathias', 'Jensen', 'Hadsten', 4),
                    (2, 'Alexander', 'Danger', 'Skanderborg', 0),
                    (3, 'Alexander', 'Danger', 'Skanderborg', 4),
                    (6, 'Alexander', 'Danger', 'Hadsten', 4),
-                   (4, 'Arash', 'Kjær', 'København', 1),
-                   (5, 'Michael', 'Med K', None, 2)]
+                   (4, 'Arash', 'Kjær', 'Kobenhavn', 1),
+                   (5, 'Michael', 'Med K', None, 2)])
+
+
+    for x in range(ENTRIES_AUTHOR):
+        author_list.append((x+6, names.get_first_name(), names.get_last_name(),
+                            random.choice(CITIES), x+6))
 
     cur.executemany("INSERT INTO author VALUES(?, ?, ?, ?, ?)", author_list)
 
@@ -59,23 +60,21 @@ def mk_book_db(db_path="book.db"):
     conn, cur = get_conn_cur(db_path)
 
     cur.execute("CREATE TABLE book ("
-                "bid INTEGER PRIMARY KEY, "
+                "bid INTEGER , "
                 "title TEXT, "
                 "year INTEGER)")
 
     book_list = []
+    book_list.extend ([(0, "Checkm8 en Fortælling", 1994),
+    (3, "EZ PZ ETL", 2000),
+    (2, "Mit Navn Staves Med K", 2015),
+    (1, "Svensk-Dansk Ordbog", 1995),
+    (4, "EZ PZ ETL", 2004)])
+
     for x in range(ENTRIES_BOOK):
-        book_list.append((x, names.get_first_name(), random.randrange(2000)))
-
-
-    book_list = [(0, "Checkm8 en Fortælling", 1994),
-                 (3, "EZ PZ ETL", 2000),
-                 (2, "Mit Navn Staves Med K", 2015),
-                 (1, "Svensk-Dansk Ordbog", 1995),
-                 (4, "EZ PZ ETL", 2004)]
+        book_list.append((x+4, names.get_first_name(), random.randrange(2000)))
 
     cur.executemany("INSERT INTO book VALUES(?, ?, ?)", book_list)
-
 
     conn.commit()
     conn.close()
@@ -84,11 +83,9 @@ def mk_country_csv(file_path="country.csv"):
     if os.path.exists(file_path):
         os.remove(file_path)
 
+
     with open(file_path, "+w") as f:
-        s = \
-        """city,country
-        Hadsten,DK
-        Skanderborg,DK
-        København,SWE
-        """
-        f.write(s)
+         f.write('city,country\n')
+         f.write('Hadsten,DK \n')
+         f.write('Skanderborg,DK \n')
+         f.write('Kobenhavn,SWE \n')
