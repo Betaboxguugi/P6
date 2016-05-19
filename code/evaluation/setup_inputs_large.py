@@ -5,10 +5,10 @@ import sqlite3
 import names
 import random
 
-
 ENTRIES_BOOK = 1000000
 ENTRIES_AUTHOR = 1000000
 ENTRiES_COUNTRIES = 20
+
 CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'Kobenhavn']
 COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
 COUNTRY_MAP['Kobenhavn'] = 'SWE'

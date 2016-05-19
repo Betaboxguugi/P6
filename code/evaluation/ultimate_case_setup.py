@@ -15,9 +15,10 @@ table1 = 'authordim'
 table2 = 'bookdim'
 table3 = 'countrydim'
 fact_table = 'facttable'
+goodbooks = 'goodbooksdim'
 
 cnnp_test = ColumnNotNullPredicate(table1)
-ctp_test = CompareTablePredicate(table2, table2)
+ctp_test = CompareTablePredicate(table2, goodbooks, ['ID'], True, False, (), True, True)
 fdp_test = FunctionalDependencyPredicate([table1, table3], 'cid', 'city')
 ndrp_test = NoDuplicateRowPredicate(table1, ['city', 'aid'], True)
 rip_test = ReferentialIntegrityPredicate()
@@ -32,6 +33,9 @@ pygrametl_program_path = './etl.py'
 dwp = DWPopulator(pygrametl_program_path, sqlite3, True, database=dw_path)
 
 dw_rep = dwp.run()
+
+# Checking how long it took.
+print(time_passed(start))
 
 case = Case(dw_rep, pred_list)
 

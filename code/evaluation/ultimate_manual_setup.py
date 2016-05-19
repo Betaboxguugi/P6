@@ -29,7 +29,7 @@ else:
 
 # Compare Table
 c.execute("""SELECT *
-             FROM bookdim
+             FROM goodbooksdim
              EXCEPT
                 SELECT *
                 FROM bookdim """)
