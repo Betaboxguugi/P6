@@ -35,11 +35,15 @@ dwp = DWPopulator(pygrametl_program_path, sqlite3, True, database=dw_path)
 dw_rep = dwp.run()
 
 # Checking how long it took.
-print(time_passed(start))
+time_before_test = time_passed(start)
 
 case = Case(dw_rep, pred_list)
 
 case.run()
 
+
+time_after_test = time_passed(start)
+
 # Checking how long it took.
-print(time_passed(start))
+print(" TIME BEFORE TEST " + time_before_test)
+print(" TIME AFTER TEST " + time_after_test)
