@@ -7,8 +7,8 @@ import random
 import choice
 
 
-ENTRIES_BOOK = 100000
-ENTRIES_AUTHOR = 100000
+ENTRIES_BOOK = 100
+ENTRIES_AUTHOR = 100
 ENTRiES_COUNTRIES = 20
 CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'Kobenhavn']
 COUNTRY_MAP = {city:country for city, country in zip(CITIES, ['DK' for x in CITIES])}
