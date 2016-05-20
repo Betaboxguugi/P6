@@ -130,7 +130,7 @@ tab_tester1 = RuleColumnPredicate(table_name='bookdim',
                                   constraint_function=constraint1,
                                   column_names=['book', 'genre'],
                                   constraint_args=[5])
-tab_tester2 = RuleColumnPredicate('bookdim', constraint2, ['genre'])
+tab_tester2 = RuleColumnPredicate(['bookdim', 'facttable'], constraint2, ['genre'])
 tab_tester3 = RuleColumnPredicate('timedim', constraint1, ['day', 'timeid'], [6], True)
 
 nn_tester1 = ColumnNotNullPredicate('bookdim', 'genre')
@@ -147,20 +147,20 @@ func_dependencies1 = (('book', 'bookid'), ('book', 'genre'))
 func_dependencies2 = (('genre'), 'book')
 fd_tester1 = FunctionalDependencyPredicate(['bookdim'], ('genre'), ('book'))
 
-print(dup_tester1.run(dw))
-print(dup_tester2.run(dw))
-print(dup_tester3.run(dw))
-print(row_tester1.run(dw))
-print(row_tester1.run(dw))
-print(row_tester2.run(dw))
-print(tab_tester1.run(dw))
+#print(dup_tester1.run(dw))
+#print(dup_tester2.run(dw))
+#print(dup_tester3.run(dw))
+#print(row_tester1.run(dw))
+#print(row_tester1.run(dw))
+#print(row_tester2.run(dw))
+#print(tab_tester1.run(dw))
 print(tab_tester2.run(dw))
 print(tab_tester3.run(dw))
-print(nn_tester1.run(dw))
-print(nn_tester2.run(dw))
+#print(nn_tester1.run(dw))
+#print(nn_tester2.run(dw))
 print(rrp_tester1.run(dw))
 #print(scdv_tester1.run(dw))
-print(fd_tester1.run(dw))
+#print(fd_tester1.run(dw))
 
 
 

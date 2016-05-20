@@ -16,7 +16,7 @@ class RuleRowPredicate(Predicate):
                  constraint_args=[], column_names_exclude=False):
         """
         :param table_name: name of table used for test
-        :type table_name: str
+        :type table_name: str, list
         :param column_names: list of column names
         :type column_names: list
         :param constraint_function: user-defined function to run on each row.

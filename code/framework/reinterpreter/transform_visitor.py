@@ -9,8 +9,9 @@ WRAPPERS = ['ConnectionWrapper']
 
 
 class TransformVisitor(ast.NodeVisitor):
-    """ Class responsible for making changes to an AST so that it can be run
-     with specific connections
+    """
+    Class responsible for making changes to an AST so that it can be run
+    with other connections
     """
     def __init__(self, sources_ids, dw_id):
         """
@@ -23,7 +24,8 @@ class TransformVisitor(ast.NodeVisitor):
         self.dw_flag = False
 
     def __get_id(self):
-        """ Goes through a single iteration of the keys of the source_ids.
+        """
+        Goes through a single iteration of the keys of the source_ids.
         """
         if self.counter == len(self.source_ids):
             raise StopIteration('There are no more mappings to use')
@@ -33,11 +35,16 @@ class TransformVisitor(ast.NodeVisitor):
             return id
 
     def __replace_connection(self, id, node):
+        """
+        Replace name of connection with user-defined id
+        :param id: Name to replace with
+        :param node: A call node
+        """
 
         newnode = ast.Name(id=id, ctx=ast.Load())
         if len(node.args) != 0:   # Conn given as positional arg
             node.args[0] = newnode
-        else:                     # Conn given by keyword i.e. "connection = x"
+        else:  # Conn given by keyword i.e. "connection = x"
             for keyword in node.keywords:
                 if keyword.arg == 'connection'\
                         or keyword.arg == 'f'\
@@ -49,7 +56,8 @@ class TransformVisitor(ast.NodeVisitor):
         ast.fix_missing_locations(node)
 
     def __find_call_name(self, node):
-        """ Function that finds the name of a call node
+        """
+        Function that finds the name of a call node
         :param node: The call node, who's name we will find.
         :return: The name of the call node
         """
@@ -65,9 +73,9 @@ class TransformVisitor(ast.NodeVisitor):
         return name
 
     def visit_Call(self, node):
-        """ The visit of a call node.
-         Is an overwrite of Visit_Call ignoring all calls except for those we
-         need to modify.
+        """
+        The visit of a call node.
+        Ignores all calls except for those we need to modify.
         :param node: A call node
         """
         name = self.__find_call_name(node)
@@ -85,7 +93,8 @@ class TransformVisitor(ast.NodeVisitor):
                 self.dw_flag = True
 
     def start(self, node):
-        """ We start the visitor.
+        """
+        We start the visitor.
         :param node: the root of an AST.
         """
         self.counter = 0

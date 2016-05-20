@@ -9,23 +9,19 @@ __maintainer__ = 'Mathias Claus Jensen'
 
 class DWPopulator:
     """
-    FrameworkTestCase for running predicate tests on a pygrametl program given
-    a set of sources
+    Runs a pygrametl program, returning a representation of a DW.
     """
     def __init__(self, program,  pep249_module,
                  program_is_path=False, replace=False, sources=(),
                  **dw_conn_params):
         """
         :param program: A path or string of a pygrametl program
-        :type program: str
         :param pep249_module: Module used for connecting to the DW
         :param sources: sources used in the pygrametl program
         :param program_is_path: Indicates whether the program input is a
         path or not.
-        :type program_is_path: bool
         :param replace: Indicates whether connections in program input
         should be replaced.
-        :type replace: bool
         :param dw_conn_params: Dict of parameters used for connecting to DW.
         """
 
@@ -65,22 +61,29 @@ class DWPopulator:
                                           source_conns=self.sources,
                                           dw_conn=dw_conn)
             scope = reinterpreter.run()
-            dw_conn.close()
+
+            try:
+               dw_conn.close()
+            except Exception:
+                pass
 
         else:
             # Runs pygrametl program without replacing connections
-            # The program must close the connection
             tree = ast.parse(self.program)
             p = compile(source=tree, filename='<string>', mode='exec')
             scope = {}
             exec(p, scope)
 
-            # Closes connections to all DWs
-            for x, value in scope.items():
-                if isinstance(value, ConnectionWrapper):
-                   scope[x].close()
+            try:
+                # Closes connections to all DWs
+                for x, value in scope.items():
+                    if isinstance(value, ConnectionWrapper):
+                       scope[x].close()
+            except Exception:
+                pass
 
         # Reestablishes contact to the DW
+        # Connection to DW should be closed before this
         dw_conn = self.pep249_module.connect(**self.dw_conn_params)
         return dw_conn, scope
 
