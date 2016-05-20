@@ -114,8 +114,8 @@ class DWRepresentation(object):
         :param names: List of table names
         :yield: A dictionary representing a row
         """
-        if len(names) == 1:
-            query = "SELECT * FROM " + names[0]
+        if isinstance(names, str):
+            query = "SELECT * FROM " + names
         else:
             query = "SELECT * FROM " + " NATURAL JOIN ".join(names)
         try:
