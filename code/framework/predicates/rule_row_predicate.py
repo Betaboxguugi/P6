@@ -40,7 +40,6 @@ class RuleRowPredicate(Predicate):
         Runs the constraint function on the specified columns of each row.
         Stores rows asserted faulty by the function for reporting.
         """
-        table = dw_rep.get_data_representation(self.table_name)
 
         # Gets the attribute names for columns needed for test
         column_arg_names = self.setup_columns(dw_rep, self.table_name,
@@ -53,7 +52,7 @@ class RuleRowPredicate(Predicate):
                                 do not match""")
 
         # Iterates over each row, calling the constraint function upon it
-        for row in table.itercolumns(column_arg_names):
+        for row in dw_rep.iter_join(self.table_name):
 
             # Finds parameters. First attributes then additional params.
             arguments = []

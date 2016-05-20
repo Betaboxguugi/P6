@@ -36,7 +36,6 @@ class RuleColumnPredicate(Predicate):
 
     def run(self, dw_rep):
         """ Runs the constraint function on the specified columns."""
-        table = dw_rep.get_data_representation(self.table_name)
 
         # Gets the attribute names for columns needed for test
         column_arg_names = self.setup_columns(dw_rep, self.table_name,
@@ -51,7 +50,7 @@ class RuleColumnPredicate(Predicate):
         # Makes a dictionary. Each key is a column_name pointing
         # at a list of the corresponding column
         columns = {name: [] for name in column_arg_names}
-        for row in table.itercolumns(column_arg_names):
+        for row in dw_rep.iter_join(self.table_name):
             for name in column_arg_names:
                 columns[name].append(row[name])
 
