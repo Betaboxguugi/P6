@@ -39,22 +39,6 @@ def get_next_row(table, names):
             return dict(zip(names, row)), False
 
 
-def get_rest_of_table(table, names):
-    """
-    Fetches the rest of a table that's either list of dicts or a cursor
-    :param table: table to fetch from
-    :return: Rest of rows as a list of dicts
-    """
-    if isinstance(table, list):
-        return table
-    else:
-        result = []
-        for row in table.fetchall():
-            result.append(dict(zip(names, row)))
-
-        return result
-
-
 def grouped_sql(table, columns):
     """
     Used to group together all rows in a table
@@ -139,48 +123,56 @@ def sorted_compare(actual, expected):
 
     # Get names of attributes
     names = [t[0] for t in actual.description]
+    result = True
+    actual_empty = False
+    expected_empty = False
 
-    # Lists to contain erroneous rows
-    actual_list = []
-    expected_list = []
-
-    while True:
+    # Run through both lists as long as we find no errors and no list is empty.
+    while result and not actual_empty and not expected_empty:
         a_row, actual_empty = get_next_row(actual, names)
-        e_row, expected_empty = get_next_row(expected, names)
+        if not actual_empty:
+            result = None not in a_row.values()
 
-        # Does not compare any that include nulls
-        # This is done to mimic results of comparing with nulls in sql
-        while not actual_empty and (None in a_row.values()):
-            actual_list.append(a_row)
-            a_row, actual_empty = get_next_row(actual, names)
-
-        while not expected_empty and None in e_row.values():
-            expected_list.append(e_row)
+        if result:
             e_row, expected_empty = get_next_row(expected, names)
+            if not expected_empty:
+                result = None not in e_row.values()
 
-        if not expected_empty and not actual_empty:
-            if a_row != e_row:
-                actual_list.append(a_row)
-                expected_list.append(e_row)
+        if not expected_empty and not actual_empty and result:
+            result = a_row == e_row
 
-        # When the two tables are of equal length
-        if actual_empty and expected_empty:
-            break
+    # Return true if no error found and both
+    return result and actual_empty and expected_empty
 
-        # When there are more rows in expected table
-        elif actual_empty and not expected_empty:
-            expected_list = [e_row]
-            break
 
-        # When there are more rows in actual table
-        elif not actual_empty and expected_empty:
-            actual_list = [a_row]
-            break
+def subset_sorted_compare(actual, expected):
+    """
+    Does a subset comparison of two sorted tables
+    :param actual: Table in DW
+    :param expected: Table given by user
+    :return: A bool indicating whether expected is a subset of actual
+    """
 
-        elif actual_list or expected_list:
-            break
+    # Get names of attributes
+    names = [t[0] for t in actual.description]
 
-    return actual_list, expected_list
+    e_row, expected_empty = get_next_row(expected, names)
+    if not expected_empty:
+        result = None not in e_row.values()
+    actual_empty = False
+
+    # Run through actual table until false or until expected table is empty
+    while result and not expected_empty and not actual_empty:
+        a_row, actual_empty = get_next_row(actual, names)
+
+        if not actual_empty:
+            if a_row == e_row:
+                e_row, expected_empty = get_next_row(expected, names)
+                if not expected_empty:
+                    result = None not in e_row.values()
+
+    # Test passed if expected table is empty and result not False
+    return expected_empty and result
 
 
 class CompareTablePredicate(Predicate):
@@ -262,6 +254,7 @@ class CompareTablePredicate(Predicate):
 
         only_in_actual = []
         only_in_expected = []
+        sort_result = False
 
         # Gets the actual columns we want to compare on.
         chosen_columns = self.setup_columns(dw_rep, self.actual_table,
@@ -328,10 +321,11 @@ class CompareTablePredicate(Predicate):
                 expected_cursor.execute(expected_table_sql)
 
                 if self.subset:
-                    raise RuntimeError('Cannot perform subset check on sorted')
+                    sort_result =\
+                        subset_sorted_compare(actual_cursor, expected_cursor)
 
                 else:
-                    only_in_actual, only_in_expected = \
+                    sort_result = \
                         sorted_compare(actual_cursor, expected_cursor)
 
             else:  # Unsorted comparison
@@ -425,9 +419,11 @@ class CompareTablePredicate(Predicate):
                            key=itemgetter(*self.sort_keys))
 
                 if self.subset:
-                    raise RuntimeError('Cannot perform subset check on sorted')
+                    sort_result =\
+                        subset_sorted_compare(actual_cursor, expected_dict)
+
                 else:
-                    only_in_actual, only_in_expected = \
+                    sort_result = \
                         sorted_compare(actual_cursor, expected_dict)
 
             else:  # Unsorted compare
@@ -446,11 +442,12 @@ class CompareTablePredicate(Predicate):
                 for row in query_result:
                     actual_dict.append(dict(zip(names, row)))
 
-                # Fetch and remove nulls from actual
-                only_in_actual = \
-                    [x for x in actual_dict if None in x.values()]
-                actual_dict = \
-                    [x for x in actual_dict if None not in x.values()]
+                if not self.subset:
+                    # Fetch and remove nulls from actual
+                    only_in_actual = \
+                        [x for x in actual_dict if None in x.values()]
+                    actual_dict = \
+                        [x for x in actual_dict if None not in x.values()]
 
                 # Fetch and remove nulls from expected
                 only_in_expected = \
@@ -507,14 +504,11 @@ class CompareTablePredicate(Predicate):
 
                         only_in_expected.extend(unique_expected)
 
-        # If no non-matching rows found, the assertion held.
-        all_unmatched = only_in_expected + only_in_actual
-        if not only_in_expected and not only_in_actual:
-            self.__result__ = True
-
         report_list = []
 
         if self.sort:
+            self.__result__ = sort_result
+
             if self.expected_in_db:
                 table_names = \
                  " Expected: " + ",".join(self.expected_table) + \
@@ -524,14 +518,23 @@ class CompareTablePredicate(Predicate):
                  " Expected: User table " + \
                  "  Actual: " + ",".join(self.actual_table)
 
+            if self.subset:
+                msg = "Comparison failed during subset sort compare"
+            else:
+                msg = "Comparison failed during sort compare"
+
             sort = Report(result=self.__result__,
                           tables=table_names,
                           predicate=self,
                           elements=[],
-                          msg="Comparison failed during sort compare")
+                          msg=msg)
             report_list.append(sort)
 
         else:
+            # If no non-matching rows found, the assertion held.
+            if not only_in_expected and not only_in_actual:
+                self.__result__ = True
+
             if self.expected_in_db:
                 table_names = ",".join(self.expected_table)
             else:
