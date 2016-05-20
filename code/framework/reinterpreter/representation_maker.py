@@ -37,7 +37,7 @@ class RepresentationMaker(object):
         Checks whether a table is part of a specific subset of table types.
         :param table: an instance of a table from pygrametl.tables
         :param typelist: list of types to compare against
-        :return: a boolean indicating if the table had a type from typelist.
+        :return: a boolean indicating if the table was of a type from typelist.
         """
         for table_type in typelist:
             if isinstance(table, table_type):
@@ -85,7 +85,7 @@ class RepresentationMaker(object):
                                   snowflakes)
 
         # Clears the list of tables as its contents may otherwise be retained,
-        # when a new Case is executed.
+        # when a new Case is executed. This is because the list is mutable.
         pygrametl._alltables.clear()
 
         return dw_rep

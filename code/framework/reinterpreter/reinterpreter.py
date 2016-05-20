@@ -15,13 +15,10 @@ class Reinterpreter(object):
         """ 
         :param program: A string containing the program that is to be 
         reinterpreted.
-        :type program: str
-        :param source_conns: A dictionary of string:connection pairs. Used to
-        specify which connections should be used in the program. The dictionary
-        must be ordered in the occurrence of use in the program, and there has
-        to be as many connections in the dictionary as there are used in the
-        program
-        :param dw_conn: PEP249 connection object
+        :param source_conns: A list of replacement connections to place
+        into the program. A replacement must be ordered according to when
+        source appears in the program.
+        :param dw_conn: PEP249 connection object, connecting to a DW
         """
 
         self.program = program
@@ -63,7 +60,8 @@ class Reinterpreter(object):
         :return: DWRepresentation of dw from the given program
         """
 
-        tree = ast.parse(self.program)  # Parsing the pygrametl program to an AST
+        # Parsing the pygrametl program to an AST
+        tree = ast.parse(self.program)
 
         # Transforming the AST to include the user defined connections
         self.__transform(tree)
