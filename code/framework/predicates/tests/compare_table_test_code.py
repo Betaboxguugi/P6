@@ -28,10 +28,7 @@ c.execute('''CREATE TABLE COMPANY
     SALARY         REAL);''')
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
-                  ('Sauron', 1000000, 'Mordor', 42),
-                  ('Anders', 43, 'Denmark', 21000.00),
-                  ('Sauron', 1000000, 'Mordor', 42),
-                  ('Sauron', 1000000, 'Mordor', None)
+                  ('Sauron', 1000000, 'Mordor', 42)
                 ]
 
 # ... and inserting the necessary data.
@@ -49,8 +46,7 @@ c.execute('''CREATE TABLE BOMPANY
 company_info = [
                 ('Anders', 43, 'Denmark', 21000.00),
                   ('Sauron', 1000000, 'Mordor', 42),
-                  ('Anders', 43, 'Denmark', 21000.00),
-                  ('Sauron', 1000000, 'Mordor', 42)
+                  ('Anders', 43, 'Denmark', 21000.00)
                 ]
 
 # ... and inserting the necessary data.
@@ -119,7 +115,7 @@ start = time.monotonic()
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
 
-compare1 = CompareTablePredicate(['company'], c,['ID'],True,False,(), False, True)
+compare1 = CompareTablePredicate(['company'], ['bompany'],['ID'],True,False,(), True, True)
 
 p = compare1.run(dw)
 for x in p:
