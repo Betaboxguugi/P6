@@ -12,6 +12,16 @@ def time_passed(start_time):
     elapsed = end - start_time
     return '{}{}'.format(round(elapsed, 3), 's')
 
+# We run the ETL program
+etl_path = './etl.py'
+with open(etl_path, 'r') as f:
+    code = compile(f.read(), etl_path, 'exec')
+    exec(code)
+    
+time_before_test = time_passed(start)
+print(time_before_test)
+
+
 # Not Null
 c.execute("""SELECT *
              FROM authordim
@@ -136,5 +146,8 @@ else:
     print('SCD Version did not hold. Should have been 4 but was ' +
           str(scdv_list[0][0]))
 
+
+time_after_test = time_passed(start)
 # Checking how long it took.
-print(time_passed(start))
+print(" TIME BEFORE TEST " + time_before_test)
+print(" TIME AFTER TEST " + time_after_test)
