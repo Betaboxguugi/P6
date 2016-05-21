@@ -3,10 +3,6 @@ import time
 
 start = time.monotonic()
 
-dw_path = './dw.db'
-conn = sqlite3.connect(dw_path)
-c = conn.cursor()
-
 def time_passed(start_time):
     end = time.monotonic()
     elapsed = end - start_time
@@ -17,10 +13,12 @@ etl_path = './etl.py'
 with open(etl_path, 'r') as f:
     code = compile(f.read(), etl_path, 'exec')
     exec(code)
-    
-time_before_test = time_passed(start)
-print(time_before_test)
 
+dw_path = './dw.db'
+conn = sqlite3.connect(dw_path)
+c = conn.cursor()
+
+time_before_test = time_passed(start)
 
 # Not Null
 c.execute("""SELECT *
@@ -145,7 +143,6 @@ if scdv_list[0] == 4:
 else:
     print('SCD Version did not hold. Should have been 4 but was ' +
           str(scdv_list[0][0]))
-
 
 time_after_test = time_passed(start)
 # Checking how long it took.
