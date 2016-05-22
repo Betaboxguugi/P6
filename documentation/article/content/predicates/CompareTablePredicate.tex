@@ -4,21 +4,12 @@ CompareTablePredicate is by far the most verbose of the predicates. It is used t
 \insertcodefile{CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
 
 \begin{description}
-<<<<<<< HEAD
-\item [actual\_table] is a string containing the name of the table from the DW to be compared with \textit{expected\_table}. May be given as a list of strings, if a natural join of tables is needed for comparison.
-\item [expected\_table] is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. If the tester wants a natural join of tables, then a list of strings may be given. Instead of strings, the parameter may also be given a cursor, from which data can be fetched, or a list of dictionaries.
-\item [sort] a bool to indicate, whether a sort compare should be used. Defaults to true.
-\item [sort\_keys] a set of attribute names to sort the tables upon, when doing a sort compare.
-\item [distinct] a bool to indicate, whether the tables should be treated as distinct, or if duplicates should be accounted for during comparison. Defaults to true.
-\item [subset] a bool to indicate, if the comparison should check for subset or equivalence.  If True, we only check whether all entries in expected appear in actual. If false, we also check that all entries in actual appear in expected. 
-=======
 \item [actual\_table] is a string with the name of a table from the DW, which should be compared with \textit{expected\_table}. It may be given as a list of strings, if a natural join of tables is needed instead of a single table.
 \item [expected\_table] is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. By giving a list of strings, a tester may instead get a natural join of tables as before. Instead of strings, the parameter may also be given a PEP249 cursor, from which data can be fetched, or a list of dictionaries.
 \item [sort] a boolean defaulting to True. If false we do a sort compare, else a unsorted comparison is performed. Both types of comparison are explained below.
 \item [sort\_keys] a set of attribute names to sort both tables upon, when doing a sort compare. Defaults to an empty set.
 \item [distinct] a boolean defaulting to true. If true tables should are treated as distinct, while false means that duplicates should be accounted for during comparison.
 \item [subset] a boolean defaulting to false. If true the comparison will check whether all entries in expected appear in actual. If false, it also checks that all entries in actual appear in expected.
->>>>>>> 587219b2b78d1a654bff31ee55e7dc11a2c352f6
 \end{description}
 
 For the instantiation above, we assert that BookDim contains the 2nd version of the Hobbit. We ignore the bid attribute for the compare, as it is a surrogate key. We do not perform sort compare. We also indicate that the tables should not be viewed as distinct. This is important, as the row within expected should only appear once in actual. We want to make sure that no duplicates of it exists within the actual table.
@@ -70,11 +61,8 @@ If the query returns no rows, we know that $Expected \subseteq BookDim$ is true.
 
 In the case, where we have to take account for duplicates within the tables, we have to perform another query. For $Expected \backslash BookDim \equiv \emptyset$ , this is shown in:
 
-<<<<<<< HEAD
-\insertcodefileSQL{SQLCompareTableDW2.sql}{SQL query if expected table in DW and we account for duplicates in the case of \cref{CompareTablePredicate.py}} 
-=======
+
 \insertcodefileSQL{SQLCompareTableDW2.sql}{SQL query if expected table in DW and we account for duplicates}
->>>>>>> 587219b2b78d1a654bff31ee55e7dc11a2c352f6
 
 By grouping together similar rows within each table, we can do the same type of comparison as before. Along with each grouped row, we also account for the amount of duplicates using the COUNT aggregate function. Thus we also need to extend the conjunction in the WHERE-clause with another logical clause concerning amount of duplicates. When doing a subset compare, the amount of duplicates for each grouped row in the expected table should be less than or equal to those of the actual table. When checking for equality between tables, we want the duplicates of each grouped row to be equivalent between the tables. Expect for these changes, we use the queries in the same way, as when not accounting for duplicates.
 
