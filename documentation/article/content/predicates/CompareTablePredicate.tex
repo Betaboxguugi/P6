@@ -6,9 +6,9 @@ CompareTablePredicate is by far the most verbose of the predicates. It is used t
 \begin{description}
 \item [actual\_table] is a string containing the name of the table from the DW to be compared with \textit{expected\_table}. May be given as a list of strings, if a natural join of tables is needed for comparison.
 \item [expected\_table] is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. If the tester wants a natural join of tables, then a list of strings may be given. Instead of strings, the parameter may also be given a cursor, from which data can be fetched, or a list of dictionaries.
-\item [sort] a bool to indicate, whether a sort compare should be used.
+\item [sort] a bool to indicate, whether a sort compare should be used. Defaults to true.
 \item [sort\_keys] a set of attribute names to sort the tables upon, when doing a sort compare.
-\item [distinct] a bool to indicate, whether the tables should be treated as distinct, or if duplicates should be accounted for during comparison.
+\item [distinct] a bool to indicate, whether the tables should be treated as distinct, or if duplicates should be accounted for during comparison. Defaults to true.
 \item [subset] a bool to indicate, if the comparison should check for subset or equivalence.  If True, we only check whether all entries in expected appear in actual. If false, we also check that all entries in actual appear in expected. 
 \end{description}
 
@@ -54,7 +54,7 @@ If the query returns no rows, we know that $Expected \subseteq BookDim$. If we w
 
 In the case, where we have to take account for duplicates within the tables, we have to perform another query. For $Expected \backslash BookDim \equiv \emptyset$ , this is shown in:
 
-\insertcodefileSQL{SQLCompareTableDW.sql}{SQL query if expected table in DW and we account for duplicates in the case of \cref{CompareTablePredicate.py}} 
+\insertcodefileSQL{SQLCompareTableDW2.sql}{SQL query if expected table in DW and we account for duplicates in the case of \cref{CompareTablePredicate.py}} 
 
 By grouping together similar rows within each table, we can do the same type of comparison as before. Along with each grouped row we also account for its size, count. Thus we also need to extend the conjunction in the WHERE-clause with another logical clause. For each row type, we want the amount of duplicates in the expected table to be less than or equal to those of the actual table. When checking for equality between tables, we want the count value for each row to be just equivalent instead. Otherwise we just run the query in both directions as before.   
 

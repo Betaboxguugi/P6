@@ -1,3 +1,4 @@
-SELECT aid,name,year COUNT(*) 
+SELECT aid, name, year, COUNT(*) 
 FROM AuthorDim 
-GROUP BY aid HAVING COUNT(*) > 1 
+GROUP BY aid
+HAVING COUNT(*) > 1 

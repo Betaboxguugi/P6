@@ -1,4 +1,4 @@
-FunctionalDependencyPredicate(tables=['BookDim',
-                                      'FactTable'],
-                              attributes='title',
-                              dependent_attributes='aid')
+FunctionalDependencyPredicate(tables=['CountryDim',
+                                      'AuthorDim'],
+                              attributes='city',
+                              dependent_attributes='country')
