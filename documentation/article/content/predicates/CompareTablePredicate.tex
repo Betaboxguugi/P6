@@ -1,65 +1,85 @@
 \subsection{CompareTablePredicate}
-CompareTablePredicate is by far the most verbose of the predicates. It is used to assert that two tables uphold some type of comparison. The predicate allows testers to compare an actual table, or join of tables, within the DW to one expected by the user. Users have different options, in how they would like to compare two tables. They may want to check for a one to one equality between tables, or whether the contents of the expected table is included in the other. In some cases, testers may want their comparisons to treat tables as sets, while at other times duplicates should be accounted. Contrary to the other predicates, this does not only perform checks using SQL queries, but also using regular python code. This introduces a few unique challenges as covered in this section. The CompareTablePredicate is instantiated as follows, with description of the parameters below.
+CompareTablePredicate is by far the most verbose of the predicates. It is used to assert that two tables uphold some type of comparison. The predicate allows testers to compare an actual table, or join of tables, within the DW to one expected by the user. Users have different options, in how they would like to compare two tables. They may want to check for a one to one equality between tables, or whether the contents of the expected table is included in the other. In some cases, testers may want their comparisons to treat tables as sets, while at other times duplicates should be accounted for. Contrary to the other predicates, this does not only perform checks using SQL queries, but also using regular python code. This introduces a few unique challenges as covered in this section. The CompareTablePredicate is instantiated as follows, with a description of the parameters below.
 
 \insertcodefile{CompareTablePredicate.py}{Instantiation of CompareTablePredicate}
 
 \begin{description}
+<<<<<<< HEAD
 \item [actual\_table] is a string containing the name of the table from the DW to be compared with \textit{expected\_table}. May be given as a list of strings, if a natural join of tables is needed for comparison.
 \item [expected\_table] is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. If the tester wants a natural join of tables, then a list of strings may be given. Instead of strings, the parameter may also be given a cursor, from which data can be fetched, or a list of dictionaries.
 \item [sort] a bool to indicate, whether a sort compare should be used. Defaults to true.
 \item [sort\_keys] a set of attribute names to sort the tables upon, when doing a sort compare.
 \item [distinct] a bool to indicate, whether the tables should be treated as distinct, or if duplicates should be accounted for during comparison. Defaults to true.
 \item [subset] a bool to indicate, if the comparison should check for subset or equivalence.  If True, we only check whether all entries in expected appear in actual. If false, we also check that all entries in actual appear in expected. 
+=======
+\item [actual\_table] is a string with the name of a table from the DW, which should be compared with \textit{expected\_table}. It may be given as a list of strings, if a natural join of tables is needed instead of a single table.
+\item [expected\_table] is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. By giving a list of strings, a tester may instead get a natural join of tables as before. Instead of strings, the parameter may also be given a PEP249 cursor, from which data can be fetched, or a list of dictionaries.
+\item [sort] a boolean defaulting to True. If false we do a sort compare, else a unsorted comparison is performed. Both types of comparison are explained below.
+\item [sort\_keys] a set of attribute names to sort both tables upon, when doing a sort compare. Defaults to an empty set.
+\item [distinct] a boolean defaulting to true. If true tables should are treated as distinct, while false means that duplicates should be accounted for during comparison.
+\item [subset] a boolean defaulting to false. If true the comparison will check whether all entries in expected appear in actual. If false, it also checks that all entries in actual appear in expected.
+>>>>>>> 587219b2b78d1a654bff31ee55e7dc11a2c352f6
 \end{description}
 
 For the instantiation above, we assert that BookDim contains the 2nd version of the Hobbit. We ignore the bid attribute for the compare, as it is a surrogate key. We do not perform sort compare. We also indicate that the tables should not be viewed as distinct. This is important, as the row within expected should only appear once in actual. We want to make sure that no duplicates of it exists within the actual table.
 
-When running the predicate, it performs comparisons differently based on settings chosen, and how the expected table is stored. In general the fastest execution comes from having the expected table contained within the DW. As such, testers may want to insert larger test tables into the DW. If expected table is given as a list of dictionaries or a cursor, it will be slower as comparison cannot be made at the database level. When a cursor is given, we create a list of dictionaries from it at instantiation.
+When running the predicate, it performs comparisons differently based on settings chosen, and how the expected table is stored. In general, the fastest execution comes from having the expected table contained within the DW. As such, testers may want to insert larger test tables into the DW. If expected table is given as a list of dictionaries or a cursor, it will be slower as comparison cannot be made at the database level. When a PEP249 cursor is given, we create a list of dictionaries from it at instantiation.
 
-The type of comparison made can be split into two, sorted and unsorted. These will be explained in the following.
+The types of comparison can be split into two, sorted and unsorted. These will be explained in the following.
 
 \subsubsection{Sorted Compare}
-Sorted comparison works by sorting the two tables and then comparing them one by one. It works mostly the same no matter, how expected table is given. Only one to one comparison, can be performed with this method. Subset compare has not been implemented. If the comparison should not account for duplicate rows, we simply use the distinct keyword, when querying from the DW. When expected table is a list of dictionaries, we remove duplicates using python. 
+Sorted comparison works by sorting the two tables and then comparing them one by one. It works the same no matter, how expected table is given. If the comparison should not account for duplicate rows, we simply use the distinct keyword, when querying from the DW. When expected table is a list of dictionaries, we remove duplicates using python.
 
-In order to perform a sorted compare, a sort key is needed. This key should be unique for each row in both tables. If two equivalent tables are sorted on such a key, a positional comparison between entries from both tables, should find no non-equivalent pairs of rows. 
+In order to perform a sorted compare, a sort key is needed. This key should be unique for each row in both tables. If two equivalent tables are sorted on such a key, a positional comparison between entries from both tables, should find no non-equivalent pairs of rows.
 
-The tester may give a sort key. If one such key is not given, the predicate will try to generate one. This entails creating the union of one candidate key from each sub-table that joined together makes the actual table. Each table has at least one such key. Dimension have their primary key and set of lookup attributes. Fact tables have their set of keyrefs. We can only construct the sort key, if a candidate key for each table can be found within the set of chosen columns, which we compare upon. 
+The tester may give a sort key. If one such key is not given, the predicate will try to generate one. This entails creating the union of one candidate key from each sub-table that joined together makes the actual table. Each table has at least one such key. Dimensions have their primary key and set of lookup attributes. Fact tables have their set of keyrefs. We can only construct the sort key, if a candidate key for each table can be found within the set of chosen columns, which we compare upon.
 
-If a sort key is present, we can perform a sorted comparison.  For tables in DW this entails, joining together all the sub-tables, then using the ORDER BY to order the tables according to the sort key. If the expected table is a list of dicts, the built-in python function \textit{sorted} is used.  After sort, both actual and expected are iterated through from the top using python. At each iteration, we fetch the next row of both tables and compare them. If they do not match, we break out of the iteration. This reports the predicate as failed. If the comparison is not stopped prematurely, and no faults are found, we report a successful compare. We do not report on faulty rows, as a single faulty row, changes the sort order. This will result in a lot of rows being marked as faulty, even though the may have a corresponding row in the other table. 
+If a sort key is present, we can perform a sorted comparison. For tables in DW this entails, joining together all the sub-tables, then using ORDER BY to order the tables according to the sort key. If the expected table is a list of dicts, the built-in python function \textit{sorted} is used. 
 
-As the comparison occurs through python, we have to fetch each row and convert it to a dictionary. This converts all nulls to the python None-type. This is problematic as Null = Null equals unknown, while None = None equals True. To mimic an SQL  comparison, we treat all rows containing Nones as faulty. This is also done in unsorted comparisons, when we compare using python. 
 
-In theory, sorted compare should be the fastest comparison to perform in the predicate. This is the case, as sorting with SQL generally has an average running time of O(n log(n)), where n is the size of the table. The comparison takes O(m), where m is the size of the smallest of the two tables being compared.  As in the case of other SQL queries however, runtime depends on many different factors such as the actual SQL implementation. We also have to account for the fact that parts of the method occur outside of SQL. 
+In the case where the comparison should check for equivalence, the following occurs. After sort, both actual and expected are iterated simultaneously using python. At each iteration, we fetch the next row of both tables and compare them. If they do not match, we break out of the iteration. We may also break out, if one of the tables is emptied before the other. Such premature breaks result in a failed comparison. A successful comparison occurs, if both tables are emptied at the same time.This indicates that the tables are of equal length and contain the same rows.
+
+The method is rather similar, when checking whether the expected table is a subset of the actual table. This time we iterate over just the actual table and compare its rows to those of expected table. We only fetch the next entry from the expected table, when there is a match. The iteration is broken once one of the tables is emptied. Only if the expected table was emptied, meaning that all its elements found matches, do we report success. In any other case, a failed comparison is reported.
+
+In both cases, comparison occurs through python. When we fetch a row, we convert it to a dictionary. This changes all stored nulls to the python None-type. This is problematic as Null = Null equals unknown, while None = None equals True. To mimic an SQL comparison, we treat all rows containing Nones as faulty.  When using sorted comparison to check for equivalence, we break out of iteration and fail, if any row is found to contain None. In the case of subset comparison, we only break prematurely if a None entry is found in one of the expected rows. This precaution is used in all parts of the predicate, where comparison is made using python.
+
+Compared to other predicates, sorted compare does not report on faulty rows. It reports fail, once a single fault is discovered.  This is partially because  a single faulty row, changes the sort order. This will result in a lot of rows being marked as faulty by positional comparison, even though the may have a corresponding row in the other table. Such a report would not be helpful to the tester, so this type of comparison simply reports success or fail.
+
+Sorted compare is the  fastest comparison to perform in this predicate. This is the case, as sorting with SQL generally has an average running time of O(n log(n)), where n is the size of the table. The comparison takes at most O(m), where m is the size of the smallest of the two tables being compared. If the tables are not equivalent, the running time will most likely be cut short, as the predicate reports at the first fault found. Thus unsorted compare is well to use, when the tester simply wants to know whether two tables are equivalent, not interested in faulty rows.
+
+
 
 \subsubsection{Unsorted Compare}
-Unsorted compare is performed, when a sort key is not available, or the tester wants a more in depth report, showing faulty rows. In this case, comparison differs based on whether expected table is in the DW or a list of dicts. 
+Unsorted compare is performed, when a sort key is not available, or the tester wants a more in-depth report showing faulty rows. In this case, comparison differs based on whether expected table is in the DW or a list of dicts. In this section we use tables from \cref{CompareTablePredicate.py} for our examples.
 
-In both cases, we perform set operations between tables. When checking whether the rows of expected table is contained within the actual table, we assert that:
+In both cases, we perform set operations between tables. When checking whether there is full equality between the tables, we assert that:
 
-\[ E \backslash A \equiv \emptyset \]
-
-Should be true. This indicates that  $E \subseteq A$. Here E is the expected table and A is the actual table. 
-
-The tester may want instead to check for full equality between the tables. In this case case we assert:  
- 
 \[ A \backslash E \cup E \backslash A \equiv \emptyset \]
 
-To evaluate to true, indicating that $A \equiv E$. 
+Evaluates to true. This indicates that  $A \equiv E$, E is the expected table and A is the actual table. If the tester wants to check if the rows of the expected table is contained within the actual table, it is assert that:
+ 
+\[ E \backslash A \equiv \emptyset \]
 
-If the expected table resides within the DW, and when not accounting for duplicates, we use the following SQL query to assert  $Expected \backslash BookDim \equiv \emptyset $.
+Should be true. This indicates that $E \subseteq A$. 
 
-\insertcodefileSQL{SQLCompareTableDW.sql}{SQL query if expected table is in DW and we treat tables as distinct in the case of \cref{CompareTablePredicate.py}}
+If the expected table resides within the DW, and when not accounting for duplicates, we use the following SQL query to assert $Expected \backslash BookDim \equiv \emptyset $.
 
-If the query returns no rows, we know that $Expected \subseteq BookDim$. If we want to check for the full equivalence, we perform a similar query, checking whether all rows within actual reside in expected. 
+\insertcodefileSQL{SQLCompareTableDW.sql}{SQL query if expected table is in DW and we treat tables as distinct}
+
+If the query returns no rows, we know that $Expected \subseteq BookDim$ is true. If we want to check for the full equivalence, we perform a similar query, checking whether all rows within the actual table reside within  the expected table.
 
 In the case, where we have to take account for duplicates within the tables, we have to perform another query. For $Expected \backslash BookDim \equiv \emptyset$ , this is shown in:
 
+<<<<<<< HEAD
 \insertcodefileSQL{SQLCompareTableDW2.sql}{SQL query if expected table in DW and we account for duplicates in the case of \cref{CompareTablePredicate.py}} 
+=======
+\insertcodefileSQL{SQLCompareTableDW2.sql}{SQL query if expected table in DW and we account for duplicates}
+>>>>>>> 587219b2b78d1a654bff31ee55e7dc11a2c352f6
 
-By grouping together similar rows within each table, we can do the same type of comparison as before. Along with each grouped row we also account for its size, count. Thus we also need to extend the conjunction in the WHERE-clause with another logical clause. For each row type, we want the amount of duplicates in the expected table to be less than or equal to those of the actual table. When checking for equality between tables, we want the count value for each row to be just equivalent instead. Otherwise we just run the query in both directions as before.   
+By grouping together similar rows within each table, we can do the same type of comparison as before. Along with each grouped row, we also account for the amount of duplicates using the COUNT aggregate function. Thus we also need to extend the conjunction in the WHERE-clause with another logical clause concerning amount of duplicates. When doing a subset compare, the amount of duplicates for each grouped row in the expected table should be less than or equal to those of the actual table. When checking for equality between tables, we want the duplicates of each grouped row to be equivalent between the tables. Expect for these changes, we use the queries in the same way, as when not accounting for duplicates.
 
-In the case, where expected table is a list of dicts, the comparisons are similar to the ones above. Instead of SQL, we use python composite statements and the filterfalse method from the itertools package, to find all faulty rows during comparison. In this case we also fetch the actual table into a list of dicts, using an SQL query.  When comparison should not take account of duplicates, we remove duplicates from actual table using the  DISTINCT keyword in the query. At the same time, we use python to remove all duplicates from the expected table. As all comparison is performed with python, we make sure to handle nulls, as we did during sorted compare.
+In the case, where expected table is a list of dicts, the comparisons are similar to the ones above. Instead of SQL, we use python composite statements and the filterfalse method from the itertools package, to find all faulty rows during comparison. In this case we also fetch the actual table into a list of dicts, using an SQL query. When comparison should not take account of duplicates, we remove duplicates from actual table using the DISTINCT keyword in the query. At the same time, we use python to remove all duplicates from the expected table. As all comparison is performed with python, we make sure to handle nulls, as we did during sorted compare.
 
-Unsorted comparison is much faster to run, when the expected table is in the DW. Doing comparisons in python, we have to fetch all the data, and do not get all the benefits of having a database, such as indexing. The benefit of doing unsorted compare instead of sorted, is that it reports the faulty rows. It may also be faster than sorted in some cases, depending on factors such as the SQL implementation, and how difficult it is to sort the tables. Remember that an SQL sort may have a worst case running time larger than  O(n log(n)).
+Unsorted comparison is much faster to run, when the expected table is in the DW. Doing comparisons in python, we have to fetch all the data at once, and we do not get the benefits of having a database, such as indexing. The benefit of doing unsorted compare instead of sorted, is that it reports the faulty rows. However, it does have a longer execution time than sorted compare. Especially when taking account of duplicates.
 
 
