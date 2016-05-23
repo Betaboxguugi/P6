@@ -73,7 +73,7 @@ class ReferentialIntegrityPredicate(Predicate):
         self.dw_rep = None
         if not points_to_all and not all_pointed_to:
             raise RuntimeError("Both points_to_all"
-                               " and all_pointed_to can not be set to false")
+                               " and all_pointed_to can not both be set to false")
 
 
     def run(self, dw_rep):
@@ -88,12 +88,8 @@ class ReferentialIntegrityPredicate(Predicate):
                 if isinstance(alpha, str):
                         a.append(dw_rep.get_data_representation(alpha))
                 else:
-                        for x in alpha:
-                                if isinstance(x, str):
-                                        a.append(dw_rep.get_data_representation(x))
-                                else:
-                                        raise ValueError('Expected string in refs, got: '
-                                                         + str(type(x)))
+                        raise ValueError('Expected string in refs, got: '
+                                         + str(type(x)))
                 if isinstance(beta, str):
                         b.append(dw_rep.get_data_representation(beta))
                 else:
@@ -103,7 +99,7 @@ class ReferentialIntegrityPredicate(Predicate):
                                 else:
                                         raise ValueError('Expected string in refs, got: '
                                                          + str(type(x)))
-                refs[tuple(a)] = tuple(b)
+                refs[a] = tuple(b)
         self.refs = refs
                         
 
