@@ -13,4 +13,4 @@ Either of the two booleans can be set to false, but not both. If both are false,
 
 In \cref{SQLReferentialIntegrityPredicate.sql} is one of the queries generated in the case of the instantiation. It returns all rows from FactTable, which refers to a non-existent row in AuthorDim. Queries like this are generated for each one-way check for references between two tables, i.e. for \texttt{points\_to\_all} and \texttt{all\_pointed\_to}. If any of the generated queries returns rows, the assertion fails and relevant information for each reference is reported to the tester. This includes: the key name, the key's value, the table that had a reference for it and the table that did not.
 
-\insertcodefileSQL{SQLReferentialIntegrityPredicate.sql}{SQL query generated from  \Cref{ReferentialIntegrityPredicate.py}}
+\insertcodefileSQL{SQLReferentialIntegrityPredicate.sql}{One of the SQL queries generated from  \Cref{ReferentialIntegrityPredicate.py}}
