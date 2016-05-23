@@ -1,8 +1,8 @@
-def initials_id(aid, name):
-    return aid == get_initials(name)
+def no_autos(name, title):
+    return not name == title 
 
-RuleRowPredicate(table_name='AuthorDim',
-                 constraint_function=initials_id,
-                 column_names=['aid', 'name'],
+RuleRowPredicate(table_name=['AuthorDim','FactTable','BookDim']
+                 constraint_function=no_autos,
+                 column_names=['name', 'title'],
                  constraint_args=[],
                  column_names_exclude=False)
