@@ -28,14 +28,29 @@ c.execute('''CREATE TABLE COMPANY
     SALARY         REAL);''')
 
 company_info = [('Anders', 43, 'Denmark', 21000.00),
-                  ('Sauron', 1000000, 'Mordor', 42),
-                ('ChaDrles', 50, 'Texas', 25000.00),
-                ('Charles', 50, 'Texas', 25000.00),
-                ('Bharles', 50, 'Texas', 25000.00)
+                  ('Sauron', 1000000, 'Mordor', 42)
                 ]
 
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
+              company_info)
+
+# Making table to test on...
+c.execute('''CREATE TABLE BOMPANY
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
+    NAME           TEXT   NOT NULL,
+    AGE            INT    NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL);''')
+
+company_info = [
+                ('Anders', 43, 'Denmark', 21000.00),
+                  ('Sauron', 1000000, 'Mordor', 42),
+                  ('Anders', 43, 'Denmark', 21000.00)
+                ]
+
+# ... and inserting the necessary data.
+c.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
               company_info)
 
 
@@ -50,28 +65,6 @@ company_info = [('Anders', 'Andersen'),
 
 # ... and inserting the necessary data.
 c.executemany("INSERT INTO LASTNAME (NAME,LAST) VALUES (?,?)",
-              company_info)
-
-
-# Making table to test on...
-c.execute('''CREATE TABLE BOMPANY
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL,
-    NAME           TEXT   NOT NULL,
-    AGE            INT    NOT NULL,
-    ADDRESS        CHAR(50),
-    SALARY         REAL);''')
-
-company_info = [
-                ('Anders', 43, 'Denmark', 21000.00),
-                ('Sauron', 1000000, 'Mordor', 42),
-                ('ChaDrles', 50, 'Texas', 25000.00),
-                ('Charles', 50, 'Texas', 25000.00),
-                ('Bharles', 50, 'Texas', 25000.00),
-                ('Bharles', 50, 'Texas', 25000.00)
-                ]
-
-# ... and inserting the necessary data.
-c.executemany("INSERT INTO BOMPANY (NAME,AGE,ADDRESS,SALARY) VALUES (?,?,?,?)",
               company_info)
 
 
@@ -122,66 +115,12 @@ start = time.monotonic()
 c = conn.cursor()
 c.execute("SELECT * FROM bompany")
 
-compare1 = CompareTablePredicate(['company'], ['bompany'], ['ID'],
-                                 True, False, (), False, False)
+compare1 = CompareTablePredicate(['company'], ['bompany'],['ID'],True,False,(), True, True)
 
 p = compare1.run(dw)
 for x in p:
     print(x)
 
-a = conn.cursor()
-sql = """
-WITH table1 AS (
-		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
-		FROM bompany
-		GROUP BY NAME,AGE,ADDRESS,SALARY
-		),
-		table2 AS (
-		SELECT NAME,AGE,ADDRESS,SALARY, COUNT(*) AS COUNT
-		FROM company
-		GROUP BY NAME,AGE,ADDRESS,SALARY
-		)
-
-SELECT  *
-FROM table1
-WHERE EXISTS (
-					SELECT *
-					FROM table2
-					WHERE table1.NAME = table2.NAME AND
-					table1.AGE = table2.AGE AND
-					table1.ADDRESS = table2.ADDRESS AND
-					table1.SALARY = table2.SALARY AND
-					table1.COUNT =  table2.COUNT
-					)
-"""
-
-a.execute(sql)
-#print(a.fetchall())
-"""
-
-a = conn.cursor()
-sql = "SELECT * FROM bompany ORDER BY AGE,NAME,ADDRESS,SALARY"
-a.execute(sql)
-print(a.fetchall())
-"""
-"""
-c = conn.cursor()
-c.execute("SELECT * FROM FACTTABLE")
-names = [t[0] for t in c.description]
-
-result = []
-for row in c.fetchall():
-        result.append(dict(zip(names, row)))
-
-print(result)
-"""
-
-"""
-a = conn.cursor()
-sql = " SELECT  *  FROM  ( SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM company GROUP BY AGE,NAME,ADDRESS,SALARY )  AS actual  WHERE NOT EXISTS (  SELECT NULL  FROM  ( SELECT AGE,NAME,ADDRESS,SALARY, COUNT(*) AS COUNT  FROM bompany GROUP BY AGE,NAME,ADDRESS,SALARY )  AS  expected  WHERE  actual.AGE = expected.AGE AND actual.NAME = expected.NAME AND actual.ADDRESS = expected.ADDRESS AND actual.SALARY = expected.SALARY AND actual.COUNT = expected.COUNT) "
-a.execute(sql)
-print(a.fetchall())
-"""
 end = time.monotonic()
 elapsed = end - start
 print('{}{}'.format(round(elapsed, 3), 's'))

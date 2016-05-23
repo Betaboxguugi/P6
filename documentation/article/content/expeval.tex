@@ -20,36 +20,37 @@ Having now defined our criteria, we perform an experiment, to gather data for th
 
 For the experiment we created a small pygrametl program to populate the BookAndAuthor DW as presented in \cref{sect:Overview}. The program is made to be erroneous. For sources, the program uses two SQL databases, containing data on books and authors, and a single csv-file storing pairs of city and country names.  Once the sources have been set up, an empty DW is populated using the pygrametl program. 
 
-Once the DW is filled, we perform tests using both  \FW{} and manual.  Manual testing was done using SQLite, through the sqlite3 python module. In both instances, testing  cover the following test cases. They are chosen, as to use every predicate that FW{} offers.
+Once the DW is filled, we perform tests using both \FW{} and manual.  Manual testing was done using SQLite, through the sqlite3 python module. In both instances, testing  cover the following test cases. They are chosen, as to use every predicate that \FW{} offers.
 
 \begin{itemize}
 \item No nulls appear in any column of authorDim
-\item There is functional dependency between cid and city in the join between authorDim and bookDim. 
+\item There is functional dependency between cid and city in the join between authorDim and countrydim. 
 \item Referential integrity is upheld through the entire DW
 \item All (name,cid) pairs within authorDim are unique.
 \item BookDim contains 6 rows
 \item In bookDim, the highest version value of the book “EZ PZ ETL” is 4.
 \item Content goodbooksdim is a subset of bookDim. Goodbooksdim contains two rows for the books “The Hobbit” and “The Divine Comedy”. The comparison should not take account of duplicates.
-[\end{itemize}
+\end{itemize}
 
 During experimentation we strive to make sure that both tests deliver the same results.  This is important as \FW{} focuses on reporting faulty data to the tester. This does slow down performance, compared to if we merely reported whether a predicate passed or failed. To make the two methods comparable, manual testing must live up to the same requirement of verbosity when reporting.
 
 \subsection{Results}
-After testing with both methods, we measured the number of statements and execution time of each. When counting statements for manual testing, we counted each clause in an SQL query as a separate statement. If a where-clause contains more than a single logical clause, all additional logical clauses are counted as statements themselves.  Tests were performed, where authorDim and bookDim had 105 rows, countryDim 2 and factTable 107. The results of the measurements can be seen in \cref{table:result}.
+After testing with both methods, we measured the number of statements and execution time of each. When counting statements for manual testing, we counted each clause in an SQL query as a separate statement. If a where-clause contains more than a single logical clause, all additional logical clauses are counted as statements themselves.  Tests were performed, where authorDim had 9988 rows, bookDim 9996, countryDim 2 and factTable 10007. The results of the measurements can be seen in \cref{table:result}.
 
-It is obvious that \FW{} allows testers to use less statements in their tests. This strongly indicates that more expressive power is contained within each statement. Looking at the execution time, it seems that manual testing performs much faster, running in 0.015 seconds as compared to 3.50 seconds, when using the framework. However, most of those 3.5 seconds are spent on running a DWPopulator object to get ready for testing. As explained in \cref{sec:dwpopulator}, this entails the running of the ETL program, and creating the DWRepresentation object used by the predicates. Not accounting for this process, the actual tests execute in 0.015 seconds, just like with manual. It must also be remembered that the time to run the The DWPopulator does not increase with the size of the DW. Only the runtime of the  testing portion depends on the amount of data stored. Thus this part of the execution will not matter, when testing upon larger amounts of data.
-
+In \cref{table:result} we can clearly see that \FW{} allows testers to use less statements in their tests. This strongly indicates that more expressive power is contained within each statement. Looking at the execution time, we can see that the two approaches are almost identical in their execution time, both with setup and predicates respectively. "Execution Time Setup" is the time both approaches use to get ready for testing. Here \FW{} runs a DWPopulator, as explained in \cref{sec:dwpopulator}, this entails the running of the ETL program, and creating the DWRepresentation object used by the predicates. Whereas manual just runs the ETL program as is. "Execution Time Test Cases" is the time each approach used on running all the test cases described above. As stated the execution time is almost identical, indicating that \FW{} is at least as good as manual testing in this regard.
 
 \begin{table}[h]
 \centering
 \caption{Result of Evaluation}
 \label{table:result}
-\begin{tabular}{|p{0.10\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|}
+\begin{tabular}{|p{0.20\textwidth}|p{0.10\textwidth}|p{0.10\textwidth}|}
 \hline
-												& \FW{}	 	& Manual				 \\ \hline
+																				& \FW{}	   & Manual	\\ \hline
+Number of statements  									& 18 			 & 112 		\\ \hline
+Execution Time\newline Setup						& 79.52s   & 79.44s  \\ \hline
+Execution Time\newline Test Cases				& 18.02s   & 18.23s  \\ \hline
+Execution Time All											& 97.52s   & 97.67s  \\ \hline
 
-Number of statements  & 14 			& 111 \\ \hline
-Execution Time				& 3.5 s   & 0.015 s   \\ \hline
 \end{tabular}
 \end{table}
 
