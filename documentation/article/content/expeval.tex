@@ -34,7 +34,7 @@ Once the DW is filled, we perform tests using both \FW{} and manual.  Manual tes
 
 During experimentation we strive to make sure that both tests deliver the same reports on the assertions.  This is important as \FW{} focuses on reporting faulty data to the tester. This does slow down performance, compared to if we merely reported whether a predicate passed or failed. To make the two methods comparable, manual testing must live up to the same requirement of verbosity when reporting. This is also why the sqlite3 module is used, instead of a simple SQLite script, so that it may print to the prompt in the same way af \FW{}
 
-#The script written for \FW{} can be found in \Cref{}, and the corresponding script for manual testing is found in \Cref{}.
+The script written for \FW{} can be found in \Cref{appendix:casescript}, and the corresponding script for manual testing is found in \Cref{appendix:manualscript}.
 
 \subsection{Results}
 After testing with both methods, we measure the number of statements used and the execution time of each. We do not count imports or assignments of strings to variables as statements. When counting statements for manual testing specifically, we count each clause in an SQL query as a separate statement. For a WHERE-clause, each logical statement is counted as a clause itself.  Execution of the test scripts  are performed, where AuthorDim has 9988 rows, BookDim 9996, CountryDim 2 and FactTable 10007. The results of the measurements can be seen in \Cref{table:result}.
