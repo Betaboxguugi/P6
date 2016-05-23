@@ -75,9 +75,37 @@ class ReferentialIntegrityPredicate(Predicate):
             raise RuntimeError("Both points_to_all"
                                " and all_pointed_to can not be set to false")
 
+
     def run(self, dw_rep):
 
         missing_keys = []
+
+        # Maps table names to table_representations
+        refs = {}
+        for alpha, beta in self.refs.items():
+                a = []
+                b = []
+                if isinstance(alpha, str):
+                        a = dw_rep.get_data_representation(alpha)
+                else:
+                        for x in alpha:
+                                if isinstance(x, str):
+                                        a.append(dw_rep.get_data_representation(x))
+                                else:
+                                        raise ValueError('Expected string in refs, got: '
+                                                         + str(type(x)))
+                if isinstance(beta, str):
+                        b = dw_rep.get_data_representation(beta)
+                else:
+                        for x in beta:
+                                if isinstance(x, str):
+                                        b.append(dw_rep.get_data_representation(x))
+                                else:
+                                        raise ValueError('Expected string in refs, got: '
+                                                         + str(type(x)))
+                refs[tuple(a)] = tuple(b)
+        self.refs = refs
+                        
 
         # If references not given. We check refs between all tables.
         if not self.refs:
