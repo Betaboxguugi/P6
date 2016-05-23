@@ -19,6 +19,7 @@ conn = sqlite3.connect(dw_path)
 c = conn.cursor()
 
 time_before_test = time_passed(start)
+print(time_before_test)
 
 # Not Null
 c.execute("""SELECT *
@@ -143,6 +144,7 @@ if scdv_list[0] == 4:
 else:
     print('SCD Version did not hold. Should have been 4 but was ' +
           str(scdv_list[0][0]))
+
 
 time_after_test = time_passed(start)
 # Checking how long it took.

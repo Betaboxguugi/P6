@@ -1,11 +1,13 @@
 \subsection{NoDuplicateRowPredicate}
-NoDuplicateRowPredicate asserts that a table contains only unique entries. This is often important, when we want to ensure no duplicates of primary keys. Using the predicate, the tester may also indicate, what columns should be considered as part of the assertion. As such, we may specify that a whole row does not have to be unique, only a subset of its columns. This is useful when asserting unique keys or lookup attributes. Below is an example of how the predicate is instantiated:
+NoDuplicateRowPredicate asserts that a given table contains only unique entries. This is often important, when we want to ensure no duplicates of primary keys. Using the predicate, the tester may also indicate, what columns should be considered as part of the assertion. As such, we may specify that a whole row does not have to be unique, only a subset of its columns. This is useful when asserting unique keys or lookup attributes. In \Cref{NoDuplicateRowPredicate.py} is an example of how the predicate can be instantiated.
+
 \insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
-In the instantiation displayed, the predicate asserts that  each entry in the aid column of AuthorDim is unique. This is important as aid is the primary key to the table. 
-NoDuplicateRowPredicate will in this case issue the following SQL query, to satisfy the previous assertion:
+In the instantiation displayed, the predicate asserts that each entry in the aid column of AuthorDim is unique. This is important as aid is the primary key to the table.
+NoDuplicateRowPredicate will in this case generate the SQL query shown in \Cref{SQLNoDuplicateRowPredicate.sql}, to satisfy the previous assertion:
 
-\insertcodefileSQL{SQLNoDuplicateRowPredicate.sql}{}
+\insertcodefileSQL{SQLNoDuplicateRowPredicate.sql}{SQL query generated from  \Cref{NoDuplicateRowPredicate.py}}
 
-The select portion of the predicate counts how many of each row there are. Then it groups those rows so we are only shown rows which are duplicates, 2 or more, within the specified columns.
+This query groups together all rows on aid, and fetches groups with more than one member in AuthorDim. These groups are duplicates. If any are found the assertion fails, and the duplicates are reported to the tester.
+
 

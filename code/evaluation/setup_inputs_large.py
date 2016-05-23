@@ -5,8 +5,8 @@ import sqlite3
 import names
 import random
 
-ENTRIES_BOOK = 10000
-ENTRIES_AUTHOR = 10000
+ENTRIES_BOOK = 100
+ENTRIES_AUTHOR = 100
 ENTRiES_COUNTRIES = 20
 
 CITIES = ['Hadsten', 'Aalborg', 'Skanderborg', None, 'Kobenhavn']
