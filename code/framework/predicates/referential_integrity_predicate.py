@@ -57,23 +57,23 @@ class ReferentialIntegrityPredicate(Predicate):
     Treats all tables as distinct.
     """
 
-    def __init__(self, refs={}, table_one_to_many=True,
-                 dim_one_to_many=True):
+    def __init__(self, refs={}, points_to_all=True,
+                 all_pointed_to=True):
         """
         :param refs: Dictionary with table pairs to perform check between
-        :param table_one_to_many: If true. We check that for each entry in
+        :param points_to_all: If true. We check that for each entry in
         the main table that there is a match at the foreign key table.
-        :param dim_one_to_many: If true. We check that for each entry in
+        :param all_pointed_to: If true. We check that for each entry in
         the foreign table that there is a match at the main table.
         :return:
         """
-        self.table_one_to_many = table_one_to_many
-        self.dim_one_to_many = dim_one_to_many
+        self.points_to_all = points_to_all
+        self.all_pointed_to = all_pointed_to
         self.refs = refs
         self.dw_rep = None
-        if not table_one_to_many and not dim_one_to_many:
-            raise RuntimeError("Both table_one_to_many"
-                               " and dim_one_to_many can not be set to false")
+        if not points_to_all and not all_pointed_to:
+            raise RuntimeError("Both points_to_all"
+                               " and all_pointed_to can not be set to false")
 
     def run(self, dw_rep):
 
@@ -88,7 +88,7 @@ class ReferentialIntegrityPredicate(Predicate):
                 key = dim.key
 
                 # Check that each entry in main table has match
-                if self.table_one_to_many:
+                if self.points_to_all:
                     query_result = referential_check(table, dim, key, dw_rep)
 
                     if query_result:
@@ -98,7 +98,7 @@ class ReferentialIntegrityPredicate(Predicate):
                             missing_keys.append(msg)
 
                 # Check that each entry in foreign key table has match
-                if self.dim_one_to_many:
+                if self.all_pointed_to:
                     query_result = referential_check(dim, table, key, dw_rep)
 
                     if query_result:

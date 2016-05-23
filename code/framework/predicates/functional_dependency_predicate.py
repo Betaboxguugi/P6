@@ -6,25 +6,25 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class FunctionalDependencyPredicate(Predicate):
-    """ Predicate that can check if a table or a join of tables holds a certain
+    """ Predicate that can check if a table or a join of table_names holds a certain
     functional dependency.
     """
-    def __init__(self, tables, attributes, dependent_attributes):
+    def __init__(self, table_names, alpha, beta):
         """
-        :param tables: tables from the database, which we wish to join
-        :param attributes: attributes which are depended upon by other
-        attributes. Given as either a single attribute name, or a tuple of
+        :param table_names: table_names from the database, which we wish to join
+        :param alpha: alpha which are depended upon by other
+        alpha. Given as either a single attribute name, or a tuple of
         attribute names.
-        :param dependent_attributes: attributes which are functionally
-        dependent on the former attributes. Given as either a single attribute
+        :param beta: alpha which are functionally
+        dependent on the former alpha. Given as either a single attribute
         name, or a tuple of attribute names.
         Example:
-        attributes = ('a','b') and dependent_attributes = 'c'
+        alpha = ('a','b') and beta = 'c'
         corresponds to the functional dependency: a, b -> c
         """
-        self.tables = tables
-        self.attributes = attributes
-        self.dependent_attributes = dependent_attributes
+        self.table_names = table_names
+        self.alpha = alpha
+        self.beta = beta
         self.results = True
 
     def run(self, dw_rep):
@@ -34,17 +34,17 @@ class FunctionalDependencyPredicate(Predicate):
         """
 
         # SQL setup for the tables specified
-        if len(self.tables) == 1 or isinstance(self.tables, str):
-            join_sql = "{} as t1 , {} as t2".format(self.tables[0],
-                                                    self.tables[0])
+        if len(self.table_names) == 1 or isinstance(self.table_names, str):
+            join_sql = "{} as t1 , {} as t2".format(self.table_names[0],
+                                                    self.table_names[0])
         else:
-            joined_sql = " NATURAL JOIN ".join(self.tables)
+            joined_sql = " NATURAL JOIN ".join(self.table_names)
             join_sql = "({}) as t1 , ({}) as t2".format(joined_sql, joined_sql)
 
         # Determining our dependencies, where alpha is the left side and beta
         # the right side of the dependency (alpha --> beta)
-        alpha = self.attributes
-        beta = self.dependent_attributes
+        alpha = self.alpha
+        beta = self.beta
 
         # SQL setup for first part of SELECT, which are the left side of
         # the dependencies
@@ -101,7 +101,7 @@ class FunctionalDependencyPredicate(Predicate):
 
         return Report(result=self.results,
                       elements=elements,
-                      tables=self.tables,
+                      tables=self.table_names,
                       predicate=self,
                       msg='The predicate failed for the functional '
                           'dependency "{}" \n'
