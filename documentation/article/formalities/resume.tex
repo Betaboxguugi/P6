@@ -1,0 +1,29 @@
+\section*{Resume}
+\setcounter{page}{0}
+Dette projekt omhandler udviklingen af python-frameworked, PygramTest, beregnet til automatiseret test af ETL-programmer, udviklet ved brug af pygrametl python-pakken. Frameworkets mål er at forsimple implementationen af tests uden særlig forøgelse af runtime. Jo nemmere det er at implementere tests, jo flere tests kan der blive udført. Hvilket kan forøge softwarens endelige kvalitet.  
+
+ETL står på engelsk for extraction, transformation og load. Betegnelsen refererer til systemer, der fører data fra en mængde datakilder over i et fælles datawarehouse(DW). Dataen kan blive ændret  under overførsel. Sådanne systemer tillader, at data fra forskellige kilder kan blive lagret og analyseret sammen. Mange ETL-værktøjer fokuserer på, at disse systemer skal udvikles gennem en GUI. Men da eksperter oftest arbejder hurtigere ved brug af en API, stiller pygrametl sådan en til rådighed.   
+
+For at sikre kvaliteten af et ETL-system skal det testes. Værktøjer til ETL-testing er i dag oftest GUI-baserede. Dette stemmer ikke overens med pygrametls brug. I stedet kan man teste ETL-systemer manuelt, eller der kan anvendes mere generiske testværktøjer, men det er ikke er en optimal løsning. Dertil udvikler vi PygramTest, en python-pakke, der skal hjælpe pygrametl-programmører med at teste deres programmer.
+
+Ligesom med andre typer software-testing, anvender man test-cases til test af  ETL-systemer. En test-case er en påstand om, hvordan et program skal fungere i en given situation. Når en case er blevet defineret, kan den implementeres, og tjekke at casen overholdes af programmet. Test-cases kan henvende sig til alle strukturelle niveauer i et ETL-system. Da vi antager at brugerne af pygrametl er eksperter, der kan anvende unit-tests, fokuserer vi med PygramTest ikke på test ved komponent og integrations niveauerne. I stedet er PygramTest beregnet til test på system niveauet. Mere nøjagtigt anvendes frameworket til datadreven source-to-target testing. Her testes et ETL-system igennem den data, som det skriver ind i et DW. Hvis fejlagtig data optræder i DW’et indikerer det fejl i ETL-systemet. 
+
+PygramTest består af to større komponenter, DWPopulator-klassen og familien af Predicate-klasser. DWPopulator kører det ETL-system, som man ønsker at teste. Hertil populere DWPopulator  et udvalgt DW, der kan anvendes til test. DWPopulator tillader også dynamisk udskiftning af kilder og DW inde i programmet før det køres. Dette gør det nemmere for brugere at ændre på den data, som der skal testes på. Efter at DW’et er blevet fyldt testes det ved brug af predicate-klasserne. Hver predicate-klasse tillader test af en bestemt DW egenskab, som skal opfyldes. En instantiering af et predicate kan da ses som implementation af en specifik test-case. Predicaterne tillader tests for størrelse af tabeller, lighed mellem tabeller, functional dependency med mere. Efter udførsel af er predicate instance rapporteres der, hvorvidt den pågældende egenskab blev overholdt. Hvis antagelsen fejler rapporteres der også om rækker i DW’et, der ledte til udfaldet. 
+
+Efter udvikling af PygramTest var tilendebragt evaluerede vi frameworket op imod manuel testing, hvor der anvendes SQLite queries igennem et python script. Med begge metoder skulle de samme egenskaber for et DW testes. Vi fandt her, at PygramTest krævede langt færre program erklæringer. Samtidig viste der sig ikke en særlig forskel i udførselstid imellem de to metoder. Dog skal det også siges, at de test, som hver metode skulle udføre passede godt til vores predicates. Der findes højst sandsynligt test cases, hvor den større fleksibilitet af SQL vil være mere gavnlig. Vi føler dog, at PygramTest’s predicates giver den nødvendige testdækning påkrævet, og at det er nemmere at implementere en manuel testing.
+
+\section*{VIT - Review}
+Tak for i tager tided til at læse vore rapport og give os feedback. Vi sætter pris på det.
+\begin{description}
+\item[Grupperum:] A6-323
+\item[Vejleder:]Christian Thomsen (chr@cs.aau.dk)
+\item[Send review til:] d608f16@cs.aau.dk
+\end{description}
+
+
+
+
+
+
+
+
