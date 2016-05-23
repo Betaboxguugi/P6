@@ -1,8 +1,8 @@
 \subsection{RuleColumnPredicate}
-RuleColumnPredicate is similar to RuleRowPredicate in \cref{RCP}, even taking the same parameters as input. The difference is that RuleColumnPredicate allows for the assertion of business rules that apply to sets of columns. It is instantiated as follows:
+RuleColumnPredicate is similar to RuleRowPredicate in \cref{RCP}, even taking the same parameters as input and being performed mainly through python code. The difference is that RuleColumnPredicate allows for the assertion of business rules that apply to sets of columns. It is instantiated as shown in \Cref{RuleColumnPredicate.py}
 
 \insertcodefile{RuleColumnPredicate.py}{Instantiation of RuleColumnPredicate}
 
-In this code example, we give no\_forgotten\_cities as the constraint function. The predicate asserts that no city in the AuthorDim table is named Constantinople.
+In this case, we give no\_forgotten\_cities as the constraint function. The predicate asserts that no city in the AuthorDim table is named Constantinople.
 
 During execution, each column specified by column\_name is fetched from the database in its entirety. The columns are then supplied to the constraint\_function along with the additional parameters in constraint\_args. Note that in contrast to RuleRowPredicate, we only call the function a single time, since it takes entire columns as input. The assertion made by the predicate holds, based on whether constraint\_function returns True or False.
