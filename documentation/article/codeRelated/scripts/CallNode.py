@@ -11,8 +11,7 @@
 
         elif name in WRAPPERS:
             if self.dw_flag:
-                raise Exception('There is more than one wrapper in this '
-                                'program')
+                raise Exception('There is more than one wrapper in this program')
             else:
                 id = self.dw_id
                 self.__replace_connection(id, node)
