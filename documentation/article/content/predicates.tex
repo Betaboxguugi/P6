@@ -4,7 +4,7 @@ with \FW{} use different implementations of SQL. Thus we risk damaging the compa
 
 For instantiation of different predicate types some common parameters are used. These are presented here, as not to repeat the information later.
 \begin{description}
-\item [table\_name] a string with the name of a table from the DW. Using the get\_data\_representation method from DWRepresentation, this is used to fetch the corresponding table.Can also be given as a list of strings, if a natural join of tables is wanted insead.
+\item [table\_name] a string with the name of a table from the DW. Using the get\_data\_representation method from DWRepresentation, this is used to fetch the corresponding table. Can also be given as a list of strings, if a natural join of tables is wanted insead. Most of the predicates may function on a join of tables. If they do not, we specify it in the individual sections.
 \item [column\_names] a string or list indicating one or more attributes from the table. If the attribute is None, we fetch all attributes for each row. If not, the data fetched depends on column\_names\_exclude.
 \item [column\_names\_exclude] a boolean that indicates, which attributes to work on. If false, we use the attributes as described in column\_names. If true we use all attributes not in column\_names. Default is false. 
 \end{description}

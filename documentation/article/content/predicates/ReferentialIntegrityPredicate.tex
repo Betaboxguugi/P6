@@ -1,17 +1,16 @@
 \subsection{ReferentialIntegrityPredicate}
-ReferentialIntegrityPredicate asserts that there is referential integrity tables in a DW. This means that each row of a table with a foreign key, has a corresponding row in the table to which it is referring. Referential integrity is not always upheld during load, so a tester may want to assert this property. The ReferentialIntegrityPredicate can be instantiated like below, with an explanation of the parameters afterwards.
+ReferentialIntegrityPredicate asserts that there is referential integrity between tables in a DW. This means that each row of a table with a foreign key, has a corresponding row in the table to which it is referring. Referential integrity is not always upheld during load, so a tester may want to assert this property. The ReferentialIntegrityPredicate can be instantiated like shown in \Cref{ReferentialIntegrityPredicate.py}, followed by an explanation of the parameters.
 
 \insertcodefile{ReferentialIntegrityPredicate.py}{Instantiation of ReferentialIntegrityPredicate}
 
 \begin{description}
-\item [refs] a dictionary containing either pygrametl table objects (such as Dimension and Facttable), or \FW{}'s own table representation objects. The tables that hold foreign keys that refer to other tables, are used as keys, and the list of tables are the tables they refer to. If the programmer wants to run the predicate on the whole datawarehouse, it is redundant to provide this parameter, as the DWRepresentation object already holds information on all references from facttables and snowflaked dimensions and so can use that by default instead.
-\item [table\_one\_to\_many] A boolean which is True by default. If it is set to True, the predicate checks if referring tables have corresponding foreign keys in the tables they refer to.
-\item [dim\_one\_to\_many] A boolean which is True by default. If it is set to True, the predicate checks if referred tables have corresponding foreign keys in the tables they are referred by.
+\item [refs] a dictionary containing names of tables. It has the same structure as in \Cref{sect:interdatarep}, pairing a table with the tables that it has foreign keys to. The dictionary indicates, which references we want to check integrity for.  If the programmer wants to run the predicate on the whole DW, it is redundant to provide this parameter, as the DWRepresentation object already holds information about the DW schema. Thus the default is None.
+\item [points\_to\_all] A boolean which is True by default. If it is set to True, the predicate checks if referring tables have corresponding foreign keys in the tables they refer to.
+\item [all\_pointed\_to] A boolean which is True by default. If it is set to True, the predicate checks if referred tables have corresponding foreign keys in the tables they are referred by.
 
-Either of the two booleans can be set to false, but not both. If both are false, it is the equivalent of having the predicate check references for no tables, and so an error will be raised instead. If the programmer wishes to check references for all tables in the datawarehouse, he can simply not provide any parameters, and let them use their default values.
+Either of the two booleans can be set to false, but not both. If both are false, it is the equivalent of having the predicate check references for no tables, and so an error will be raised instead. If the programmer wishes to check references for all tables in the DW, he can simply not provide any parameters, and let them use their default values.
 \end{description}
 
-Below in \cref{SQLReferentialIntegrityPredicate.sql} is an example of a query used in the predicate to find the rows that do not have a corresponding foriegn key in the table they refer to. Queries like this are made every time there is a one way check for references between two tables. When fetchall is called and rows are returned, all relevant information is gathered for reporting of each row. This information includes: the key name, the key's value, the table that had a reference for it and the table that did not.
+In \cref{SQLReferentialIntegrityPredicate.sql} is one of the queries generated in the case of the instantiation. It returns all rows from FactTable, which refers to a non-existent row in AuthorDim. Queries like this are generated for each one-way check for references between two tables, i.e. for \texttt{points\_to\_all} and \texttt{all\_pointed\_to}. If any of the generated queries returns rows, the assertion fails and relevant information for each reference is reported to the tester. This includes: the key name, the key's value, the table that had a reference for it and the table that did not.
 
-\insertcodefileSQL{SQLReferentialIntegrityPredicate.sql}{SQL ReferentialIntegrityPredicate}
-
+\insertcodefileSQL{SQLReferentialIntegrityPredicate.sql}{SQL query generated from  \Cref{ReferentialIntegrityPredicate.py}}

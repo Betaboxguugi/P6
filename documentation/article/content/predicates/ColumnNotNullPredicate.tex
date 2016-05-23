@@ -1,11 +1,11 @@
 \subsection{ColumnNotNullPredicate}
-For a set of specified columns within a table, ColumnNotNullPredicate lets testers assert that no member of the given columns are null. While nulls may be allowed to occur within a table, they could indicate data loss. It may also be the case that not null constraints are placed upon certain columns. This is the case for primary keys. The ColumnNotNullPredicate is instantiated as exemplified below:
+For a set of specified columns within a table, ColumnNotNullPredicate lets testers assert that no member of one or more columns  are null. While nulls may be allowed to occur within a table, they could indicate data loss. It may also be the case that not null constraints are placed upon certain columns. This is the case for primary keys. The ColumnNotNullPredicate is instantiated as exemplified in \Cref{ColumnNotNullPredicate.py}
 
 \insertcodefile{ColumnNotNullPredicate.py}{Instantiation of ColumnNotNullPredicate}
 
-For instantiation, we assert that no entry to the column bid in the BookDim is null. This is important to check, as bid is a primary key to the dimension. 
-ColumnNotNullPredicate functions in this case by issuing the following SQL query:
+For the instantiation, we assert that no row in the column bid in the BookDim is null. This is important to check, as bid is a primary key to the dimension. In this case
+ColumnNotNullPredicate generates the query shown in \Cref{SQLColumnNotNullPredicate.sql}
 
-\insertcodefileSQL{SQLColumnNotNullPredicate.sql}{}
+\insertcodefileSQL{SQLColumnNotNullPredicate.sql}{SQL query generated from  \Cref{ColumnNotNullPredicate.py}}
 
-This query will show all rows which contain null in the column bid. If any rows are found, the assertion fails and all found rows are reported to the user. Otherwise it succeeds.
+This query fetches all rows that contains null in the column bid. If any rows are found, the assertion fails and all found rows are reported to the user. Otherwise it succeeds.

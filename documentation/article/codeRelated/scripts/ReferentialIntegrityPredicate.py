@@ -1,5 +1,5 @@
 ReferentialIntegrityPredicate(
-    refs={facttable: [book_dim, author_dim], author_dim: [country_dim]},
-    table_one_to_many=True,
-    dim_one_to_many=True
+    refs={facttable: [BookDim, AuthorDim], AuthorDim: [CountryDim]},
+    points_to_all=True,
+    all_pointed_to=True
 )
