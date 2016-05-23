@@ -120,7 +120,7 @@ for dim in snow_dw_rep.dims:
         print(dim.name, row)
 
 ref_tester = ReferentialIntegrityPredicate(
-    refs={dim1_rep: [dim2_rep, dim3], dim2: [dim4]},
+    refs={dim1.name: [dim2.name, dim3.name], dim2.name: [dim4.name]},
     points_to_all=True,
     all_pointed_to=True)
 
