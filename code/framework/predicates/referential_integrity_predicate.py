@@ -86,7 +86,7 @@ class ReferentialIntegrityPredicate(Predicate):
                 a = []
                 b = []
                 if isinstance(alpha, str):
-                        a = dw_rep.get_data_representation(alpha)
+                        a.append(dw_rep.get_data_representation(alpha))
                 else:
                         for x in alpha:
                                 if isinstance(x, str):
@@ -95,7 +95,7 @@ class ReferentialIntegrityPredicate(Predicate):
                                         raise ValueError('Expected string in refs, got: '
                                                          + str(type(x)))
                 if isinstance(beta, str):
-                        b = dw_rep.get_data_representation(beta)
+                        b.append(dw_rep.get_data_representation(beta))
                 else:
                         for x in beta:
                                 if isinstance(x, str):
