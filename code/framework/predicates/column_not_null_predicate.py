@@ -13,54 +13,56 @@ class ColumnNotNullPredicate(Predicate):
     def __init__(self, table_name, column_names=None,
                  column_names_exclude=False):
         """
-        :param table_name: name of specified table which needs to be tested
-        :type table_name: str
-        :param column_names: name of the specified column, which needs to be
-        tested within the table
-        :type column_names: list or str
+        :param table_name: name of the table we are testing.
+        Can be given as a list of tables if we want a join.
+        :param column_names: set of column names
+        :param column_names_exclude: bool indicating if  all columns not in
+        column_names should instead be used in the assertion.
         """
 
         if isinstance(table_name, str):
             self.table_name = [table_name]
         else:
             self.table_name = table_name
-        self.rows_with_null = []
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
 
     def run(self, dw_rep):
         """
-        Iterates over the table, storing any row containing nulls.
-        :param dw_rep : DWRepresentation object
+        Runs SQL to return all rows containing null.
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
 
-        # Gets the columns to iterate over
+        # Gets the columns to concern
         chosen_columns = self.setup_columns(dw_rep, self.table_name,
                                             self.column_names,
                                             self.column_names_exclude)
 
-        cursor = dw_rep.connection.cursor()
-
+        # Generates and runs SQL for finding rows with null
         null_condition_sql = (x + " IS NULL" for x in chosen_columns)
 
         pred_sql = " SELECT * " + \
                    " FROM " + " NATURAL JOIN ".join(self.table_name) + \
                    " WHERE " + " OR ".join(null_condition_sql)
 
+        cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
-        tuples = cursor.fetchall()
-        names = [t[0] for t in cursor.description]
-        query_result = []
+        query_result = cursor.fetchall()
+        cursor.close()
 
         # Create dict, so that attributes have names
-        for row in tuples:
-            query_result.append(dict(zip(names, row)))
+        names = [t[0] for t in cursor.description]
+        dict_result = []
+        for row in query_result:
+            dict_result.append(dict(zip(names, row)))
 
-        if not query_result:
+        # If any rows were fetched. Assertion fails
+        if not dict_result:
             self.__result__ = True
 
         return Report(result=self.__result__,
                       predicate=self,
                       tables=self.table_name,
-                      elements=query_result,
+                      elements=dict_result,
                       msg=None)

@@ -16,10 +16,9 @@ class SCDVersionPredicate(Predicate):
     def __init__(self, table_name, entry, version):
         """
         :param table_name: Name of Type2SCD table
-        :param entry: Dict pairing lookupsatts with values. Describes an
+        :param entry: Dict, pairing lookupsatts with values. Describes an
         entry in the table, which may have several versions.
         :param version: The asserted maximum version value of entry
-        :return:
         """
         self.table_name = table_name
         self.entry = entry
@@ -27,8 +26,9 @@ class SCDVersionPredicate(Predicate):
 
     def run(self, dw_rep):
         """
-        :param dw_rep: A DWRepresentation object
-        :return report object describing results of the predicate
+        Checks that the actual highest version for entry is as asserted
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
 
         dim = dw_rep.get_data_representation(self.table_name)
@@ -40,12 +40,10 @@ class SCDVersionPredicate(Predicate):
         if not set(dim.lookupatts) == set(self.entry.keys()):
             raise RuntimeError('Correct lookupatts not given')
 
-        versionatt = dim.versionatt
-
         # Creates conditions for the where-clause
         # These are meant to find all instances of row
         null_condition_sql = []
-        for a,b in self.entry.items():
+        for a, b in self.entry.items():
             if isinstance(b, str):
                 new = "\'" + b + "\'"
                 null_condition_sql.append(a + " = " + new)
@@ -54,13 +52,14 @@ class SCDVersionPredicate(Predicate):
                 null_condition_sql.append(a + " = " + str(b))
 
         # Find all instances of row and selects the maximum version
-        lookup_sql = " SELECT max(" + versionatt + ")" + \
+        lookup_sql = " SELECT max(" + dim.versionatt + ")" + \
                      " FROM " + self.table_name + \
                      " WHERE " + " AND ".join(null_condition_sql)
 
         cursor = dw_rep.connection.cursor()
         cursor.execute(lookup_sql)
         (query_result,) = cursor.fetchall()
+        cursor.close()
 
         if query_result[0] is None:
             raise RuntimeError('Table empty or entry not present in table')

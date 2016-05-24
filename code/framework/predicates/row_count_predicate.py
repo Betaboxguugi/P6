@@ -6,36 +6,40 @@ __maintainer__ = 'Mikael Vind Mikkelsen'
 
 
 class RowCountPredicate(Predicate):
+    """
+    Predicate for asserting that a table has a certain number of rows
+    """
 
     def __init__(self, table_name, number_of_rows):
         """
-        :param table_name: name of the table we are testing
-        :param number_of_rows: number of rows we are testing for
+        :param table_name: name of the table we are testing.
+        Can be given as a list of tables if we want a join.
+        :param number_of_rows: number of rows asserted to be in table
         """
         if isinstance(table_name, str):
             self.table_name = [table_name]
         else:
             self.table_name = table_name
         self.number_of_rows = number_of_rows
-        self.table = []
-        self.row_number = int
 
     def run(self, dw_rep):
         """
-        :param dw_rep: A DWRepresentation object allowing us to access our
-        table by name
-        :return:
+        Runs SQL to get the number of rows in a table. Then compares.
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
 
+        # Generates and runs SQL  for finding number of rows
         pred_sql = \
             " SELECT COUNT(*) " + \
             " FROM " + "NATURAL JOIN ".join(self.table_name)
 
-        print(pred_sql)
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
         (query_result,) = cursor.fetchall()
+        cursor.close()
 
+        # Comparing actual number of rows with those asserted
         if query_result[0] == self.number_of_rows:
             self.__result__ = True
 

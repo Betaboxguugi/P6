@@ -57,27 +57,33 @@ class ReferentialIntegrityPredicate(Predicate):
     Treats all tables as distinct.
     """
 
-    def __init__(self, refs={}, points_to_all=True,
+    def __init__(self, refs=None, points_to_all=True,
                  all_pointed_to=True):
         """
-        :param refs: Dictionary with table pairs to perform check between
+        :param refs: Dictionary with table pairs to perform checks between
         :param points_to_all: If true. We check that for each entry in
         the main table that there is a match at the foreign key table.
         :param all_pointed_to: If true. We check that for each entry in
         the foreign table that there is a match at the main table.
         :return:
         """
+        if not refs:
+            self.refs = {}
+        else:
+            self.refs = refs
         self.points_to_all = points_to_all
         self.all_pointed_to = all_pointed_to
-        self.refs = refs
-        self.dw_rep = None
         if not points_to_all and not all_pointed_to:
             raise RuntimeError("Both points_to_all"
-                               " and all_pointed_to can not both be set to false")
-
+                               " and all_pointed_to"
+                               " can not both be set to false")
 
     def run(self, dw_rep):
-
+        """
+        Runs SQL to return any keys not upholding referential integrity
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
+        """
         missing_keys = []
 
         # Maps table names to table_representations
@@ -87,24 +93,26 @@ class ReferentialIntegrityPredicate(Predicate):
                 if isinstance(alpha, str):
                         a = dw_rep.get_data_representation(alpha)
                 else:
-                        raise ValueError('Expected string in refs, got: '
-                                         + str(type(x)))
+                        raise ValueError('Expected string in refs, got: ' +
+                                         str(type(x)))
                 if isinstance(beta, str):
                         b.append(dw_rep.get_data_representation(beta))
                 else:
                         for x in beta:
                                 if isinstance(x, str):
-                                        b.append(dw_rep.get_data_representation(x))
+                                        b.append(dw_rep.
+                                                 get_data_representation(x))
                                 else:
-                                        raise ValueError('Expected string in refs, got: '
-                                                         + str(type(x)))
+                                        raise ValueError('Expected string' +
+                                                         ' in refs, got: ' +
+                                                         str(type(x)))
                 refs[a] = tuple(b)
         self.refs = refs
-                        
 
         # If references not given. We check refs between all tables.
         if not self.refs:
             self.refs = dw_rep.refs
+
         # Performs check for each pair of main table and foreign key table.
         for table, dims in self.refs.items():
             for dim in dims:

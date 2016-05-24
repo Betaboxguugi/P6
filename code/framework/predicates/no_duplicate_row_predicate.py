@@ -7,21 +7,17 @@ __maintainer__ = 'Alexander Brandborg'
 
 class NoDuplicateRowPredicate(Predicate):
     """
-    Predicate for asserting whether duplicated rows appear in a table.
+    Predicate for asserting that no duplicated rows appear in a table.
     """
 
     def __init__(self, table_name, column_names=None,
                  column_names_exclude=False):
         """
-        :param table_name: name of table to be checked
-        :type table_name: str
-        :param column_names: A list of column names.
-        Recommended for when you want to check for duplicates without looking
-        at primary keys for example.
-        :type column_names: List[str]
-        :param column_names_exclude: a bool, if set to true, then the predicate
-        will look at all columns excluding the one(s) specified in column_names
-        :type column_names_exclude: bool
+        :param table_name: name of the table we are testing.
+        Can be given as a list of tables if we want a join.
+        :param column_names: set of column names
+        :param column_names_exclude: bool indicating if  all columns not in
+        column_names should instead be used in the assertion.
         """
 
         if isinstance(table_name, str):
@@ -30,55 +26,43 @@ class NoDuplicateRowPredicate(Predicate):
             self.table_name = table_name
 
         self.column_names = column_names
-        self.duplicates = []
-        self.table = None
-        self.columns = None
         self.column_names_exclude = column_names_exclude
 
     def run(self, dw_rep):
         """
-        Checks for duplicates using a hash table. Each time a row is met,
-        we hash it into the table. If the same row has already been hashed
-        a duplicate has been found and we register it.
-        :param dw_rep: DWRepresentation
-        :return: report object
+        Runs SQL to return any duplicated rows in a table.
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
 
-        # Gets the columns to iterate over
+        # Gets the columns to concern
         chosen_columns = self.setup_columns(dw_rep, self.table_name,
                                             self.column_names,
                                             self.column_names_exclude)
 
-        join_column_list = []
-        for table in self.table_name:
-            all_columns = set(dw_rep.get_data_representation(table).all)
-            join_column_list.append(all_columns)
-
-        join_attributes = set.intersection(*join_column_list)
-
+        # Generates and runs SQL to return all duplicates
         pred_sql = \
-            " SELECT " + ",".join(join_attributes) + " ,COUNT(*)" + \
+            " SELECT " + ",".join(chosen_columns) + " ,COUNT(*)" + \
             " FROM " + " NATURAL JOIN ".join(self.table_name) + \
             " GROUP BY " + ",".join(chosen_columns) + \
             " HAVING COUNT(*) > 1 "
         cursor = dw_rep.connection.cursor()
         cursor.execute(pred_sql)
-        tuples = cursor.fetchall()
+        query_result = cursor.fetchall()
+        cursor.close()
+
+        # Create dict, so that attributes have names
         names = [t[0] for t in cursor.description]
-        query_result = []
-        extended_chosen_columns = chosen_columns.union(('COUNT(*)',))
+        dict_result = []
+        for row in query_result:
+            dict_result.append(dict(zip(names, row)))
 
-        for row in tuples:
-            q = dict(zip(names, row))
-            q = \
-                [{k: v for k, v in q.items() if k in extended_chosen_columns}]
-            query_result.append(q)
-
-        if not query_result:
+        # If any rows were fetched. Assertion fails
+        if not dict_result:
             self.__result__ = True
 
         return Report(result=self.__result__,
                       tables=self.table_name,
                       predicate=self,
-                      elements=query_result,
+                      elements=dict_result,
                       msg=None)
