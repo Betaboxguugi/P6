@@ -16,14 +16,10 @@ class RuleRowPredicate(Predicate):
                  constraint_args=[], column_names_exclude=False):
         """
         :param table_name: name of table used for test
-        :type table_name: str, list
         :param column_names: list of column names
-        :type column_names: list
         :param constraint_function: user-defined function to run on each row.
         Must return a boolean.
-        :type constraint_function: function
-        :param costraint_args: Additional arguments for the constrain function.
-        :type list
+        :param constraint_args: Additional arguments for the constrain function.
         :param column_names_exclude: bool, indicating how column_names is
         used to fetch columns from the table.
         """
@@ -32,14 +28,15 @@ class RuleRowPredicate(Predicate):
         self.constraint_args = constraint_args
         self.column_names = column_names
         self.column_names_exclude = column_names_exclude
-        self.wrong_rows = []
 
     def run(self, dw_rep):
         """
-        :param dw_rep: DWRepresentation
         Runs the constraint function on the specified columns of each row.
         Stores rows asserted faulty by the function for reporting.
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
+        wrong_rows = []
 
         # Gets the attribute names for columns needed for test
         column_arg_names = self.setup_columns(dw_rep, self.table_name,
@@ -64,13 +61,13 @@ class RuleRowPredicate(Predicate):
 
             # Runs function on parameters
             if not self.constraint_function(*arguments):
-                self.wrong_rows.append(row)
+                wrong_rows.append(row)
 
-        if not self.wrong_rows:
+        if not wrong_rows:
             self.__result__ = True
 
         return Report(result=self.__result__,
                       tables=self.table_name,
                       predicate=self,
-                      elements=self.wrong_rows,
+                      elements=wrong_rows,
                       msg=None)

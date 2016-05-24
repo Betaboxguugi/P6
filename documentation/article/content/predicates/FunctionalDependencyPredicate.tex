@@ -14,4 +14,4 @@ In our instantiation above, we use the predicate to assert that there is a funct
 In \Cref{SQLFunctionalDependency.sql} we see the query generated in this case. Here we join the table with itself on alpha, then return all distinct rows in which alpha can not be used to determine beta. If the query returns any rows, the assertion fails and the rows are reported to the tester.    
 
 \insertcodefileSQL{SQLFunctionalDependency.sql}{SQL query generated from
- \Cref{FunctionalDependencyPredicate.py}}
+\Cref{FunctionalDependencyPredicate.py}}

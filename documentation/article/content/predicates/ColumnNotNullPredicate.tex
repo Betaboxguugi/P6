@@ -6,6 +6,6 @@ For a set of specified columns within a table, ColumnNotNullPredicate lets teste
 For the instantiation, we assert that no row in the column bid in the BookDim is null. This is important to check, as bid is a primary key to the dimension. In this case
 ColumnNotNullPredicate generates the query shown in \Cref{SQLColumnNotNullPredicate.sql}
 
-\insertcodefileSQL{SQLColumnNotNullPredicate.sql}{SQL query generated from  \Cref{ColumnNotNullPredicate.py}}
+\insertcodefileSQL{SQLColumnNotNullPredicate.sql}{SQL query generated from \Cref{ColumnNotNullPredicate.py}}
 
 This query fetches all rows that contains null in the column bid. If any rows are found, the assertion fails and all found rows are reported to the user. Otherwise it succeeds.

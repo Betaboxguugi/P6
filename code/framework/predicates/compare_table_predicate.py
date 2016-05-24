@@ -163,6 +163,8 @@ def subset_sorted_compare(actual, expected):
     e_row, expected_empty = get_next_row(expected, names)
     if not expected_empty:
         result = None not in e_row.values()
+    else:
+        result = False
     actual_empty = False
 
     # Run through actual table until false or until expected table is empty
@@ -189,10 +191,12 @@ class CompareTablePredicate(Predicate):
                  column_names=None, column_names_exclude=False, sort=True,
                  sort_keys=(), distinct=True, subset=False):
         """
-        :param actual_table: Actual table in DW
+        :param table_name: name of the table we are testing.
+        Can be given as a list of tables if we want a join.
+        :param column_names: set of column names
         :param expected_table: User defined table to compare with
-        :param column_names: Columns to use for comparison
-        :param column_names_exclude: To get complement of column_names
+        :param column_names_exclude: bool indicating if  all columns not in
+        column_names should instead be used in the assertion.
         :param sort_keys: Set of attributes to sort on.
         :param distinct: If tables should be treated as having no duplicates
         :param subset: If we should check that expected_table is only a subset
@@ -252,8 +256,8 @@ class CompareTablePredicate(Predicate):
     def run(self, dw_rep):
         """
         Compares the two tables and sets their surpluses for reporting.
-        :param dw_rep: A DWRepresentation object
-        :return: A Report object descriping how the predicate did
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
         """
 
         only_in_actual = []

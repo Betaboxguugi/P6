@@ -17,14 +17,10 @@ class RuleColumnPredicate(Predicate):
                  column_names_exclude=False):
         """
         :param table_name: name of table used for test
-        :type table_name: str, list
         :param column_names: list of column names
-        :type column_names: list
         :param constraint_function: user-defined function to run on each row.
         Must return a boolean.
-        :type constraint_function: function
-        :param costraint_args: Additional arguments for the constrain function.
-        :type list
+        :param constraint_args: Additional arguments for the constrain function.
         :param column_names_exclude: bool, indicating how column_names is
         used to fetch columns from the table.
         """
@@ -35,7 +31,11 @@ class RuleColumnPredicate(Predicate):
         self.column_names_exclude = column_names_exclude
 
     def run(self, dw_rep):
-        """ Runs the constraint function on the specified columns."""
+        """
+        Runs the constraint function on the specified columns.
+        :param dw_rep: A DWRepresentation object allowing us to access DW
+        :return: Report object to inform whether assertion held
+        """
 
         # Gets the attribute names for columns needed for test
         column_arg_names = self.setup_columns(dw_rep, self.table_name,

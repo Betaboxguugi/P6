@@ -14,11 +14,11 @@ NormalPos.top=26
 NormalPos.right=1008
 NormalPos.bottom=581
 Class=LaTeXView
-Document=content\expeval.tex
+Document=master.tex
 
 [Frame0_View0,0]
-TopLine=0
-Cursor=0
+TopLine=117
+Cursor=4952
 
 [Frame1]
 Flags=0
@@ -32,11 +32,11 @@ NormalPos.top=26
 NormalPos.right=1008
 NormalPos.bottom=581
 Class=LaTeXView
-Document=master.tex
+Document=content\appendices.tex
 
 [Frame1_View0,0]
 TopLine=0
-Cursor=0
+Cursor=35
 
 [SessionInfo]
 FrameCount=2
