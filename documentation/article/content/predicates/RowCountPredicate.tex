@@ -10,7 +10,7 @@ RowCountPredicate asserts if a table has a specified number of rows. This can be
 In the instantiation shown in \Cref{RowCountPredicate.py}, we assert that CountryDim has 200 entries.  
 RowCountPredicate would in this instance generate the following SQL query, which counts how many rows are in a given table.
 
-\insertcodefileSQL{SQLRowCountPredicate.sql}{SQL query generated from  \Cref{RowCountPredicate.py}}
+\insertcodefileSQL{SQLRowCountPredicate.sql}{SQL query generated from \Cref{RowCountPredicate.py}}
 
 RowCountPredicate will then compare the scalar result from the query in \Cref{SQLRowCountPredicate.sql} to the specified number of rows we are looking for, in this case 200. If equal, the test is successful, if not equal, the test return false and reports how many rows are actually in the table.
 
