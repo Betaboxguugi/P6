@@ -8,7 +8,3 @@ CompareTablePredicate(actual_name='BookDim',
 					  subset = True
 					  )
 					  
-
-actual_table, expected_table,
-column_names=None, column_names_exclude=False, sort=True,
- sort_keys=(), distinct=True, subset=False
