@@ -19,10 +19,11 @@ class Predicate:
         """
         Produces a list of columns, which we want to iterate over.
         :param: dw_rep: A DWRepresentation
-        :param: table_names: A string indicating a DW table
-        :param: column_names: A string or list of attribute names
-        :param: column_names_exclude: A bool indicating whether
-         the column_names is inclusive or exclusive
+        :param table_names: name of the table we are testing.
+        Can be given as a list of tables if we want a join.
+        :param column_names: set of column names
+        :param column_names_exclude: bool indicating if  all columns not in
+        column_names should instead be used in the assertion.
         :return chosen_columns: columns we want to iterate over
         """
 
