@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=master.tex
 
 [Frame0_View0,0]
-TopLine=117
-Cursor=4952
+TopLine=0
+Cursor=1255
 
 [Frame1]
 Flags=0
@@ -36,7 +36,7 @@ Document=content\appendices.tex
 
 [Frame1_View0,0]
 TopLine=0
-Cursor=35
+Cursor=319
 
 [SessionInfo]
 FrameCount=2
