@@ -1,10 +1,10 @@
 \section{Evaluation}\label{sect:eval}
-In the following section, we evaluate \FW{}. The aim of the evaluation is to prove that \FW{} lets testers write less code, and execute tests at a reasonable speed. A reasonable execution speed should not differ much from speeds of other test methods.   In the following, we describe our criteria and how an experiment was performed. Finally we present our results.
+In the following section, we evaluate \FW{}. The aim of the evaluation is to argue that \FW{} lets testers write less code, and execute tests at a reasonable speed. A reasonable execution speed should not differ much from speeds of other test methods. In the following, we describe our criteria and how an experiment was performed. Finally we present our results.
 
 \subsection{Criteria of Evaluation}\label{subsect:CoE}
-As mentioned in \Cref{intro}, no test framework on market is developed specifically for pygrametl. So there is no obvious candidate to compare against. Instead we may evaluate against more generic on-market products, such as QuerySurge or AnyDBTest. However because of time constraints, we opt to not use these tools, as they need to be learned. Instead we choose to evaluate against manual testing, which tests code through SQL queries. While this may not be the fairest of comparisons, the evaluation will show the potential gain of migrating to \FW{} from manual testing.
+As mentioned in \Cref{intro}, no test framework on market is developed specifically for pygrametl. So there is no obvious candidate to compare against. Instead we may evaluate against more generic on-market products, such as QuerySurge or AnyDBTest. However because of time constraints, we opt to not use these tools, as they need to be learned. Instead we choose to evaluate against manual testing, which tests code through SQL queries. The evaluation will show the potential gain of migrating to \FW{} from manual testing.
 
-Now that we have determined what to evaluate \FW{} against, we describe the criteria used for the evaluation.  
+Now that we have determined what to evaluate \FW{} against, we describe the criteria used for the evaluation.
 
 \begin{description}
 \item[Number of statements used] The best solution uses the fewest statements to test an ETL system. In general, as the amount of statements increase, a program becomes more difficult to comprehend. As the size grows, more time will have to be spend on general development and debugging.
@@ -13,14 +13,12 @@ Now that we have determined what to evaluate \FW{} against, we describe the crit
 
 Note that we evaluate based mostly upon the number of statements used. We accept an increase in runtime, if the program becomes easier to comprehend.
 
-Another possible criteria could have been implementation time. However, we have already worked in-depth with SQL queries internal when developing the framework predicates. These queries are very similar to the ones needed for manual testing. Thus we expect implementation time for manual testing to be rather fast, as we are already familiar with these queries.  As this may not be representative of the time needed for manual testing, we decide against using this criteria.  
+Another possible criteria could have been implementation time. However, we have already worked in-depth with SQL queries internal when developing the framework predicates. These queries are very similar to the ones needed for manual testing. Thus we expect implementation time for manual testing to be rather fast, as we are already familiar with these queries. As this may not be representative of the time needed for manual testing, we decide against using this criteria.
 
 \subsection{Experiment}
 Having now defined our criteria, we perform an experiment, to gather data for the evaluation of \FW{} against manual testing.
 
-For the experiment we created a small pygrametl program to populate the BookAndAuthor DW as presented in \Cref{sect:Overview}. The program is made to be erroneous. For sources, the program uses two SQL databases, containing data on books and authors, and a single csv-file storing pairs of city and country names.  Once the sources have been set up, an empty DW is populated using the pygrametl program.
-
-Once the DW is filled, we perform tests using both \FW{} and manual.  Manual testing was done using SQLite through the sqlite3 python module. In both instances, testing covers the following test cases. They are chosen, as to use every predicate that \FW{} offers.
+For the experiment we created a small pygrametl program to populate the BookAndAuthor DW as presented in \Cref{sect:Overview}. The source code for the program can be seen in \Cref{pygrametlTS}. The program is made to be erroneous. For sources, the program uses two SQL databases, containing data on books and authors, and a single csv-file storing pairs of city and country names. Once the sources have been set up, an empty DW is populated using the pygrametl program. In order to populate the DW with dirty data, we do not enforce any integrity constraints in the DW, as is common during an ETL load. At the same time, the pygrametl program does not handle dirty data extracted from the sources. This leads to faults, such as missing keys, which we discover during the tests. Once the DW is filled, we perform tests using both \FW{} and manual. Manual testing is done using SQLite through the sqlite3 python module. In both instances, testing covers the following test cases. They are chosen, as to use every predicate that \FW{} offers.
 
 \begin{itemize}
 \item No nulls appear in any column of authorDim
@@ -32,12 +30,12 @@ Once the DW is filled, we perform tests using both \FW{} and manual.  Manual tes
 \item Contents of goodbooksdim is a subset of bookDim. Goodbooksdim contains two rows for the books “The Hobbit” and “The Divine Comedy”. The comparison should not take account of duplicates.
 \end{itemize}
 
-During experimentation we strive to make sure that both tests deliver the same reports on the assertions.  This is important as \FW{} focuses on reporting faulty data to the tester. This does slow down performance, compared to if we merely reported whether a predicate passed or failed. To make the two methods comparable, manual testing must live up to the same requirement of verbosity when reporting. This is also why the sqlite3 module is used, instead of a simple SQLite script, so that it may print to the prompt in the same way af \FW{}
+During experimentation we strive to make sure that both tests deliver the same reports on the assertions. This is important as \FW{} focuses on reporting faulty data to the tester. This does slow down performance, compared to if we merely reported whether a predicate passed or failed. To make the two methods comparable, manual testing must live up to the same requirement of verbosity when reporting. This is also why the sqlite3 module is used, instead of a simple SQLite script, so that it may print to the prompt in the same way af \FW{}
 
 The script written for \FW{} can be found in \Cref{appendix:casescript}, and the corresponding script for manual testing is found in \Cref{appendix:manualscript}.
 
 \subsection{Results}
-After testing with both methods, we measure the number of statements used and the execution time of each. We do not count imports or assignments of strings to variables as statements. When counting statements for manual testing specifically, we count each clause in an SQL query as a separate statement. For a WHERE-clause, each logical statement is counted as a clause itself.  Execution of the test scripts  are performed, where AuthorDim has 9988 rows, BookDim 9996, CountryDim 2 and FactTable 10007. The results of the measurements can be seen in \Cref{table:result}.
+After testing with both methods, we measure the number of statements used and the execution time of each. We do not count imports or assignments of strings to variables as statements. When counting statements for manual testing specifically, we count each clause in an SQL query as a separate statement. For a WHERE-clause, each logical statement is counted as a clause itself. Execution of the test scripts are performed, where AuthorDim has 9988 rows, BookDim 9996, CountryDim 2 and FactTable 10007. The results of the measurements can be seen in \Cref{table:result}.
 
 In \Cref{table:result} we can clearly see that \FW{} allows testers to use less statements in their tests. This strongly indicates that more expressive power is contained within each statement. Looking at the execution time, we can see that the two approaches are almost identical in their execution time, both with setup and predicates respectively. "Execution Time Setup" is the time both approaches use to get ready for testing. Here \FW{} runs a DWPopulator, as explained in \Cref{sec:dwpopulator}, this entails the running of the ETL program, and creating the DWRepresentation object used by the predicates. Whereas manual just runs the ETL program as is. "Execution Time Test Cases" is the time each approach used on running all the test cases described above. Execution time is almost identical between the two cases, indicating that \FW{} is at least as good as manual testing in this regard.
 
@@ -47,11 +45,11 @@ In \Cref{table:result} we can clearly see that \FW{} allows testers to use less 
 \label{table:result}
 \begin{tabular}{|p{0.20\textwidth}|p{0.10\textwidth}|p{0.10\textwidth}|}
 \hline
-   																			 & \FW{}   	& Manual    \\ \hline
-Number of statements 									 & 11 stmt   		  & 110  stmt  	 \\ \hline
-Execution Time\newline Setup   					 & 79.52 sec   & 79.44 sec  \\ \hline
-Execution Time\newline Test Cases   			 & 18.02 sec   & 18.23 sec  \\ \hline
-Execution Time Total   										 & 97.52 sec   & 97.67 sec  \\ \hline
+																			 & \FW{} 	& Manual \\ \hline
+Number of statements 									 & 11 stmt 		 & 110 stmt 	 \\ \hline
+Execution Time\newline Setup 					 & 79.52 sec & 79.44 sec \\ \hline
+Execution Time\newline Test Cases 			 & 18.02 sec & 18.23 sec \\ \hline
+Execution Time Total 										 & 97.52 sec & 97.67 sec \\ \hline
 
 \end{tabular}
 \end{table}
