@@ -10,6 +10,15 @@ Testing may also occur through the comparison of tables within a populated DW wi
 
 Having looked at some of the currently available tools, we find that they require a lot of test code to be written. To get a wider test coverage, we need to decrease the amount of code necessary for each test. We also worry that faults may be more prevalent to occur in the test code, as it grows larger. Such faults can undermine the usefulness and accuracy of test results.
 
-To allow for automated testing of pygrametl programs, we have developed \textit{\FW{}}. Like AnyDBTest, it is assertion-based. However, it does not only allow for assertions to be made upon the relationships of tables. We hold that assertions should relate to other DW properties, e.g. data integrity. The framework allows for functional testing at the system level, after all components of the ETL system have been integrated. As the framework automates test execution, it can also be used for regression testing. We aim to help testers in writing less code for a single test. This will lead to less time spent on each test, enabling a wider coverage during testing. Covering more of the software will increase its overall quality. We also need the tests to be executed at a reasonable speed. If the tests are quick to write, but slow to execute, users may use other methods Yet we deem this less important to how long it takes to write the tests.
+To allow for automated testing of pygrametl programs, we develop \textit{\FW{}}. Our motivation for developing \FW{} is that no other testing tool has been made with pygrametl in mind. As of writing, testers will have to test manually or use third-party tools that are either rather broad in application or that require the use of a GUI. With \FW{}, we aim to help testers in writing less code for a single test. This will lead to less time spent on each test, enabling a wider test coverage. Covering more of the software will increase its overall quality. We also need the tests to be executed at a reasonable speed. If the tests are quick to write, but slow to execute, users may use other methods However, we deem this less important to how long it takes to write the tests.
 
 The rest of this paper is organized as follows. \Cref{sect:RelatedWork} will give a brief overview of some related work. This is followed by an introduction to the pygrametl python package in \Cref{sect:pygrametl}. \Cref{sect:btesting} will explain some basic testing terminology relevant to the paper. This leads into an overview of \FW{} in \Cref{sect:Overview}. \Cref{sec:dwpopulator} shows how the framework performs setup before testing. In \Cref{sect:interdatarep} we describe the classes used to represent the DW during testing. Afterwards, \Cref{sect:pred} explains the different types of predicates, used to assert properties of a DW. \Cref{sect:eval} will focus on evaluating the framework. Finally, in \Cref{sect:conc} we conclude upon the paper.
+
+
+
+
+
+ 
+
+
+
