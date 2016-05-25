@@ -55,11 +55,13 @@ fact_table = FactTable(
 
 snowflake = SnowflakedDimension([(author_dim, country_dim)])
 
+# We map cities to countries and populate the countrydim
 cid_map = {}
 for row in country_src:
-    cid = (country_dim.ensure(row))
+    cid = (country_dim.ensure(row)) 
     cid_map[row['city']] = cid
 
+# We populate the authordim and the fact table
 for row in author_src:
     if row['city'] in ['Hadsten','Skanderborg','Kobenhavn']:
         row['cid'] = cid_map[row['city']]
@@ -67,11 +69,14 @@ for row in author_src:
         row['cid'] = None
     row['name'] = row['firstname'] + ' ' + row['lastname']
     row.pop('aid', 0) # Gets rid of aid so that pygrametl can generate them
-
+    
+    # Placing new row in author_dim
     row['aid'] = author_dim.ensure(row)
+
+    # Placing new row in fact_table
     fact_table.ensure(row)
     
-
+# Places books directly into book_dim
 for row in book_src:
     book_dim.scdensure(row)
 
@@ -81,3 +86,4 @@ wrapper.close()
 author_conn.close()
 book_conn.close()
 country_handle.close()
+
