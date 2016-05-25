@@ -5,7 +5,7 @@ CompareTablePredicate is by far the most complex of the predicates. It is used t
 
 \begin{description}
 \item [actual\_table] Is a string with the name of a table from the DW, which should be compared with \textit{expected\_table}. It may be given as a list of strings, if a natural join of tables is needed instead of a single table.
-\item [expected\_table] Is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. By giving a list of strings, a tester may instead get a natural join of tables as before. Instead of strings, the parameter may also be given a PEP249 cursor, from which data can be fetched, or a list of dictionaries.
+\item [expected\_table] Is the user-given table to compare against. If the table resides in the DW, then it may be given by a string containing its name. By giving a list of strings, a tester may instead get a natural join of tables as before. Instead of strings, the parameter may also be given a PEP 249 cursor, from which data can be fetched, or a list of dictionaries.
 \item [sort] A boolean defaulting to True. If false we do a sort compare, else a unsorted comparison is performed. Both types of comparison are explained below.
 \item [sort\_keys] A set of attribute names to sort both tables upon, when doing a sort compare. Defaults to an empty set.
 \item [distinct] A boolean defaulting to true. If true tables should are treated as distinct, while false means that duplicates should be accounted for during comparison.
@@ -14,7 +14,7 @@ CompareTablePredicate is by far the most complex of the predicates. It is used t
 
 For the instantiation above, we assert that BookDim contains the 2nd version of the Hobbit. We ignore the bid attribute for the compare, as it is a surrogate key. We do not perform sort compare. We also indicate that the tables should not be viewed as distinct. This is important, as the row within expected should only appear once in actual. We want to make sure that no duplicates of it exists within the actual table.
 
-When running the predicate, it performs comparisons differently based on settings chosen, and how the expected table is stored. In general, the fastest execution comes from having the expected table contained within the DW. As such, testers may want to insert larger test tables into the DW. If expected table is given as a list of dictionaries or a cursor, it will be slower as comparison cannot be made at the database level. When a PEP249 cursor is given, we create a list of dictionaries from it at instantiation.
+When running the predicate, it performs comparisons differently based on settings chosen, and how the expected table is stored. In general, the fastest execution comes from having the expected table contained within the DW. As such, testers may want to insert larger test tables into the DW. If expected table is given as a list of dictionaries or a cursor, it will be slower as comparison cannot be made at the database level. When a PEP 249 cursor is given, we create a list of dictionaries from it at instantiation.
 
 The types of comparison can be split into two, sorted and unsorted. These will be explained in the following.
 

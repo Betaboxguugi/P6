@@ -4,7 +4,7 @@ NoDuplicateRowPredicate asserts that a given table contains only unique entries.
 \insertcodefile{NoDuplicateRowPredicate.py}{Instantiation of NoDuplicateRowPredicate}
 
 In the instantiation displayed, the predicate asserts that each entry in the aid column of AuthorDim is unique. This is important as aid is the primary key to the table.
-NoDuplicateRowPredicate will in this case generate the SQL query shown in \Cref{SQLNoDuplicateRowPredicate.sql}, to satisfy the previous assertion:
+NoDuplicateRowPredicate will in this case generate the SQL query shown in \Cref{SQLNoDuplicateRowPredicate.sql}, to satisfy the previous assertion.
 
 \insertcodefileSQL{SQLNoDuplicateRowPredicate.sql}{SQL query generated from \Cref{NoDuplicateRowPredicate.py}}
 
