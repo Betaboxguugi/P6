@@ -78,15 +78,28 @@
 \headcommand {\beamer@subsectionpages {35}{38}}
 \headcommand {\slideentry {7}{0}{1}{39/42}{}{0}}
 \headcommand {\beamer@framepages {39}{42}}
-\headcommand {\sectionentry {8}{Alexander}{43}{Alexander}{0}}
+\headcommand {\sectionentry {8}{Evaluation}{43}{Evaluation}{0}}
 \headcommand {\beamer@sectionpages {39}{42}}
 \headcommand {\beamer@subsectionpages {39}{42}}
-\headcommand {\slideentry {8}{0}{1}{43/46}{}{0}}
+\headcommand {\beamer@subsectionentry {0}{8}{1}{43}{Hvordan evaluerede vi SkiRaff?}}\headcommand {\beamer@subsectionpages {43}{42}}
+\headcommand {\slideentry {8}{1}{1}{43/46}{Hvordan evaluerede vi SkiRaff?}{0}}
 \headcommand {\beamer@framepages {43}{46}}
-\headcommand {\slideentry {8}{0}{2}{47/47}{}{0}}
+\headcommand {\slideentry {8}{1}{2}{47/47}{Hvordan evaluerede vi SkiRaff?}{0}}
 \headcommand {\beamer@framepages {47}{47}}
-\headcommand {\beamer@partpages {1}{47}}
-\headcommand {\beamer@subsectionpages {43}{47}}
-\headcommand {\beamer@sectionpages {43}{47}}
-\headcommand {\beamer@documentpages {47}}
-\headcommand {\def \inserttotalframenumber {23}}
+\headcommand {\beamer@subsectionentry {0}{8}{2}{48}{Alternativer}}\headcommand {\beamer@subsectionpages {43}{47}}
+\headcommand {\slideentry {8}{2}{1}{48/52}{Alternativer}{0}}
+\headcommand {\beamer@framepages {48}{52}}
+\headcommand {\slideentry {8}{2}{2}{53/58}{Alternativer}{0}}
+\headcommand {\beamer@framepages {53}{58}}
+\headcommand {\sectionentry {9}{Conclusion}{59}{Conclusion}{0}}
+\headcommand {\beamer@sectionpages {43}{58}}
+\headcommand {\beamer@subsectionpages {48}{58}}
+\headcommand {\slideentry {9}{0}{1}{59/63}{}{0}}
+\headcommand {\beamer@framepages {59}{63}}
+\headcommand {\slideentry {9}{0}{2}{64/64}{}{0}}
+\headcommand {\beamer@framepages {64}{64}}
+\headcommand {\beamer@partpages {1}{64}}
+\headcommand {\beamer@subsectionpages {59}{64}}
+\headcommand {\beamer@sectionpages {59}{64}}
+\headcommand {\beamer@documentpages {64}}
+\headcommand {\def \inserttotalframenumber {27}}
