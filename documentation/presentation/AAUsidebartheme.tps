@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=AAUsidebartheme.tex
 
 [Frame0_View0,0]
-TopLine=80
-Cursor=3379
+TopLine=33
+Cursor=1742
 
 [Frame1]
 Flags=0
@@ -89,8 +89,8 @@ Class=LaTeXView
 Document=content\presentation3.tex
 
 [Frame4_View0,0]
-TopLine=0
-Cursor=252
+TopLine=21
+Cursor=944
 
 [Frame5]
 Flags=0
@@ -112,5 +112,5 @@ Cursor=273
 
 [SessionInfo]
 FrameCount=6
-ActiveFrame=0
+ActiveFrame=4
 

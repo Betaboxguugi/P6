@@ -33,22 +33,26 @@
 % does not look nice, try deleting the line with the fontenc.
 \usepackage{helvet}
 
+\input{code/prettyCode}
+
 % colored hyperlinks
 \newcommand{\chref}[2]{%
   \href{#1}{{\usebeamercolor[bg]{AAUsidebar}#2}}%
 }
 
-\title[The AAU Sidebar Beamer Theme]% optional, use only with long paper titles
-{The AAU Sidebar Beamer Theme}
+\title[SkiRaff an ETL Testing Framework for pygrametl]% optional, use only with long paper titles
+{SkiRaff an ETL Testing Framework for pygrametl}
 
-\subtitle{v.\ 1.4.0}  % could also be a conference name
+\subtitle{}  % could also be a conference name
 
 \date{\today}
 
-\author[Jesper Kjær Nielsen] % optional, use only with lots of authors
+\author[Alexander Branborg,\\ Arash Michael Aami Kjær,\\ Mathias Claus Jensen,\\  Mikael Vind Mikkelsen] % optional, use only with lots of authors
 {
-  Jesper Kjær Nielsen\\
-  \href{mailto:jkn@es.aau.dk}{{\tt jkn@es.aau.dk}}
+	Alexander Branborg \href{abran13@student.aau.dk}{{\tt abran13@student.aau.dk}}\\
+	Arash Michael Aami Kjær \href{ams13@student.aau.dk}{{\tt ams13@student.aau.dk}}\\
+	Mathias Claus Jensen \href{mcje13@student.aau.dk}{{\tt mcje13@student.aau.dk}}\\
+  Mikael Vind Mikkelsen \href{mvmi12@student.aau.dk}{{\tt mvmi12@student.aau.dk}}
 }
 % - Give the names in the same order as they appear in the paper.
 % - Use the \inst{?} command only if the authors have different
@@ -56,12 +60,12 @@
 
 \institute[
 %  {\includegraphics[scale=0.2]{aau_segl}}\\ %insert a company, department or university logo
-  Dept.\ of Electronic Systems\\
+  Department of Computer Science\\
   Aalborg University\\
   Denmark
 ] % optional - is placed in the bottom of the sidebar on every slide
 {% is placed on the title page
-  Department of Electronic Systems\\
+  Department of Computer Science\\
   Aalborg University\\
   Denmark
   
@@ -94,10 +98,17 @@
 %%%%%%%%%%%%%%%%
 
 %\input{content/examples.tex}
+<<<<<<< HEAD
 \input{content/presentation1.tex}
 %\input{content/presentation2.tex}
 %\input{content/presentation3.tex}
 \input{content/presentation4.tex}
+=======
+%\input{content/presentation1.tex}
+%\input{content/presentation2.tex}
+\input{content/presentation3.tex}
+%\input{content/presentation4.tex}
+>>>>>>> 39d2e5b94ae1d1a98f1ec6e539bcbf1da03311ad
 
 
 {\aauwavesbg
