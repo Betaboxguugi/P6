@@ -1,18 +1,18 @@
-\beamer@slide {FunctionalDependencyPredicate.py}{32}
-\beamer@slide {SQLFunctionalDependency.sql}{32}
-\beamer@slide {funDep1.py}{33}
-\beamer@slide {funDep2.py}{34}
+\beamer@slide {FunctionalDependencyPredicate.py}{34}
 \beamer@slide {SQLFunctionalDependency.sql}{34}
-\beamer@slide {funDep3.py}{35}
-\beamer@slide {ReferentialIntegrityPredicate.py}{38}
-\beamer@slide {SQLReferentialIntegrityPredicate.sql}{38}
-\beamer@slide {ref1.py}{39}
-\beamer@slide {ref2.py}{40}
-\beamer@slide {ref3.py}{41}
-\beamer@slide {ref4.py}{42}
-\beamer@slide {RuleRowPredicate.py}{45}
-\beamer@slide {ruleRow1.py}{46}
-\beamer@slide {ruleRow2.py}{47}
-\beamer@slide {row_count_predicate_new.py}{48}
-\beamer@slide {row_count_predicate_old.py}{49}
-\beamer@slide {Results of evaluation}{54}
+\beamer@slide {funDep1.py}{35}
+\beamer@slide {funDep2.py}{36}
+\beamer@slide {SQLFunctionalDependency.sql}{36}
+\beamer@slide {funDep3.py}{37}
+\beamer@slide {ReferentialIntegrityPredicate.py}{40}
+\beamer@slide {SQLReferentialIntegrityPredicate.sql}{40}
+\beamer@slide {ref1.py}{41}
+\beamer@slide {ref2.py}{42}
+\beamer@slide {ref3.py}{43}
+\beamer@slide {ref4.py}{44}
+\beamer@slide {RuleRowPredicate.py}{47}
+\beamer@slide {ruleRow1.py}{48}
+\beamer@slide {ruleRow2.py}{49}
+\beamer@slide {row_count_predicate_new.py}{50}
+\beamer@slide {row_count_predicate_old.py}{51}
+\beamer@slide {Results of evaluation}{56}
