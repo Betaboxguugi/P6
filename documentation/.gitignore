@@ -3,5 +3,7 @@
 *.blg
 *.out
 *.toc
+*.snm
 master.pdf
+AAUsidebartheme.pdf
 !/article/codeRelated/scripts
