@@ -11,22 +11,10 @@
 %Andre nyttige predicates - Har vi covered enough
 
 \section{Predicates}
-\begin{frame}{Predicates}{Agenda}
-  \begin{itemize}
-    \item<1-> Why are they useful?
-    \item<1-> Usage/Implementation 
-    \item<1-> Alternative Forms of Implementation
-  \end{itemize}
-\end{frame}
-%%%%%%%%%%%%%%%%
 
-\subsection{Why are they useful?}
-\begin{frame}{Predicates}{Why are they useful?}
+\subsection{Hvorfor er de brugbare?}
+\begin{frame}{Predicates}{Hvorfor er de brugbare?}
 	\begin{itemize}
-		\item<1-> Systems level testing
-			\begin{itemize}
-				\item Data loss
-			\end{itemize}
 		\item<2-> Source to target test
 		\item<2->[] \includegraphics[width=8.5cm]{figures/scenario.pdf}
 		\item<3-> Regression testing
@@ -55,10 +43,19 @@
 			\item<1-> RowCountPredicate
 			\item<1-> ColumnNotNullPredicate
 			\item<1-> \textbf{ReferentialIntegrityPredicate}
+			\begin{itemize}
+				\item<1-> \textbf{Advanceret predicate}
+			\end{itemize}
 			\item<1-> \textbf{FunctionalDependencyPredicate}
+			\begin{itemize}
+				\item<1-> \textbf{Ligner mange af vores predicater.}
+			\end{itemize}
 			\item<1-> SCDVersionPredicate
 			\item<1-> CompareTablePredicate
 			\item<1-> \textbf{RuleRowPredicate}
+			\begin{itemize}
+				\item<1-> \textbf{Bruger ikke SQL men representation}
+			\end{itemize}
 			\item<1-> RuleColumnPredicate
 		\end{itemize}
 	\end{block}
@@ -74,6 +71,7 @@
 	\end{block}
 \end{frame}
 
+%Godt kode eksempel da mange predicater ligner den
 \begin{frame}{Predicates}{Usage - Functional Dependency}
 	\begin{block}{Setup:}
 		\insertcodefile{FunctionalDependencyPredicate.py}{}
@@ -101,12 +99,14 @@
 \begin{frame}{Predicates}{Usage - Referential Integrity}
 	\begin{block}{Referential Integrity - Why is it useful?}
 		\begin{itemize}
+		%Nævn mere at referential integrity er en standart
 			\item<1-> Most DBMS's have various referential integrity rules
 			\item<2-> Not removing the correct data from all tables
 		\end{itemize}
 	\end{block}
 \end{frame}
 
+%Går igennem fordi advanceret.
 \begin{frame}{Predicates}{Usage - Referential Integrity}
   \begin{block}{Setup:}
 		\insertcodefile{ReferentialIntegrityPredicate.py}{}
@@ -132,6 +132,8 @@
 	\insertcodefile{ref4.py}{}
 \end{frame}
 
+%Nævn comparePredicate som en anden advanceret predicate, men lang til at gå igennem.
+%Hvis mangel på tid - fjern kode eksempel
 \begin{frame}{Predicates}{Usage - RuleRowPredicate}
 	\begin{block}{RuleRowPredicate - Why is it useful?}
 		\begin{itemize}
