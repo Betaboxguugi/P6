@@ -9,5 +9,4 @@ missing_keys = []
         else:
             raise ValueError('Expected string in refs, got: ' +
                                  str(type(x)))
-        if isinstance(beta, str):
-            b.append(dw_rep.get_data_representation(beta))
+
