@@ -15,9 +15,9 @@
 \subsection{Hvorfor er de nyttige?}
 \begin{frame}{Predicates}{Hvorfor er de nyttige?}
 	\begin{itemize}
-		\item<2-> Source to target test
-		\item<2->[] \includegraphics[width=8.5cm]{figures/scenario.pdf}
-		\item<3-> Regression testing
+		\item<1-> Source to target test
+		\item<1->[] \includegraphics[width=8.5cm]{figures/overview.pdf}
+		\item<2-> Regression testing
 		\item<3-> Business Rules
 	\end{itemize}
 \end{frame}
@@ -42,20 +42,59 @@
 		\begin{itemize}
 			\item<1-> RowCountPredicate
 			\item<1-> ColumnNotNullPredicate
-			\item<1-> \textbf{ReferentialIntegrityPredicate}
-			\begin{itemize}
-				\item<2-> \textbf{Advanceret predicate}
-			\end{itemize}
+			\item<1-> ReferentialIntegrityPredicate
 			\item<1-> \textbf{FunctionalDependencyPredicate}
-			\begin{itemize}
-				\item<3-> \textbf{Har meget til fælles med mange af vores predicater.}
-			\end{itemize}
+				\begin{itemize}
+					\item<1-> \textbf{Har meget til fælles med mange af vores predicater.}
+				\end{itemize}			
+			\item<1-> SCDVersionPredicate
+			\item<1-> CompareTablePredicate
+			\item<1-> RuleRowPredicate
+			\item<1-> RuleColumnPredicate
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Predicates}{Hvorfor er de nyttige?}
+	\begin{block}{Predicates til rådighed i SKiRaff}
+		\begin{itemize}
+			\item<1-> RowCountPredicate
+			\item<1-> ColumnNotNullPredicate
+			\item<1-> \textbf{ReferentialIntegrityPredicate}
+				\begin{itemize}
+					\item<1-> \textbf{Advanceret predicate}
+				\end{itemize}
+			\item<1-> \textbf{FunctionalDependencyPredicate}
+				\begin{itemize}
+					\item<1-> \textbf{Har meget til fælles med mange af vores predicater.}
+				\end{itemize}			
+			\item<1-> SCDVersionPredicate
+			\item<1-> CompareTablePredicate
+			\item<1-> RuleRowPredicate
+			\item<1-> RuleColumnPredicate
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Predicates}{Hvorfor er de nyttige?}
+	\begin{block}{Predicates til rådighed i SKiRaff}
+		\begin{itemize}
+			\item<1-> RowCountPredicate
+			\item<1-> ColumnNotNullPredicate
+			\item<1-> \textbf{ReferentialIntegrityPredicate}
+				\begin{itemize}
+					\item<1-> \textbf{Advanceret predicate}
+				\end{itemize}
+			\item<1-> \textbf{FunctionalDependencyPredicate}
+				\begin{itemize}
+					\item<1-> \textbf{Har meget til fælles med mange af vores predicater.}
+				\end{itemize}			
 			\item<1-> SCDVersionPredicate
 			\item<1-> CompareTablePredicate
 			\item<1-> \textbf{RuleRowPredicate}
-			\begin{itemize}
-				\item<4-> \textbf{Bruger ikke SQL men representation objekter}
-			\end{itemize}
+				\begin{itemize}
+					\item<1-> \textbf{Bruger ikke SQL men representation objekter}
+				\end{itemize}
 			\item<1-> RuleColumnPredicate
 		\end{itemize}
 	\end{block}

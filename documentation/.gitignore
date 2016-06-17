@@ -4,6 +4,7 @@
 *.out
 *.toc
 *.snm
+*.nav
 master.pdf
 AAUsidebartheme.pdf
 !/article/codeRelated/scripts
