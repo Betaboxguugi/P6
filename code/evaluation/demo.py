@@ -50,7 +50,10 @@ pred_list = [ndrp_test, e_ndrp_test, fdp_test, e_fdp_test, rip_test]
 
 dw_path = './dw.db'
 pygrametl_program_path = './etl.py'
-dwp = DWPopulator(pygrametl_program_path, sqlite3, True, database=dw_path)
+dwp = DWPopulator(pygrametl_program_path,
+                  pep249_module=sqlite3,
+                  program_is_path=True,
+                  database=dw_path) # Arg til sqlite3
 
 dw_rep = dwp.run()
 
