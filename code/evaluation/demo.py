@@ -19,16 +19,34 @@ table3 = 'countrydim'
 fact_table = 'facttable'
 goodbooks = 'goodbooksdim'
 
-cnnp_test = ColumnNotNullPredicate(table1)
-ctp_test = CompareTablePredicate(table2, goodbooks, ['ID'], True, False, (), True, True)
-fdp_test = FunctionalDependencyPredicate([table1, table3], 'cid', 'city')
-ndrp_test = NoDuplicateRowPredicate(table1, ['city', 'aid'], True)
-rip_test = ReferentialIntegrityPredicate()
-rocp_test = RowCountPredicate(table2, 6)
-scdvp_test = SCDVersionPredicate(table2, {"title": 'EZ PZ ETL'}, 4)
 
-pred_list = [cnnp_test, ctp_test, fdp_test, ndrp_test, rip_test, rocp_test,
-             scdvp_test]
+# Uden fejl
+ndrp_test = NoDuplicateRowPredicate(table_name='authordim',
+                                    column_names=['aid'],
+                                    column_names_exclude=True)
+
+# Med fejl
+e_ndrp_test = NoDuplicateRowPredicate(table_name='authordim',
+                                    column_names=['city', 'aid'],
+                                    column_names_exclude=True)
+
+# Uden fejl
+fdp_test = FunctionalDependencyPredicate(table_name=['authordim', 'countrydim'],
+                                         alpha='city',
+                                         beta='country')
+
+# Med fejl
+e_fdp_test = FunctionalDependencyPredicate(table_name=['authordim', 'countrydim'],
+                                         alpha='country',
+                                         beta='city')
+
+rip_test = ReferentialIntegrityPredicate()
+
+
+
+
+
+pred_list = [ndrp_test, e_ndrp_test, fdp_test, e_fdp_test, rip_test]
 
 dw_path = './dw.db'
 pygrametl_program_path = './etl.py'
